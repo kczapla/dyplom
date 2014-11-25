@@ -55,7 +55,7 @@ if __name__ == '__main__':
             first_class.use_test_values()
 
         elif what == '7':
-            print(first_class.interest_matrix)
+            print(first_class.interest_matrix_voice)
 
         elif what == '8':
             first_class.delete_network(int(input('Podaj indeks sieci, którą chcesz usunąć: ')))

@@ -6,7 +6,14 @@ import core.test as test
 
 class Data:
     def __init__(self):
-        self.interest_matrix = []
+        """
+        Method initialize interests matrix for 3 class of flow, list of creted by user networks and index to handle
+        operations on networks.
+
+        """
+        self.interest_matrix_voice = []
+        self.interest_matrix_video = []
+        self.interest_matrix_be = []
         self.networks = []
         self.index = 0
 
@@ -20,7 +27,7 @@ class Data:
 
         for nets in self.networks:
             if 'GSM' in nets.name:
-                nets.out_intensity(self.networks)
+                nets.set_intensity_voice_out(self.networks)
 
         for nets in self.networks:
             if 'GSM' in nets.name:
@@ -35,7 +42,7 @@ class Data:
             print("+++++++++++++++++")
 
     def use_test_values(self):
-        self.interest_matrix = test.interest_matrix
+        self.interest_matrix_voice = test.interest_matrix
         for tmp in test.test_networks():
             self.networks.append(tmp)
             self.index = test.index
@@ -72,29 +79,29 @@ class Data:
 
         for x in range(self.index+1):
             self.networks[x].set_index(x)
-            self.interest_matrix[x].pop(n)
-        self.interest_matrix.pop(n)
+            self.interest_matrix_voice[x].pop(n)
+        self.interest_matrix_voice.pop(n)
         self.process_data()
 
     def create_interest_matrix(self):
         """
         Creating the interest matrix based on the number of networks
-        :return:
         """
-        self.interest_matrix = []
+        self.interest_matrix_voice = []
         for ly in range(self.index+1):
-            self.interest_matrix.append([float(input('x[{}][{}] = '.format(ly, lx))) for lx in range(self.index+1)])
+            self.interest_matrix_voice.append(
+                [float(input('x[{}][{}] = '.format(ly, lx))) for lx in range(self.index+1)])
 
     def split_matrix(self):
         """
         Method which partial interest matrix into row to every network
-        :return: set the value of interest_row in instance of the network class
+        :return: set the value of interest_row_voice in instance of the network class
         """
         for temp in self.networks:
-            temp.interest_row = self.interest_matrix[temp.index]
+            temp.interest_row = self.interest_matrix_voice[temp.index]
 
     def change_single_value_matrix(self, row, col):
-        self.interest_matrix[row][col] = input('Podaj nowa wartosc: ')
+        self.interest_matrix_voice[row][col] = input('Podaj nowa wartosc: ')
 
 
 if __name__ == '__main__':
