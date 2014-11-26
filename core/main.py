@@ -10,8 +10,14 @@ if __name__ == '__main__':
     while True:
         print("""++++++++++OPTIONS++++++++++
                 (1) - CREATE NETWORKS
-                (2) - INSERT INTEREST MATRIX
+                (2) - CREATE INTEREST MATRIX
+                    (2.1) - VOICE
+                    (2.2) - VIDEO
+                    (2.3) - BEST EFFORT
                 (3) - CHANGE INTEREST MATRIX
+                    (3.1) - VOICE
+                    (3.2) - VIDEO
+                    (3.3) - BEST EFFORT
                 (4) - PROCESS DATA
                 (5) - SHOW DATA
                 (6) - USE TEST VALUES
@@ -36,14 +42,28 @@ if __name__ == '__main__':
                     print("Błędna wartość. Spróbuj ponownie.")
                     continue
 
-        elif what == '2':
-            first_class.create_interest_matrix()
+        elif '2.' in what:
+            if what == '2.1':
+                first_class.create_interest_matrix(first_class.interest_matrix_voice)
+            elif what == '2.2':
+                first_class.create_interest_matrix(first_class.interest_matrix_video)
+            elif what == '2.3':
+                first_class.create_interest_matrix(first_class.interest_matrix_be)
+            else:
+                print('Wrong value! Choose from available options.')
             first_class.split_matrix()
 
-        elif what == '3':
+        elif '3.' in what:
             row = str(input('Set row: '))
             col = str(input('Set column: '))
-            first_class.change_single_value_matrix(row, col)
+            if what == '3.1':
+                first_class.change_single_value_matrix(row, col, first_class.interest_matrix_voice)
+            elif what == '3.2':
+                first_class.change_single_value_matrix(row, col, first_class.interest_matrix_video)
+            elif what == '3.3':
+                first_class.change_single_value_matrix(row, col, first_class.interest_matrix_be)
+            else:
+                print('Wrong value! Choose from available options.')
 
         elif what == '4':
             first_class.process_data()
@@ -56,6 +76,8 @@ if __name__ == '__main__':
 
         elif what == '7':
             print(first_class.interest_matrix_voice)
+            print(first_class.interest_matrix_video)
+            print(first_class.interest_matrix_be)
 
         elif what == '8':
             first_class.delete_network(int(input('Podaj indeks sieci, którą chcesz usunąć: ')))

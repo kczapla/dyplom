@@ -197,9 +197,10 @@ class Package:
         :param networks: list of created networks in project
         """
         for net in networks:
+
             tmp = (self.interest_row_voice[net.index] *
-                   self.lambda_g711 *
-                   self.package_length_g711)
+                   self.intensity_voice_in *
+                   self.package_length_g729)
 
             self.flow_voice_in += tmp
             self.flow_voice_in_list.append(tmp)

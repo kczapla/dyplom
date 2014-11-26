@@ -49,6 +49,8 @@ class Data:
 
     def use_test_values(self):
         self.interest_matrix_voice = test.interest_matrix
+        self.interest_matrix_video = test.intrest_matrix_video
+        self.interest_matrix_be = test.interest_matrix_be
         for tmp in test.test_networks():
             self.networks.append(tmp)
             self.index = test.index
@@ -89,13 +91,22 @@ class Data:
         self.interest_matrix_voice.pop(n)
         self.process_data()
 
-    def create_interest_matrix(self):
+    def create_interest_matrix_voice(self):
         """
-        Creating the interest matrix based on the number of networks
+        Creating the interest matrix for voice movement based on the number of networks
         """
         self.interest_matrix_voice = []
         for ly in range(self.index+1):
             self.interest_matrix_voice.append(
+                [float(input('x[{}][{}] = '.format(ly, lx))) for lx in range(self.index+1)])
+
+    def create_interest_matrix(self, interest_matrix=None):
+        """
+        Creating the interest matrix based on the number of networks
+        """
+        interest_matrix = []
+        for ly in range(self.index+1):
+            interest_matrix.append(
                 [float(input('x[{}][{}] = '.format(ly, lx))) for lx in range(self.index+1)])
 
     def split_matrix(self):
@@ -105,9 +116,11 @@ class Data:
         """
         for temp in self.networks:
             temp.interest_row_voice = self.interest_matrix_voice[temp.index]
+            temp.interest_row_video = self.interest_matrix_video[temp.index]
+            temp.interest_row_be = self.interest_matrix_be[temp.index]
 
-    def change_single_value_matrix(self, row, col):
-        self.interest_matrix_voice[row][col] = input('Podaj nowa wartosc: ')
+    def change_single_value_matrix(self, row, col, interest_matrix=None):
+        interest_matrix[row][col] = input('Podaj nowa wartosc: ')
 
 
 if __name__ == '__main__':
