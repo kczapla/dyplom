@@ -27,7 +27,7 @@ values = [{'intensity': 240, 'loss': 0.002, 'mode': 'c', 'index': 0},
           {'intensity': 180, 'loss': 0.002, 'mode': 'c', 'index': 2},
           {'intensity': 12000, 'intensity_video': 18000, 'intensity_be': 18000, 'loss': 0, 'mode': 'p', 'index': 3},
           {'intensity': 16000, 'intensity_video': 20000, 'intensity_be': 20000, 'loss': 0, 'mode': 'p', 'index': 4},
-          {'intensity': 15000, 'intensity_video': 19000, 'intensity_be': 20000, 'loss': 0, 'mode': 'p', 'index': 5}]
+          {'intensity': 15000, 'intensity_video': 19000, 'intensity_be': 19000, 'loss': 0, 'mode': 'p', 'index': 5}]
 
 index = 5
 

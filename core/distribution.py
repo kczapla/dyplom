@@ -37,8 +37,15 @@ class Data:
         for nets in self.networks:
             nets.set_flow_voice_in(self.networks)
 
+            if not 'GSM' in nets.name:
+                nets.set_flow_video_in(self.networks)
+                nets.set_flow_be_in(self.networks)
+
         for nets in self.networks:
             nets.set_flow_voice_out(self.networks)
+            if not 'GSM' in nets.name:
+                nets.set_flow_video_out(self.networks)
+                nets.set_flow_be_out(self.networks)
 
     def show_data(self):
         for x in self.networks:
