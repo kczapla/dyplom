@@ -34,6 +34,12 @@ class Data:
                 nets.input_resources()
                 nets.output_resources()
 
+        for nets in self.networks:
+            nets.set_flow_voice_in(self.networks)
+
+        for nets in self.networks:
+            nets.set_flow_voice_out(self.networks)
+
     def show_data(self):
         for x in self.networks:
             print("+++++++++++++++++")
@@ -98,7 +104,7 @@ class Data:
         :return: set the value of interest_row_voice in instance of the network class
         """
         for temp in self.networks:
-            temp.interest_row = self.interest_matrix_voice[temp.index]
+            temp.interest_row_voice = self.interest_matrix_voice[temp.index]
 
     def change_single_value_matrix(self, row, col):
         self.interest_matrix_voice[row][col] = input('Podaj nowa wartosc: ')

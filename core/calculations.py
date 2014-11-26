@@ -24,7 +24,7 @@ def pcm_lines(n=None):
     :param n: Number of lines
     :return: Number of pcm lines
     """
-    return round(n/30+0.5)
+    return round(n/30+0.49)
 
 
 def real_links(pcm=None):
@@ -43,7 +43,7 @@ def dsp(nr=None, ldsp=4):
     :param ldsp: Number of lines per one digital signal processor
     :return: Number of signal processors on the edge of the network
     """
-    return round(nr/ldsp+0.5)
+    return round(nr/ldsp+0.49)
 
 
 def out_intensity(network=None):
