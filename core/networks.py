@@ -159,7 +159,7 @@ class Circuit:
 
 
 class Package:
-    def __init__(self, intensity_voice=0, index=None, intensity_video=0, intensity_mail=0):
+    def __init__(self, intensity_voice=0, index=None, intensity_video=0, intensity_be=0):
 
         """
 
@@ -169,7 +169,7 @@ class Package:
         #Values into the core network from access network
         self.intensity_voice_in = intensity_voice
         self.intensity_video_in = intensity_video
-        self.intensity_be_in = intensity_mail
+        self.intensity_be_in = intensity_be
         self.flow_voice_in_list = []
         self.flow_video_in_list = []
         self.flow_be_in_list = []
