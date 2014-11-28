@@ -131,14 +131,21 @@ class Circuit:
 
         Method reset calculated values
         """
-
         self.intensity_voice_out = 0
         self.links_out = 0
         self.pcm_out = 0
         self.r_out = 0
         self.dsp_out = 0
         self.flow_voice_out = 0
-
+		
+		self.interest_row_voice = []
+        self.interest_row_video = []
+        self.interest_row_be = []
+		
+		self.flow_voice_in_list = []
+        self.flow_video_in_list = []
+        self.flow_be_in_list = []
+		
     def set_intensity_voice_out(self, networks=None):
         """
         Method is counting the output intensity of the network.
@@ -320,6 +327,10 @@ class Package:
         self.flow_voice_out = 0
         self.flow_video_out = 0
         self.flow_be_out = 0
+		
+		self.interest_row_voice = []
+        self.interest_row_video = []
+        self.interest_row_be = []
 
     def set_intensity_voice_in(self, n):
         """

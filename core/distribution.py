@@ -20,12 +20,14 @@ class Data:
 #Methods connected with displaying Data class
     def process_data(self):
 
-        self.split_matrix()
+        
 
         for nets in self.networks:
             nets.reset_resources()
-
-        for nets in self.networks:
+        
+		self.split_matrix()
+		
+		for nets in self.networks:
             if 'GSM' in nets.name:
                 nets.set_intensity_voice_out(self.networks)
 
@@ -104,9 +106,21 @@ class Data:
 
         for x in range(self.index+1):
             self.networks[x].set_index(x)
-            self.interest_matrix_voice[x].pop(n)
-        self.interest_matrix_voice.pop(n)
-        self.process_data()
+			
+			if self.interest_matrix_voice:
+				self.interest_matrix_voice[x].pop(n)
+			if self.interest_matrix_video:
+				self.interest_matrix_video[x].pop(n)
+			if self.interest_matrix_be:
+				self.interest_matrix_be[x].pop(n)
+
+		if self.interest_matrix_voice:	
+			self.interest_matrix_voice.pop(n)
+		if self.interest_matrix_video:
+			self.interest_matrix_video.pop(n)
+		if self.interest_matrix_be:
+			self.interest_matrix_be.pop(n)
+        #self.process_data()
 
     def create_interest_matrix_voice(self):
         """
