@@ -36,7 +36,7 @@ if __name__ == '__main__':
                     loss = float(input('Loss probability: '))
 
                     if intensity_voice and loss:
-                        first_class.create_circuit_network()
+                        first_class.create_circuit_network(intensity_voice, loss)
                     else:
                         print('Wrong values. Try again.')
 

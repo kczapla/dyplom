@@ -4,7 +4,7 @@ import core.calculations as calc
 
 
 class Circuit:
-    def __init__(self, intensity=None, index=None, loss=0.002):
+    def __init__(self, index=None, intensity=None, loss=0.002):
 
         """
 
@@ -137,15 +137,14 @@ class Circuit:
         self.r_out = 0
         self.dsp_out = 0
         self.flow_voice_out = 0
-		
-		self.interest_row_voice = []
+        self.interest_row_voice = []
         self.interest_row_video = []
         self.interest_row_be = []
-		
-		self.flow_voice_in_list = []
+
+        self.flow_voice_in_list = []
         self.flow_video_in_list = []
         self.flow_be_in_list = []
-		
+
     def set_intensity_voice_out(self, networks=None):
         """
         Method is counting the output intensity of the network.
@@ -166,7 +165,7 @@ class Circuit:
 
 
 class Package:
-    def __init__(self, intensity_voice=0, index=None, intensity_video=0, intensity_be=0):
+    def __init__(self, index=None, intensity_voice=0, intensity_video=0, intensity_be=0):
 
         """
 
@@ -327,8 +326,8 @@ class Package:
         self.flow_voice_out = 0
         self.flow_video_out = 0
         self.flow_be_out = 0
-		
-		self.interest_row_voice = []
+
+        self.interest_row_voice = []
         self.interest_row_video = []
         self.interest_row_be = []
 
