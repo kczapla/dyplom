@@ -20,7 +20,7 @@ class Data:
         self.networks = []
         self.index = 0
 
-        self.index_nodes = 4
+        self.index_nodes = 0
         self.index_links = 0
         self.nodes = []
         self.links = []
@@ -193,14 +193,14 @@ class Data:
         self.nodes.append(dev.CoreRouter(self.index_nodes, buffer_voice, buffer_video, buffer_be))
         self.index_nodes += 1
 
-    def create_links(self, index, length, capacity):
+    def create_links(self):
 
         """
-
-        :param length: Length of link
-        :param capacity: capacity of the connection
+        Method is creating links between nodes
         """
-        self.links.append(dev.Link(index, length, capacity))
+        self.links = []
+        self.links = [dev.Link(x, int(input('Length: ')), int(input('Capacity: '))) for x in self.connections_sliced]
+        #self.links.append(dev.Link(index, length, capacity))
 
     def create_adjacency_matrix(self):
 
@@ -214,8 +214,6 @@ class Data:
         self.adjacency_matrix = []
         self.adjacency_matrix = ([[int(input('x[{}][{}] = '.format(lx, ly))) for ly in range(self.index_nodes)]
                                   for lx in range(self.index_nodes)])
-        for x in enumerate(self.adjacency_matrix[3]):
-                print(x)
         self.connections = [(self.adjacency_matrix.index(x), i) for x in self.adjacency_matrix
                             for i, j in enumerate(x) if j == 1]
         self.connections_sliced = self.connections[:int(len(self.connections)/2)]
@@ -224,7 +222,6 @@ class Data:
 if __name__ == '__main__':
     d = Data()
     d.create_adjacency_matrix()
-    print(d.adjacency_matrix)
-    print(d.adjacency_matrix.index(d.adjacency_matrix[3]))
+
     #print(d.connections)
     #print(d.connections_sliced)
