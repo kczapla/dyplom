@@ -28,10 +28,10 @@ class CoreRouter(Router):
 
 
 class Link:
-    def __init__(self, name, length, capacity):
+    def __init__(self, index, length, capacity):
 
-        self.index = name
-        self.name = "Link " + str(name)
+        self.index = index
+        self.name = "Link " + str(index)
         self.length = length
         self.paths = {}
         self.capacity = capacity

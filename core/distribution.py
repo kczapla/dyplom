@@ -1,12 +1,14 @@
 __author__ = 'perun'
 
-import networkx as nx
+# import networkx as nx
 import core.networks as nw
 import core.test as test
+import core.devices as dev
 
 
 class Data:
     def __init__(self):
+
         """
         Method initialize interests matrix for 3 class of flow, list of creted by user networks and index to handle
         operations on networks.
@@ -18,7 +20,16 @@ class Data:
         self.networks = []
         self.index = 0
 
-#Methods connected with displaying Data class
+        self.index_nodes = 4
+        self.index_links = 0
+        self.nodes = []
+        self.links = []
+
+        self.adjacency_matrix = []
+        self.connections = []
+        self.connections_sliced = []
+
+    # Methods connected with displaying Data class
     def process_data(self):
 
         for nets in self.networks:
@@ -71,7 +82,8 @@ class Data:
             self.networks.append(tmp)
             self.index = test.index
 
-#Methods connected with processing Data class
+            #Methods connected with processing Data class
+
     def create_circuit_network(self, intensity=0, loss=0):
 
         """
@@ -122,16 +134,17 @@ class Data:
             if self.interest_matrix_be:
                 self.interest_matrix_be.pop(n)
 
-    def create_interest_matrix(self, interest_matrix=None):
+    def create_interest_matrix(self, interest_matrix):
+
         """
         Creating the interest matrix based on the number of networks
         """
-        interest_matrix = []
-        for ly in range(self.index):
-            interest_matrix.append(
-                [float(input('x[{}][{}] = '.format(ly, lx))) for lx in range(self.index)])
+        interest_matrix = list()
+        interest_matrix.append(
+            [[float(input('x[{}][{}] = '.format(ly, lx))) for ly in range(self.index)] for lx in range(self.index)])
 
     def split_matrix(self):
+
         """
         Method which partial interest matrix into row to every network
         :return: set the value of interest_row_voice in instance of the network class
@@ -146,9 +159,72 @@ class Data:
             if self.interest_matrix_be:
                 temp.interest_row_be = self.interest_matrix_be[temp.index]
 
-    def change_single_value_matrix(self, row, col, interest_matrix=None):
+    @staticmethod
+    def change_single_value_matrix(row, col, interest_matrix=None):
+
+        """
+
+        :param row: row where variable is
+        :param col: column where variable is
+        :param interest_matrix: which matrix change
+        """
         interest_matrix[row][col] = float(input('New value: '))
+
+    # methods connected with graph operations
+    def create_node_edge(self, buffer_voice, buffer_video, buffer_be):
+
+        """
+
+        :param buffer_voice: size of queue for voice traffic
+        :param buffer_video: size of queue for video traffic
+        :param buffer_be: size of queue for best effort traffic
+        """
+        self.nodes.append(dev.EdgeRouter(self.index_nodes, buffer_voice, buffer_video, buffer_be))
+        self.index_nodes += 1
+
+    def create_node_core(self, buffer_voice, buffer_video, buffer_be):
+
+        """
+
+        :param buffer_voice: size of queue for voice traffic
+        :param buffer_video: size of queue for video traffic
+        :param buffer_be: size of queue for best effort traffic
+        """
+        self.nodes.append(dev.CoreRouter(self.index_nodes, buffer_voice, buffer_video, buffer_be))
+        self.index_nodes += 1
+
+    def create_links(self, index, length, capacity):
+
+        """
+
+        :param length: Length of link
+        :param capacity: capacity of the connection
+        """
+        self.links.append(dev.Link(index, length, capacity))
+
+    def create_adjacency_matrix(self):
+
+        """
+        Creating a splitting adjacency matrix.
+        bug - self.adjacency_matrix.index(x) returns '1' when matrix [[0, 1, 1, 1], [1, 0, 0, 0], [1, 0, 0, 0],
+        [1, 0, 0, 0]] because this method is looking for first appearance of the value to appear. First is on the first
+        row. Be aware of it!
+
+        """
+        self.adjacency_matrix = []
+        self.adjacency_matrix = ([[int(input('x[{}][{}] = '.format(lx, ly))) for ly in range(self.index_nodes)]
+                                  for lx in range(self.index_nodes)])
+        for x in enumerate(self.adjacency_matrix[3]):
+                print(x)
+        self.connections = [(self.adjacency_matrix.index(x), i) for x in self.adjacency_matrix
+                            for i, j in enumerate(x) if j == 1]
+        self.connections_sliced = self.connections[:int(len(self.connections)/2)]
 
 
 if __name__ == '__main__':
-    pass
+    d = Data()
+    d.create_adjacency_matrix()
+    print(d.adjacency_matrix)
+    print(d.adjacency_matrix.index(d.adjacency_matrix[3]))
+    #print(d.connections)
+    #print(d.connections_sliced)
