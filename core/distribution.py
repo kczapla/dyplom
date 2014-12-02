@@ -27,7 +27,8 @@ class Data:
 
         self.adjacency_matrix = []
         self.connections = []
-        self.connections_sliced = []
+        self.paths_matrix = []
+        self.paths = []
 
     # Methods connected with displaying Data class
     def process_data(self):
@@ -82,7 +83,7 @@ class Data:
             self.networks.append(tmp)
             self.index = test.index
 
-            #Methods connected with processing Data class
+            # Methods connected with processing Data class
 
     def create_circuit_network(self, intensity=0, loss=0):
 
@@ -126,13 +127,14 @@ class Data:
             if self.interest_matrix_be:
                 self.interest_matrix_be[x].pop(n)
 
-            if self.interest_matrix_voice:
-                self.interest_matrix_voice.pop(n)
+        if self.interest_matrix_voice:
+            self.interest_matrix_voice.pop(n)
 
-            if self.interest_matrix_video:
-                self.interest_matrix_video.pop(n)
-            if self.interest_matrix_be:
-                self.interest_matrix_be.pop(n)
+        if self.interest_matrix_video:
+            self.interest_matrix_video.pop(n)
+
+        if self.interest_matrix_be:
+            self.interest_matrix_be.pop(n)
 
     def create_interest_matrix(self, interest_matrix):
 
@@ -193,14 +195,32 @@ class Data:
         self.nodes.append(dev.CoreRouter(self.index_nodes, buffer_voice, buffer_video, buffer_be))
         self.index_nodes += 1
 
+    def delete_node(self, index):
+
+        self.nodes.pop(index)
+        self.index_nodes -= 1
+
+        # self.nodes = [self.nodes[x].set_name(x) for x in range(self.index_nodes)]
+        for x in range(self.index_nodes):
+            self.nodes[x].set_name(x)
+
+        if self.adjacency_matrix:
+            for x in self.adjacency_matrix:
+                x.pop(index)
+
+            self.adjacency_matrix.pop(index)
+            self.slice_adjacency_matrix()
+            self.create_links()
+
     def create_links(self):
 
         """
         Method is creating links between nodes
         """
         self.links = []
-        self.links = [dev.Link(x, int(input('Length: ')), int(input('Capacity: '))) for x in self.connections_sliced]
-        #self.links.append(dev.Link(index, length, capacity))
+        # self.links = [dev.Link(x, int(input('Length: ')), int(input('Capacity: '))) for x in self.connections_sliced]
+        self.links = [dev.Link(x, 50, 300) for x in self.connections]
+        # self.links.append(dev.Link(index, length, capacity))
 
     def create_adjacency_matrix(self):
 
@@ -212,16 +232,75 @@ class Data:
 
         """
         self.adjacency_matrix = []
-        self.adjacency_matrix = ([[int(input('x[{}][{}] = '.format(lx, ly))) for ly in range(self.index_nodes)]
-                                  for lx in range(self.index_nodes)])
-        self.connections = [(self.adjacency_matrix.index(x), i) for x in self.adjacency_matrix
-                            for i, j in enumerate(x) if j == 1]
-        self.connections_sliced = self.connections[:int(len(self.connections)/2)]
+        # self.adjacency_matrix = ([[int(input('x[{}][{}] = '.format(lx, ly))) for ly in range(self.index_nodes)]
+        # for lx in range(self.index_nodes)])
+        self.adjacency_matrix = [[0, 1, 0, 1, 1, 0], [1, 0, 1, 1, 0, 0], [0, 1, 0, 1, 1, 1], [1, 1, 1, 0, 0, 0],
+                                 [1, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]]
+        self.slice_adjacency_matrix()
 
+    def slice_adjacency_matrix(self):
+
+        self.connections = [[self.adjacency_matrix.index(x), i] for x in self.adjacency_matrix
+                            for i, j in enumerate(x) if j == 1]
+
+        for x in self.connections:
+            for y in self.connections:
+                tmp = y[:]
+                tmp.reverse()
+                if tmp == x:
+                    self.connections.remove(y)
+
+    def create_paths_matrix(self):
+
+        self.paths_matrix = []
+        # self.paths_matrix = ([[int(input('x[{}][{}] = '.format(lx, ly))) for ly in range(self.index_nodes)]
+        # for lx in range(self.index_nodes)])
+        self.paths_matrix = [[5, 2, 1, 0], [0, 1, 3, 2, 5]]
+
+        self.slice_paths_matrix()
+
+    def slice_paths_matrix(self):
+
+        self.paths = [[] for x in self.paths_matrix]
+
+        for x in self.path_matrix:
+            for y in range(len(x)):
+                if y < len(x)-1:
+                    self.paths[self.paths_matrix.index(x)].append(x[y:y+2])
+
+    def scatter_flow(self):
+
+        for x in self.networks:
+            for y in self.nodes:
+                if 'ER' in y.name and not y.connected:
+                    y.flow_voice = x.flow_voice_in
+                    y.flow_video = x.flow_video_in
+                    y.flow_be = x.flow_be_in
+                    y.set_connected(True)
+
+        
 
 if __name__ == '__main__':
-    d = Data()
-    d.create_adjacency_matrix()
 
-    #print(d.connections)
-    #print(d.connections_sliced)
+    d = Data()
+    for x in range(3):
+        d.create_node_core(5, 15, 30)
+    for x in range(3):
+        d.create_node_edge(5, 15, 30)
+
+    d.create_adjacency_matrix()
+    print(d.adjacency_matrix)
+    d.create_links()
+
+    for x in d.links:
+        print(x.name)
+
+    d.delete_node(3)
+
+    for x in d.nodes:
+        print(x.name)
+
+    for x in d.links:
+        print(x.name)
+        # print(d.connections)
+        #print(d.connections_sliced)
