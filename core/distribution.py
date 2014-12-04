@@ -136,14 +136,35 @@ class Data:
         if self.interest_matrix_be:
             self.interest_matrix_be.pop(n)
 
-    def create_interest_matrix(self, interest_matrix):
+    def create_interest_matrix_voice(self):
 
         """
         Creating the interest matrix based on the number of networks
         """
-        interest_matrix = list()
-        interest_matrix.append(
-            [[float(input('x[{}][{}] = '.format(ly, lx))) for ly in range(self.index)] for lx in range(self.index)])
+        self.interest_matrix_voice = list()
+       # self.interest_matrix_voice.append(
+        #    [[float(input('x[{}][{}] = '.format(ly, lx))) for ly in range(self.index)] for lx in range(self.index)])
+        self.interest_matrix_voice = [[0, 1], [1, 0]]
+
+    def create_interest_matrix_video(self):
+
+        """
+        Creating the interest matrix based on the number of networks
+        """
+        self.interest_matrix_video = list()
+       # self.interest_matrix_voice.append(
+        #    [[float(input('x[{}][{}] = '.format(ly, lx))) for ly in range(self.index)] for lx in range(self.index)])
+        self.interest_matrix_video = [[0, 1], [1, 0]]
+
+    def create_interest_matrix_be(self):
+
+        """
+        Creating the interest matrix based on the number of networks
+        """
+        self.interest_matrix_be = list()
+       # self.interest_matrix_voice.append(
+        #    [[float(input('x[{}][{}] = '.format(ly, lx))) for ly in range(self.index)] for lx in range(self.index)])
+        self.interest_matrix_be = [[0, 1], [1, 0]]
 
     def split_matrix(self):
 
@@ -263,7 +284,7 @@ class Data:
 
         self.paths = [[] for x in self.paths_matrix]
 
-        for x in self.path_matrix:
+        for x in self.paths_matrix:
             for y in range(len(x)):
                 if y < len(x)-1:
                     self.paths[self.paths_matrix.index(x)].append(x[y:y+2])
@@ -276,31 +297,62 @@ class Data:
                     y.flow_voice = x.flow_voice_in
                     y.flow_video = x.flow_video_in
                     y.flow_be = x.flow_be_in
-                    y.set_connected(True)
+                    y.set_connected(True, x.name)
+                    break
 
-        
+        for x in self.paths:
+            for y in x:
+                tmp = y[:]
+                tmp.reverse()
+                for z in self.links:
+                    if y == z.index:
+                        z.flow_voice_up = self.nodes[x[0][0]].flow_voice
+                        z.flow_video_up = self.nodes[x[0][0]].flow_video
+                        z.flow_be_up = self.nodes[x[0][0]].flow_be
+                        break
+                    elif tmp == z.index:
+                        z.flow_voice_down = self.nodes[x[0][0]].flow_voice
+                        z.flow_video_down = self.nodes[x[0][0]].flow_video
+                        z.flow_be_down = self.nodes[x[0][0]].flow_be
+                        break
+
 
 if __name__ == '__main__':
 
     d = Data()
-    for x in range(3):
+
+    d.create_package_network(100, 1000, 1000)
+    d.create_package_network(50, 500, 500)
+
+    d.create_interest_matrix_voice()
+    d.create_interest_matrix_video()
+    d.create_interest_matrix_be()
+
+    d.process_data()
+
+    d.create_node_edge(5, 15, 30)
+    for x in range(4):
         d.create_node_core(5, 15, 30)
-    for x in range(3):
-        d.create_node_edge(5, 15, 30)
+    d.create_node_edge(5, 15, 30)
 
     d.create_adjacency_matrix()
     print(d.adjacency_matrix)
     d.create_links()
+    d.create_paths_matrix()
+    d.scatter_flow()
+
+    #for x in d.links:
+     #   print(x.name)
+
+    #d.delete_node(3)
+
+    #for x in d.nodes:
+     #   print(x.name)
 
     for x in d.links:
-        print(x.name)
-
-    d.delete_node(3)
-
-    for x in d.nodes:
-        print(x.name)
-
-    for x in d.links:
-        print(x.name)
+        print(x.index)
+        print(x.flow_voice_up)
+        print(x.flow_voice_down)
+        print('-----------------')
         # print(d.connections)
         #print(d.connections_sliced)

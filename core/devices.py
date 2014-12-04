@@ -24,14 +24,16 @@ class EdgeRouter(Router):
         self.flow_be = 0
 
         self.connected = False
+        self.connected_index = ''
 
     def set_name(self, index):
 
         self.index = index
         self.name = "ER " + str(index)
 
-    def set_connected(self, status):
+    def set_connected(self, status, index):
         self.connected = status
+        self.connected_index = index
 
 
 class CoreRouter(Router):
