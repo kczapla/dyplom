@@ -29,12 +29,21 @@ class Data:
         self.connections = []
         self.paths_matrix = []
         self.paths = []
+        #variable have list with networks connected to core network
+        self.net_edge = []
 
     # Methods connected with displaying Data class
     def process_data(self):
 
         for nets in self.networks:
             nets.reset_resources()
+
+        for x in self.links:
+            x.reset_resources()
+
+        for x in self.nodes:
+            if 'ER' in x.name:
+                x.reset_resources()
 
         self.split_matrix()
 
@@ -67,6 +76,8 @@ class Data:
                     nets.set_flow_video_out(self.networks)
                 if self.interest_matrix_be:
                     nets.set_flow_be_out(self.networks)
+
+
 
     def show_data(self):
         for x in self.networks:
@@ -271,6 +282,12 @@ class Data:
                 if tmp == x:
                     self.connections.remove(y)
 
+    def create_net_edge_matrix(self):
+
+        self.net_edge = [[1, 0], [0, 5]]
+        #self.net_edge = [[x.index, int(input('Index of edge router to be connected with network {}: '.format(x.name)))]
+         #                for x in self.networks]
+
     def create_paths_matrix(self):
 
         self.paths_matrix = []
@@ -291,14 +308,16 @@ class Data:
 
     def scatter_flow(self):
 
-        for x in self.networks:
-            for y in self.nodes:
-                if 'ER' in y.name and not y.connected:
-                    y.flow_voice = x.flow_voice_in
-                    y.flow_video = x.flow_video_in
-                    y.flow_be = x.flow_be_in
-                    y.set_connected(True, x.name)
-                    break
+        for x in self.net_edge:
+            for y in self.networks:
+                if x[0] == y.index:
+                    for z in self.nodes:
+                        if x[1] == z.index and 'ER' in z.name and not z.connected:
+                            z.flow_voice = y.flow_voice_in
+                            z.flow_video = y.flow_video_in
+                            z.flow_be = y.flow_be_in
+                            z.set_connected(True, y.name)
+                            break
 
         for x in self.paths:
             for y in x:
@@ -306,15 +325,34 @@ class Data:
                 tmp.reverse()
                 for z in self.links:
                     if y == z.index:
-                        z.flow_voice_up = self.nodes[x[0][0]].flow_voice
-                        z.flow_video_up = self.nodes[x[0][0]].flow_video
-                        z.flow_be_up = self.nodes[x[0][0]].flow_be
+                        z.flow_voice_up += self.nodes[x[0][0]].flow_voice
+                        z.flow_video_up += self.nodes[x[0][0]].flow_video
+                        z.flow_be_up += self.nodes[x[0][0]].flow_be
+
+                        #Writing the name of path going through link
+                        z.paths_voice[str(x)] = self.nodes[x[0][0]].flow_voice
+                        z.paths_video[str(x)] = self.nodes[x[0][0]].flow_video
+                        z.paths_be[str(x)] = self.nodes[x[0][0]].flow_be
+
                         break
+
                     elif tmp == z.index:
-                        z.flow_voice_down = self.nodes[x[0][0]].flow_voice
-                        z.flow_video_down = self.nodes[x[0][0]].flow_video
-                        z.flow_be_down = self.nodes[x[0][0]].flow_be
+                        z.flow_voice_down += self.nodes[x[0][0]].flow_voice
+                        z.flow_video_down += self.nodes[x[0][0]].flow_video
+                        z.flow_be_down += self.nodes[x[0][0]].flow_be
+
+                        #Writing the name of path going through link
+                        z.paths_voice[str(x)] = self.nodes[x[0][0]].flow_voice
+                        z.paths_video[str(x)] = self.nodes[x[0][0]].flow_video
+                        z.paths_be[str(x)] = self.nodes[x[0][0]].flow_be
+
                         break
+
+        for x in self.links:
+            x.set_flow_voice()
+            x.set_flow_video()
+            x.set_flow_be()
+
 
 
 if __name__ == '__main__':
@@ -339,6 +377,7 @@ if __name__ == '__main__':
     print(d.adjacency_matrix)
     d.create_links()
     d.create_paths_matrix()
+    d.create_net_edge_matrix()
     d.scatter_flow()
 
     #for x in d.links:
@@ -353,6 +392,8 @@ if __name__ == '__main__':
         print(x.index)
         print(x.flow_voice_up)
         print(x.flow_voice_down)
+        print(x.flow_voice)
+        print(x.paths_voice)
         print('-----------------')
         # print(d.connections)
         #print(d.connections_sliced)

@@ -19,6 +19,10 @@ class EdgeRouter(Router):
 
         self.name = "ER " + str(index)
 
+        self.flow_voice_in = 0
+        self.flow_video_in = 0
+        self.flow_be_in = 0
+
         self.flow_voice = 0
         self.flow_video = 0
         self.flow_be = 0
@@ -28,12 +32,39 @@ class EdgeRouter(Router):
 
     def set_name(self, index):
 
+        """
+        Method is setting the new name based of index of the router
+        :param index: new value of router index
+        """
         self.index = index
         self.name = "ER " + str(index)
 
     def set_connected(self, status, index):
+
+        """
+        Method is responsible for handling connection between network and router
+        :param status: status of connected variable. Can be true of false
+        :param index: Index of network
+        """
         self.connected = status
         self.connected_index = index
+
+    def reset_resources(self):
+
+        """
+        Method is responsible for resenting resources of current object
+
+        """
+        self.flow_voice_in = 0
+        self.flow_video_in = 0
+        self.flow_be_in = 0
+
+        self.flow_voice = 0
+        self.flow_video = 0
+        self.flow_be = 0
+
+        self.connected = False
+        self.connected_index = ''
 
 
 class CoreRouter(Router):
@@ -44,6 +75,10 @@ class CoreRouter(Router):
 
     def set_name(self, index):
 
+        """
+        Method is setting the new name based of index of the router
+        :param index: new value of router index
+        """
         self.index = index
         self.name = "CR " + str(index)
 
@@ -54,7 +89,9 @@ class Link:
         self.index = index
         self.name = "Link " + str(index)
         self.length = length
-        self.paths = {}
+        self.paths_voice = {}
+        self.paths_video = {}
+        self.paths_be = {}
         self.capacity = capacity
 
         self.flow_voice_up = 0
@@ -70,10 +107,44 @@ class Link:
         self.flow_be = 0
 
     def set_flow_voice(self):
+
+        """
+        Sums up both ways traffic for voice stream
+
+        """
         self.flow_voice = self.flow_voice_down + self.flow_voice_up
 
     def set_flow_video(self):
+
+        """
+        Sums up both ways traffic for video stream
+
+        """
         self.flow_video = self.flow_video_down + self.flow_video_up
 
     def set_flow_be(self):
+
+        """
+        Sums up both ways traffic for be stream
+
+        """
         self.flow_be = self.flow_be_down + self.flow_be_up
+
+    def reset_resources(self):
+
+        """
+        Method is responsible for resenting resources of current object
+
+        """
+
+        self.flow_voice_up = 0
+        self.flow_video_up = 0
+        self.flow_be_up = 0
+
+        self.flow_voice_down = 0
+        self.flow_video_down = 0
+        self.flow_be_down = 0
+
+        self.flow_voice = 0
+        self.flow_video = 0
+        self.flow_be = 0
