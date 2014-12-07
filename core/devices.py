@@ -1,5 +1,7 @@
 __author__ = 'perun'
 
+import core.calculations as calc
+
 
 class Router:
     def __init__(self, index, buffer_voice, buffer_video, buffer_be):
@@ -105,6 +107,17 @@ class Link:
         self.flow_voice = 0
         self.flow_video = 0
         self.flow_be = 0
+
+        self.iplr_voice = 0
+        self.iplr_void = 0
+        self.iplr_be = 0
+
+    def calculate_iplr(self, nodes):
+
+        for x in nodes:
+            if self.index[1] == x.index:
+                calc.iplr(self, x)
+                break
 
     def set_flow_voice(self):
 

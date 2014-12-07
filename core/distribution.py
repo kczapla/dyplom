@@ -27,10 +27,22 @@ class Data:
 
         self.adjacency_matrix = []
         self.connections = []
-        self.paths_matrix = []
-        self.paths = []
+
+        self.paths_matrix_voice = []
+        self.paths_voice = []
+
+        self.paths_matrix_video = []
+        self.paths_video = []
+
+        self.paths_matrix_be = []
+        self.paths_be = []
+
         #variable have list with networks connected to core network
         self.net_edge = []
+
+        self.iplr_for_paths_voice = {}
+        self.iplr_for_paths_video = {}
+        self.iplr_for_paths_be = {}
 
     # Methods connected with displaying Data class
     def process_data(self):
@@ -77,7 +89,8 @@ class Data:
                 if self.interest_matrix_be:
                     nets.set_flow_be_out(self.networks)
 
-
+        #for link in self.links:
+         #   link.calculate_iplr()
 
     def show_data(self):
         for x in self.networks:
@@ -251,7 +264,7 @@ class Data:
         """
         self.links = []
         # self.links = [dev.Link(x, int(input('Length: ')), int(input('Capacity: '))) for x in self.connections_sliced]
-        self.links = [dev.Link(x, 50, 300) for x in self.connections]
+        self.links = [dev.Link(x, 50, 300000000) for x in self.connections]
         # self.links.append(dev.Link(index, length, capacity))
 
     def create_adjacency_matrix(self):
@@ -288,25 +301,61 @@ class Data:
         #self.net_edge = [[x.index, int(input('Index of edge router to be connected with network {}: '.format(x.name)))]
          #                for x in self.networks]
 
-    def create_paths_matrix(self):
+    def create_paths_matrix_voice(self):
 
-        self.paths_matrix = []
-        # self.paths_matrix = ([[int(input('x[{}][{}] = '.format(lx, ly))) for ly in range(self.index_nodes)]
+        self.paths_matrix_voice = []
+        # self.paths_matrix_voice = ([[int(input('x[{}][{}] = '.format(lx, ly))) for ly in range(self.index_nodes)]
         # for lx in range(self.index_nodes)])
-        self.paths_matrix = [[5, 2, 1, 0], [0, 1, 3, 2, 5]]
+        self.paths_matrix_voice = [[5, 2, 1, 0], [0, 1, 3, 2, 5]]
 
-        self.slice_paths_matrix()
+        self.slice_paths_matrix_voice()
 
-    def slice_paths_matrix(self):
+    def slice_paths_matrix_voice(self):
 
-        self.paths = [[] for x in self.paths_matrix]
+        self.paths_voice = [[] for x in self.paths_matrix_voice]
 
-        for x in self.paths_matrix:
+        for x in self.paths_matrix_voice:
             for y in range(len(x)):
                 if y < len(x)-1:
-                    self.paths[self.paths_matrix.index(x)].append(x[y:y+2])
+                    self.paths_voice[self.paths_matrix_voice.index(x)].append(x[y:y+2])
 
-    def scatter_flow(self):
+    def create_paths_matrix_video(self):
+
+        self.paths_matrix_video = []
+        # self.paths_matrix_video = ([[int(input('x[{}][{}] = '.format(lx, ly))) for ly in range(self.index_nodes)]
+        # for lx in range(self.index_nodes)])
+        self.paths_matrix_video = [[5, 2, 1, 0], [0, 1, 3, 2, 5]]
+
+        self.slice_paths_matrix_video()
+
+    def slice_paths_matrix_video(self):
+
+        self.paths_video = [[] for x in self.paths_matrix_video]
+
+        for x in self.paths_matrix_video:
+            for y in range(len(x)):
+                if y < len(x)-1:
+                    self.paths_video[self.paths_matrix_video.index(x)].append(x[y:y+2])
+
+    def create_paths_matrix_be(self):
+
+        self.paths_matrix_be = []
+        # self.paths_matrix_be = ([[int(input('x[{}][{}] = '.format(lx, ly))) for ly in range(self.index_nodes)]
+        # for lx in range(self.index_nodes)])
+        self.paths_matrix_be = [[5, 2, 1, 0], [0, 1, 3, 2, 5]]
+
+        self.slice_paths_matrix_be()
+
+    def slice_paths_matrix_be(self):
+
+        self.paths_be = [[] for x in self.paths_matrix_video]
+
+        for x in self.paths_matrix_be:
+            for y in range(len(x)):
+                if y < len(x)-1:
+                    self.paths_be[self.paths_matrix_be.index(x)].append(x[y:y+2])
+
+    def set_connections(self):
 
         for x in self.net_edge:
             for y in self.networks:
@@ -319,40 +368,131 @@ class Data:
                             z.set_connected(True, y.name)
                             break
 
-        for x in self.paths:
+    def scatter_flow_voice(self):
+
+        for x in self.paths_voice:
             for y in x:
                 tmp = y[:]
                 tmp.reverse()
                 for z in self.links:
                     if y == z.index:
                         z.flow_voice_up += self.nodes[x[0][0]].flow_voice
-                        z.flow_video_up += self.nodes[x[0][0]].flow_video
-                        z.flow_be_up += self.nodes[x[0][0]].flow_be
 
                         #Writing the name of path going through link
                         z.paths_voice[str(x)] = self.nodes[x[0][0]].flow_voice
-                        z.paths_video[str(x)] = self.nodes[x[0][0]].flow_video
-                        z.paths_be[str(x)] = self.nodes[x[0][0]].flow_be
 
                         break
 
                     elif tmp == z.index:
                         z.flow_voice_down += self.nodes[x[0][0]].flow_voice
-                        z.flow_video_down += self.nodes[x[0][0]].flow_video
-                        z.flow_be_down += self.nodes[x[0][0]].flow_be
 
                         #Writing the name of path going through link
                         z.paths_voice[str(x)] = self.nodes[x[0][0]].flow_voice
+
+                        break
+
+    def scatter_flow_video(self):
+
+        for x in self.paths_video:
+            for y in x:
+                tmp = y[:]
+                tmp.reverse()
+                for z in self.links:
+                    if y == z.index:
+                        z.flow_video_up += self.nodes[x[0][0]].flow_video
+
+                        #Writing the name of path going through link
                         z.paths_video[str(x)] = self.nodes[x[0][0]].flow_video
+
+                        break
+
+                    elif tmp == z.index:
+                        z.flow_video_down += self.nodes[x[0][0]].flow_video
+
+                        #Writing the name of path going through link
+                        z.paths_video[str(x)] = self.nodes[x[0][0]].flow_video
+
+                        break
+
+    def scatter_flow_be(self):
+
+        for x in self.paths_be:
+            for y in x:
+                tmp = y[:]
+                tmp.reverse()
+                for z in self.links:
+                    if y == z.index:
+                        z.flow_be_up += self.nodes[x[0][0]].flow_be
+
+                        #Writing the name of path going through link
                         z.paths_be[str(x)] = self.nodes[x[0][0]].flow_be
 
                         break
 
+                    elif tmp == z.index:
+                        z.flow_be_down += self.nodes[x[0][0]].flow_be
+
+                        #Writing the name of path going through link
+                        z.paths_be[str(x)] = self.nodes[x[0][0]].flow_be
+
+                        break
+
+    def sum_up_flow(self):
         for x in self.links:
             x.set_flow_voice()
             x.set_flow_video()
             x.set_flow_be()
 
+    def scatter_iplr_voice(self):
+
+        for link in self.links:
+            link.calculate_iplr(self.nodes)
+
+        for path in self.paths_voice:
+            self.iplr_for_paths_voice[str(path)] = 0
+            tmp_iplr = 0
+            for x in path:
+                for y in self.links:
+                    tmp = y.index[:]
+                    tmp.reverse()
+                    if y.index == x or tmp == x:
+                        tmp_iplr += y.iplr_voice
+                        break
+            self.iplr_for_paths_voice[str(path)] = tmp_iplr
+
+    def scatter_iplr_video(self):
+
+        for link in self.links:
+            link.calculate_iplr(self.nodes)
+
+        for path in self.paths_video:
+            self.iplr_for_paths_video[str(path)] = 0
+            tmp_iplr = 0
+            for x in path:
+                for y in self.links:
+                    tmp = y.index[:]
+                    tmp.reverse()
+                    if y.index == x or tmp == x:
+                        tmp_iplr += y.iplr_video
+                        break
+            self.iplr_for_paths_video[str(path)] = tmp_iplr
+
+    def scatter_iplr_be(self):
+
+        for link in self.links:
+            link.calculate_iplr(self.nodes)
+
+        for path in self.paths_be:
+            self.iplr_for_paths_be[str(path)] = 0
+            tmp_iplr = 0
+            for x in path:
+                for y in self.links:
+                    tmp = y.index[:]
+                    tmp.reverse()
+                    if y.index == x or tmp == x:
+                        tmp_iplr += y.iplr_be
+                        break
+            self.iplr_for_paths_be[str(path)] = tmp_iplr
 
 
 if __name__ == '__main__':
@@ -376,9 +516,22 @@ if __name__ == '__main__':
     d.create_adjacency_matrix()
     print(d.adjacency_matrix)
     d.create_links()
-    d.create_paths_matrix()
+    d.create_paths_matrix_voice()
+    d.create_paths_matrix_video()
+    d.create_paths_matrix_be()
+
     d.create_net_edge_matrix()
-    d.scatter_flow()
+    d.set_connections()
+
+    d.scatter_flow_voice()
+    d.scatter_flow_video()
+    d.scatter_flow_be()
+
+    d.sum_up_flow()
+
+    d.scatter_iplr_voice()
+    d.scatter_iplr_video()
+    d.scatter_iplr_be()
 
     #for x in d.links:
      #   print(x.name)
@@ -394,6 +547,13 @@ if __name__ == '__main__':
         print(x.flow_voice_down)
         print(x.flow_voice)
         print(x.paths_voice)
+        print('IPLR for voice: ', x.iplr_voice)
+        print('IPLR for video: ', x.iplr_video)
+        print('IPLR for be: ', x.iplr_be)
         print('-----------------')
+
+    print(d.iplr_for_paths_voice)
+    print(d.iplr_for_paths_video)
+    print(d.iplr_for_paths_be)
         # print(d.connections)
         #print(d.connections_sliced)

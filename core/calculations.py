@@ -55,3 +55,23 @@ def out_intensity(network=None):
         for y in network:
             for x in network:
                     y.intensity_out += x.intensity_in*x.interest_row[y.index]
+
+
+def iplr(link, node):
+
+    #voice
+    """
+    Method is calculating value of IP loos ratio parameter
+    :param link: object of link between nodes
+    :param node: object of node from which size of buffer will be taken
+    """
+    a = float(link.flow_voice/link.capacity)
+    link.iplr_voice = float(((1-a)/(1-pow(a, node.buffer_voice+2)))*pow(a, node.buffer_voice+1))
+
+    #video
+    a = float(link.flow_video/(link.capacity-link.flow_voice))
+    link.iplr_video = float(((1-a)/(1-pow(a, node.buffer_video+2)))*pow(a, node.buffer_video+1))
+
+    #be
+    a = float(link.flow_be/(link.capacity-(link.flow_voice+link.flow_video)))
+    link.iplr_be = float(((1-a)/(1-pow(a, node.buffer_be+2)))*pow(a, node.buffer_be+1))
