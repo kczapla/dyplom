@@ -112,6 +112,16 @@ class Link:
         self.iplr_void = 0
         self.iplr_be = 0
 
+        self.ipdt_voice = 0
+        self.ipdt_video = 0
+        self.ipdt_be = 0
+
+    def calculate_ipdt(self, nodes, package_voice, package_video, package_be):
+
+        for x in nodes:
+            if self.index[1] == x.index:
+                calc.ipdt(self, x, package_voice, package_video, package_be)
+
     def calculate_iplr(self, nodes):
 
         for x in nodes:

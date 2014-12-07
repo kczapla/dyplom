@@ -44,6 +44,10 @@ class Data:
         self.iplr_for_paths_video = {}
         self.iplr_for_paths_be = {}
 
+        self.ipdt_for_paths_voice = {}
+        self.ipdt_for_paths_video = {}
+        self.ipdt_for_paths_be = {}
+
     # Methods connected with displaying Data class
     def process_data(self):
 
@@ -443,10 +447,14 @@ class Data:
             x.set_flow_video()
             x.set_flow_be()
 
-    def scatter_iplr_voice(self):
-
+    def scatter_iplr(self):
         for link in self.links:
             link.calculate_iplr(self.nodes)
+
+    def sum_iplr_path_voice(self):
+
+        #for link in self.links:
+            #link.calculate_iplr(self.nodes)
 
         for path in self.paths_voice:
             self.iplr_for_paths_voice[str(path)] = 0
@@ -460,10 +468,10 @@ class Data:
                         break
             self.iplr_for_paths_voice[str(path)] = tmp_iplr
 
-    def scatter_iplr_video(self):
+    def sum_iplr_path_video(self):
 
-        for link in self.links:
-            link.calculate_iplr(self.nodes)
+        #for link in self.links:
+            #link.calculate_iplr(self.nodes)
 
         for path in self.paths_video:
             self.iplr_for_paths_video[str(path)] = 0
@@ -477,10 +485,10 @@ class Data:
                         break
             self.iplr_for_paths_video[str(path)] = tmp_iplr
 
-    def scatter_iplr_be(self):
+    def sum_iplr_path_be(self):
 
-        for link in self.links:
-            link.calculate_iplr(self.nodes)
+        #for link in self.links:
+            #link.calculate_iplr(self.nodes)
 
         for path in self.paths_be:
             self.iplr_for_paths_be[str(path)] = 0
@@ -494,6 +502,60 @@ class Data:
                         break
             self.iplr_for_paths_be[str(path)] = tmp_iplr
 
+    def scatter_ipdt(self):
+        for link in self.links:
+            link.calculate_ipdt(self.nodes, 680, 8320, 12320)
+
+    def sum_ipdt_path_voice(self):
+
+        #for link in self.links:
+        #    link.calculate_iplr(self.nodes)
+
+        for path in self.paths_voice:
+            self.ipdt_for_paths_voice[str(path)] = 0
+            tmp_ipdt = 0
+            for x in path:
+                for y in self.links:
+                    tmp = y.index[:]
+                    tmp.reverse()
+                    if y.index == x or tmp == x:
+                        tmp_ipdt += y.ipdt_voice
+                        break
+            self.ipdt_for_paths_voice[str(path)] = tmp_ipdt
+
+    def sum_ipdt_path_video(self):
+
+        #for link in self.links:
+        #    link.calculate_ipdt(self.nodes)
+
+        for path in self.paths_video:
+            self.ipdt_for_paths_video[str(path)] = 0
+            tmp_ipdt = 0
+            for x in path:
+                for y in self.links:
+                    tmp = y.index[:]
+                    tmp.reverse()
+                    if y.index == x or tmp == x:
+                        tmp_ipdt += y.ipdt_video
+                        break
+            self.ipdt_for_paths_video[str(path)] = tmp_ipdt
+
+    def sum_ipdt_path_be(self):
+
+        #for link in self.links:
+        #    link.calculate_ipdt(self.nodes)
+
+        for path in self.paths_video:
+            self.ipdt_for_paths_be[str(path)] = 0
+            tmp_ipdt = 0
+            for x in path:
+                for y in self.links:
+                    tmp = y.index[:]
+                    tmp.reverse()
+                    if y.index == x or tmp == x:
+                        tmp_ipdt += y.ipdt_video
+                        break
+            self.ipdt_for_paths_be[str(path)] = tmp_ipdt
 
 if __name__ == '__main__':
 
@@ -514,7 +576,9 @@ if __name__ == '__main__':
     d.create_node_edge(5, 15, 30)
 
     d.create_adjacency_matrix()
+
     print(d.adjacency_matrix)
+
     d.create_links()
     d.create_paths_matrix_voice()
     d.create_paths_matrix_video()
@@ -529,10 +593,15 @@ if __name__ == '__main__':
 
     d.sum_up_flow()
 
-    d.scatter_iplr_voice()
-    d.scatter_iplr_video()
-    d.scatter_iplr_be()
+    d.scatter_iplr()
+    d.sum_iplr_path_voice()
+    d.sum_iplr_path_video()
+    d.sum_iplr_path_be()
 
+    d.scatter_ipdt()
+    d.sum_ipdt_path_voice()
+    d.sum_ipdt_path_video()
+    d.sum_ipdt_path_be()
     #for x in d.links:
      #   print(x.name)
 
@@ -547,13 +616,22 @@ if __name__ == '__main__':
         print(x.flow_voice_down)
         print(x.flow_voice)
         print(x.paths_voice)
+        print('-----------------------')
         print('IPLR for voice: ', x.iplr_voice)
         print('IPLR for video: ', x.iplr_video)
         print('IPLR for be: ', x.iplr_be)
-        print('-----------------')
+        print('------------------------')
+        print('IPDT for voice: ', x.ipdt_voice)
+        print('IPDT for video: ', x.ipdt_video)
+        print('IPDT for be: ', x.ipdt_be)
+        print('+++++++++++++++++++++++')
 
-    print(d.iplr_for_paths_voice)
-    print(d.iplr_for_paths_video)
-    print(d.iplr_for_paths_be)
+    print('Voice IPLR: ', d.iplr_for_paths_voice)
+    print('Video IPLR: ', d.iplr_for_paths_video)
+    print('BE IPLR: ', d.iplr_for_paths_be)
+    print('------------------------')
+    print('Voice IPDT: ', d.ipdt_for_paths_voice)
+    print('Video IPDT: ', d.ipdt_for_paths_video)
+    print('BE IPDT: ', d.ipdt_for_paths_be)
         # print(d.connections)
         #print(d.connections_sliced)
