@@ -349,7 +349,7 @@ class Package:
     def set_index(self, index):
 
         """
-        Setter for index variable
+        Setter for index_networks variable
         :param index:
         """
         self.index = index

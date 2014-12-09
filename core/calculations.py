@@ -77,27 +77,58 @@ def iplr(link, node):
 
 def ipdt(link, node, package_voice, package_video, package_be):
 
+    # speed of light in optical fibre 200,000 km/s
+    c = 200000
+
     a = float(link.flow_voice / link.capacity)
     mi = float(link.capacity / package_voice)
     num = float(1 + pow(a, node.buffer_voice) * (node.buffer_voice * a - (node.buffer_voice + 1)))
     dnom = float((1 - a) * (1 - pow(a, node.buffer_voice + 2)))
-    link.ipdt_voice = float((a/mi)*(num/dnom))
-
+    t_ocz = float((a/mi)*(num/dnom))
+    t_nad = float(1/mi)
+    t_prop = float(link.length/c)
+    link.ipdt_voice = t_nad + t_ocz + t_prop
 
     a = float(link.flow_video / (link.capacity - link.flow_voice))
     mi = float(link.capacity / package_video)
     num = float(1 + pow(a, node.buffer_video) * (node.buffer_video * a - (node.buffer_video + 1)))
     dnom = float((1 - a) * (1 - pow(a, node.buffer_video + 2)))
-    link.ipdt_video = float((a/mi)*(num/dnom))
+    t_ocz = float((a/mi)*(num/dnom))
+    t_prop = float(link.length/c)
+    t_nad = float(1/mi)
+    link.ipdt_video = t_nad + t_ocz + t_prop
 
-    a = float(link.flow_video / (link.capacity - link.flow_voice))
+    a = float(link.flow_video / (link.capacity - link.flow_voice - link.flow_video))
     mi = float(link.capacity / package_be)
     num = float(1 + pow(a, node.buffer_be) * (node.buffer_be * a - (node.buffer_be + 1)))
     dnom = float((1 - a) * (1 - pow(a, node.buffer_be + 2)))
-    link.ipdt_be = float((a/mi)*(num/dnom))
+    t_ocz = float((a/mi)*(num/dnom))
+    t_prop = float(link.length/c)
+    t_nad = float(1/mi)
+    link.ipdt_be = t_nad + t_ocz + t_prop
 
-   #a = float(link.flow_be / (link.capacity - (link.flow_voice + link.flow_video)))
-    #link.ipdt_be = float(((a * package_be) / link.capacity) * ((1 + pow(a, node.buffer_be)
-     #                                                           * (node.buffer_be * a - (node.buffer_be + 1)))
-      #                                                         / (
-       # (1 - node.buffer_be) * (1 - pow(a, node.buffer_be + 2)))))
+
+
+def ipdv(link, node, package_voice, package_video, package_be):
+
+    t_nad_voice = float(package_voice / link.capacity)
+    t_nad_video = float(package_video / link.capacity)
+    t_nad_be = float(package_be / link.capacity)
+
+    ipdt_max_voice = (node.buffer_voice + 1) * t_nad_voice + t_nad_video + t_nad_be
+    ipdt_min_voice = t_nad_voice
+    link.ipdv_voice = ipdt_max_voice - ipdt_min_voice
+
+    a = float(link.flow_video / (link.capacity - link.flow_voice))
+    num = float(node.buffer_video + 1) * t_nad_video + t_nad_be
+    dnom = float(1 - a)
+    ipdt_max_video = float(num/dnom)
+    ipdt_min_video = t_nad_video
+    link.ipdv_video = float(ipdt_max_video - ipdt_min_video)
+
+    a = float(link.flow_video / (link.capacity - link.flow_voice - link.flow_video))
+    num = float(node.buffer_be + 1) * t_nad_be
+    dnom = float(1 - a)
+    ipdt_max_be = float(num/dnom)
+    ipdt_min_be = t_nad_be
+    link.ipdv_be = float(ipdt_max_be - ipdt_min_be)

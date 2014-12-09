@@ -1,48 +1,60 @@
 __author__ = 'perun'
 
 import core.distribution as dist
+import core.menu as menu
 
 
 if __name__ == '__main__':
 
-    first_class = dist.Data()
+    d = dist.Data()
 
     while True:
-        print("""++++++++++OPTIONS++++++++++
-                (1) - CREATE NETWORKS
+        print("""+++++++++++++++OPTIONS+++++++++++++++
+                (1) - CREATE ACCESS NETWORKS
                     (1.1) - CIRCUIT
                     (1.2) - PACKAGE
-                (2) - CREATE INTEREST MATRIX
-                    (2.1) - VOICE
-                    (2.2) - VIDEO
-                    (2.3) - BEST EFFORT
-                (3) - CHANGE INTEREST MATRIX
+                (2) - DELETE NETWORK
+                (3) - CREATE INTEREST MATRIX
                     (3.1) - VOICE
                     (3.2) - VIDEO
                     (3.3) - BEST EFFORT
-                (4) - PROCESS DATA
-                (5) - SHOW DATA
-                (6) - USE TEST VALUES
-                (7) - SHOW INTEREST MATRIX
-                (8) - DELETE NETWORK
-                (9) - EXIT PROGRAM
-                ++++++++++OPTIONS+++++++++++""")
-        what = str(input('Your choice: '))
+                (4) - CHANGE INTEREST MATRIX
+                    (4.1) - VOICE
+                    (4.2) - VIDEO
+                    (4.3) - BEST EFFORT
+                (5) - CREATE NODES IN CORE NETWORK
+                    (5.1) - EDGE ROUTER
+                    (5.2) - CORE ROUTER
+                (6) - DELETE NODE
+                (7) - CREATE ADJACENCY MATRIX
+                (8) - CHANGE ADJACENCY MATRIX
+                (9) - CONNECT NETWORKS WITH CORE
+                (10) - SET PATHS BETWEEN NODES
+                    (10.1) - VOICE TRAFFIC
+                    (10.2) - VIDEO TRAFFIC
+                    (10.3) - BE TRAFFIC
+                (11) - PROCESS DATA
+                (12) - SHOW DATA
+                (13) - USE TEST VALUES
+                (14) - SHOW INTEREST MATRIX
+                (15) - EXIT PROGRAM
+                +++++++++++++++OPTIONS+++++++++++++++""")
+        option = str(input('Your choice: '))
 
-        if '1.' in what:
+        if '1.' in option:
 
-                if what == '1.1':
+                if option == '1.1':
                     intensity_voice = int(input('Intensity of voice stream: '))
                     loss = float(input('Loss probability: '))
 
                     if intensity_voice and loss:
-                        first_class.create_circuit_network(intensity_voice, loss)
+                        d.create_circuit_network(intensity_voice, loss)
                     else:
                         print('Wrong values. Try again.')
 
-                elif what == '1.2':
+                elif option == '1.2':
                     intensity_voice = int(input('Intensity of voice stream: '))
-                    intensity_video = int(input('Instensity of video stream: '))
+                    intensity_video = int(input('Intensity of video stream: '))
                     intensity_be = int(input('Intensity of be stream: '))
 
                     if not intensity_voice:
@@ -52,68 +64,148 @@ if __name__ == '__main__':
                     if not intensity_be:
                         intensity_be = 0
 
-                    first_class.create_package_network(intensity_voice, intensity_video, intensity_be)
+                    d.create_package_network(intensity_voice, intensity_video, intensity_be)
                 else:
-                    print("Błędna wartość. Spróbuj ponownie.")
+                    print('Wrong value! Try again.')
 
-        elif '2.' in what:
-            if first_class.networks:
-                if what == '2.1':
-                    first_class.create_interest_matrix(first_class.interest_matrix_voice)
-                elif what == '2.2':
-                    first_class.create_interest_matrix(first_class.interest_matrix_video)
-                elif what == '2.3':
-                    first_class.create_interest_matrix(first_class.interest_matrix_be)
+        elif '2.' in option:
+            if d.networks:
+                print('Select netowrk to delete from list below:')
+                menu.print_nodes(d.networks)
+                index = int(input('Index of network: '))
+                if type(index) is int and 0 <= index < d.index_networks:
+                    d.delete_network(index)
+                else:
+                    print('Network doesn\'t exist. Try again.')
+            else:
+                print('Before operation create networks! Try again.')
+
+        elif '3.' in option:
+            if d.networks:
+                if option == '3.1':
+                    print('INTEREST MATRIX VOICE')
+                    print('Size of matrix: {}'.format(d.index_networks))
+                    print('Insert data as on example. \n Example: \n Row[N]: value1, value2, ..., valueN')
+                    tmp = menu.interest_matrix(d.index_networks)
+                    if not tmp:
+                        print('To much values in single row. Try again.')
+                    else:
+                        d.set_interest_matrix_voice(tmp)
+                elif option == '3.2':
+                    print('INTEREST MATRIX VIDEO')
+                    print('Size of matrix: {}'.format(d.index_networks))
+                    print('Insert data as on example. \n Example: \n Row[N]: value1, value2, ..., valueN')
+                    tmp = menu.interest_matrix(d.index_networks)
+                    if not tmp:
+                        print('To much values in single row. Try again.')
+                    else:
+                        d.set_interest_matrix_video(tmp)
+                elif option == '3.3':
+                    print('INTEREST MATRIX BE')
+                    print('Size of matrix: {}'.format(d.index_networks))
+                    print('Insert data as on example. \n Example: \n Row[N]: value1, value2, ..., valueN')
+                    tmp = menu.interest_matrix(d.index_networks)
+                    if not tmp:
+                        print('To much values in single row. Try again.')
+                    else:
+                        d.set_interest_matrix_be(tmp)
                 else:
                     print('Wrong value! Choose from available options.')
-                first_class.split_matrix()
-            else:
-                print('Wrong value! Choose from available options.')
 
-        elif '3.' in what:
-            if first_class.networks:
-                row = str(input('Set row: '))
-                col = str(input('Set column: '))
-                if what == '3.1':
-                    first_class.change_single_value_matrix(row, col, first_class.interest_matrix_voice)
-                elif what == '3.2':
-                    first_class.change_single_value_matrix(row, col, first_class.interest_matrix_video)
-                elif what == '3.3':
-                    first_class.change_single_value_matrix(row, col, first_class.interest_matrix_be)
+        elif option == '4':
+            if option == '4.1':
+                if d.interest_matrix_voice:
+                    index = int(input('Set row to change: '))
+                    if type(index) is int and 0 <= index < d.index_networks:
+                        row = menu.single_row_interest(index)
+                        if not row:
+                            print('To many values in single row. Try again.')
+                        else:
+                            d.change_single_value_interest_matrix_voice(index, row)
+                    else:
+                        print('Wrong value! Try again.')
+            elif option == '4.2':
+                if d.interest_matrix_video:
+                    index = int(input('Set row to change: '))
+                    if type(index) is int and 0 <= index < d.index_networks:
+                        row = menu.single_row_interest(index)
+                        if not row:
+                            print('To many values in single row. Try again.')
+                        else:
+                            d.change_single_value_interest_matrix_video(index, row)
+                    else:
+                        print('Wrong value! Try again.')
+            elif option == '4.3':
+                if d.interest_matrix_be:
+                    index = int(input('Set row to change: '))
+                    if type(index) is int and 0 <= index < d.index_networks:
+                        row = menu.single_row_interest(index)
+                        if not row:
+                            print('To many values in single row. Try again.')
+                        else:
+                            d.change_single_value_interest_matrix_be(index, row)
+                    else:
+                        print('Wrong value! Try again.')
+            else:
+                print('Option doesnt exists! Try again.')
+
+        elif option == '5':
+            if option == '5.1':
+                buffer_voice = int(input('Size of voice buffer: '))
+                buffer_video = int(input('Size of voice buffer: '))
+                buffer_be = int(input('Size of voice buffer: '))
+                if buffer_voice and buffer_video and buffer_be:
+                    d.create_node_edge(buffer_voice, buffer_video, buffer_be)
+                else:
+                    print('Set all values! Try again.')
+            elif option == '5.2':
+                buffer_voice = int(input('Size of voice buffer: '))
+                buffer_video = int(input('Size of voice buffer: '))
+                buffer_be = int(input('Size of voice buffer: '))
+                if buffer_voice and buffer_video and buffer_be:
+                    d.create_node_core(buffer_voice, buffer_video, buffer_be)
+                else:
+                    print('Set all values! Try again.')
+            else:
+                print('Before operation create networks! Try again.')
+
+        elif option == '6':
+            print('Select node to delete from list below:')
+            menu.print_nodes(d.nodes)
+            index = int(input('Index of node: '))
+            if type(index) and 0 <= index < d.index_nodes:
+                d.delete_node(index)
+            else:
+                print('Wrong value or node doesnt exsit! Try again')
+
+        elif option == '7':
+            if d.nodes:
+                if option == '7.1':
+                    print('ADJACENCY MATRIX')
+                    print('Size of matrix: {}'.format(d.index_nodes))
+                    print('Insert data as on example. \n Example: \n Row[N]: value1, value2, ..., valueN')
+                    tmp = menu.adjacency_matrix(d.index_nodes)
+                    if not tmp:
+                        print('To much values in single row. Try again.')
+                    else:
+                        d.create_adjacency_matrix(tmp)
                 else:
                     print('Wrong value! Choose from available options.')
-            else:
-                print('Before operation create networks! Try again.')
 
-        elif what == '4':
-            if first_class.networks:
-                first_class.process_data()
-            else:
-                print('Before process create networks! Try again.')
+        elif option == '8':
 
-        elif what == '5':
-            if first_class.networks:
-                first_class.show_data()
-            else:
-                print('Before operation create networks! Try again.')
+            if d.adjacency_matrix:
+                    menu.print_matrix(d.adjacency_matrix)
+                    row = int(input('Select row to change: '))
+                    if type(row) is int and 0 <= row < d.index_networks:
+                        tmp = menu.single_row_adjacency(row)
+                        if not row:
+                            print('To many values in single row. Try again.')
+                        else:
+                            d.change_single_value_interest_matrix_voice(row, menu.single_row_adjacency(row))
+                    else:
+                        print('Wrong value! Try again.')
 
-        elif what == '6':
-            first_class.use_test_values()
-
-        elif what == '7':
-            if first_class.networks:
-                print(first_class.interest_matrix_voice)
-                print(first_class.interest_matrix_video)
-                print(first_class.interest_matrix_be)
-            else:
-                print('Before operation create networks! Try again.')
-
-        elif what == '8':
-            if first_class.networks:
-                first_class.delete_network(int(input('Podaj indeks sieci, którą chcesz usunąć: ')))
-            else:
-                print('Before operation create networks! Try again.')
-
-        elif what == '9':
+        elif option == '9':
             print('EXIT PROGRAM')
             break

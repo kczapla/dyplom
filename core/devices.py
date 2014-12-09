@@ -35,8 +35,8 @@ class EdgeRouter(Router):
     def set_name(self, index):
 
         """
-        Method is setting the new name based of index of the router
-        :param index: new value of router index
+        Method is setting the new name based of index_networks of the router
+        :param index: new value of router index_networks
         """
         self.index = index
         self.name = "ER " + str(index)
@@ -78,8 +78,8 @@ class CoreRouter(Router):
     def set_name(self, index):
 
         """
-        Method is setting the new name based of index of the router
-        :param index: new value of router index
+        Method is setting the new name based of index_networks of the router
+        :param index: new value of router index_networks
         """
         self.index = index
         self.name = "CR " + str(index)
@@ -116,11 +116,23 @@ class Link:
         self.ipdt_video = 0
         self.ipdt_be = 0
 
+        self.ipdv_voice = 0
+        self.ipdv_video = 0
+        self.ipdv_be = 0
+
+    def calculate_ipdv(self, nodes, package_voice, package_video, package_be):
+
+        for x in nodes:
+            if self.index[1] == x.index:
+                calc.ipdv(self, x, package_voice, package_video, package_be)
+                break
+
     def calculate_ipdt(self, nodes, package_voice, package_video, package_be):
 
         for x in nodes:
             if self.index[1] == x.index:
                 calc.ipdt(self, x, package_voice, package_video, package_be)
+                break
 
     def calculate_iplr(self, nodes):
 

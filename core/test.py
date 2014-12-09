@@ -23,12 +23,12 @@ interest_matrix_be = [[0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 0.5, 0, 0.5],
                      [0, 0, 0, 0.5, 0.5, 0]]
 
-values = [{'intensity': 240, 'mode': 'c', 'loss': 0.002,  'index': 0},
-          {'intensity': 350, 'mode': 'c', 'loss': 0.002,  'index': 1},
-          {'intensity': 180, 'mode': 'c', 'loss': 0.002,  'index': 2},
-          {'index': 3, 'mode': 'p', 'intensity': 12000, 'intensity_video': 18000, 'intensity_be': 18000},
-          {'index': 4, 'mode': 'p',  'intensity': 16000, 'intensity_video': 20000, 'intensity_be': 20000},
-          {'index': 5, 'mode': 'p', 'intensity': 15000, 'intensity_video': 19000, 'intensity_be': 19000}]
+values = [{'intensity': 240, 'mode': 'c', 'loss': 0.002,  'index_networks': 0},
+          {'intensity': 350, 'mode': 'c', 'loss': 0.002,  'index_networks': 1},
+          {'intensity': 180, 'mode': 'c', 'loss': 0.002,  'index_networks': 2},
+          {'index_networks': 3, 'mode': 'p', 'intensity': 12000, 'intensity_video': 18000, 'intensity_be': 18000},
+          {'index_networks': 4, 'mode': 'p',  'intensity': 16000, 'intensity_video': 20000, 'intensity_be': 20000},
+          {'index_networks': 5, 'mode': 'p', 'intensity': 15000, 'intensity_video': 19000, 'intensity_be': 19000}]
 
 index = 6
 
@@ -37,9 +37,9 @@ def test_networks():
 
     for tmp in values:
         if tmp['mode'] == 'c':
-            yield nw.Circuit(tmp['index'], tmp['intensity'], tmp['loss'])
+            yield nw.Circuit(tmp['index_networks'], tmp['intensity'], tmp['loss'])
         elif tmp['mode'] == 'p':
-            yield nw.Package(tmp['index'], tmp['intensity'], tmp['intensity_video'], tmp['intensity_be'])
+            yield nw.Package(tmp['index_networks'], tmp['intensity'], tmp['intensity_video'], tmp['intensity_be'])
 
              #      EDGE      |     CORE
          #1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11
