@@ -36,7 +36,9 @@ if __name__ == '__main__':
                     (11.3) - BE TRAFFIC
                 (12) - PROCESS DATA
                     (12.1) - RESOURCES ON THE EDGE OF ACCESS NETWORK
-                (13) - SHOW DATA
+                    (12.2) - SCATTER FLOW IN THE CORE NETWORK
+                    (12.3) - QoS PARAMETERS
+                (13) - GET RESULTS
                 (14) - USE TEST VALUES
                 (15) - SHOW INTEREST MATRIX
                 (16) - EXIT PROGRAM
@@ -45,30 +47,30 @@ if __name__ == '__main__':
 
         if '1.' in option:
 
-                if option == '1.1':
-                    intensity_voice = int(input('Intensity of voice stream: '))
-                    loss = float(input('Loss probability: '))
+            if option == '1.1':
+                intensity_voice = int(input('Intensity of voice stream: '))
+                loss = float(input('Loss probability: '))
 
-                    if intensity_voice and loss:
-                        d.create_circuit_network(intensity_voice, loss)
-                    else:
-                        print('Wrong values. Try again.')
-
-                elif option == '1.2':
-                    intensity_voice = int(input('Intensity of voice stream: '))
-                    intensity_video = int(input('Intensity of video stream: '))
-                    intensity_be = int(input('Intensity of be stream: '))
-
-                    if not intensity_voice:
-                        intensity_voice = 0
-                    if not intensity_video:
-                        intensity_video = 0
-                    if not intensity_be:
-                        intensity_be = 0
-
-                    d.create_package_network(intensity_voice, intensity_video, intensity_be)
+                if intensity_voice and loss:
+                    d.create_circuit_network(intensity_voice, loss)
                 else:
-                    print('Wrong value! Try again.')
+                    print('Wrong values. Try again.')
+
+            elif option == '1.2':
+                intensity_voice = int(input('Intensity of voice stream: '))
+                intensity_video = int(input('Intensity of video stream: '))
+                intensity_be = int(input('Intensity of be stream: '))
+
+                if not intensity_voice:
+                    intensity_voice = 0
+                if not intensity_video:
+                    intensity_video = 0
+                if not intensity_be:
+                    intensity_be = 0
+
+                d.create_package_network(intensity_voice, intensity_video, intensity_be)
+            else:
+                print('Wrong value! Try again.')
 
         elif '2.' in option:
             if d.networks:
@@ -196,24 +198,29 @@ if __name__ == '__main__':
         elif option == '8':
 
             if d.adjacency_matrix:
-                    menu.print_matrix(d.adjacency_matrix)
-                    row = int(input('Select row to change: '))
-                    if type(row) is int and 0 <= row < d.index_networks:
-                        tmp = menu.single_row_adjacency(row)
-                        if not row:
-                            print('To many values in single row. Try again.')
-                        else:
-                            d.change_single_value_interest_matrix_voice(row, menu.single_row_adjacency(row))
+                menu.print_matrix(d.adjacency_matrix)
+                row = int(input('Select row to change: '))
+                if type(row) is int and 0 <= row < d.index_networks:
+                    tmp = menu.single_row_adjacency(row)
+                    if not row:
+                        print('To many values in single row. Try again.')
                     else:
-                        print('Wrong value! Try again.')
+                        d.change_single_value_interest_matrix_voice(row, menu.single_row_adjacency(row))
+                else:
+                    print('Wrong value! Try again.')
 
         elif option == '9':
-            pass
+            print('''CREATING CONNECTIONS BETWEEN NODES BASED ON ADJACENCY MATRIX
+                     Set values of links''')
+            if d.connections:
+                d.create_links(menu.links(d.connections))
+            else:
+                print('Any connection is not defined in adjacency matrix. Can not create link.')
 
         elif option == '10':
             if d.networks and d.nodes:
-                print('CONNECTING ACCESS NETWORK WITH EDGE ROUTER')
-                print('Networks to connect: ')
+                print('''CONNECTING ACCESS NETWORK WITH EDGE ROUTER
+                         Networks to connect:''')
                 menu.print_nodes(d.networks)
                 print('Edge routers to connect: ')
                 menu.print_edge_nodes(d.nodes)
@@ -222,11 +229,11 @@ if __name__ == '__main__':
                 print('Networks or nodes doesnt exist. Create them before choosing this option.')
 
         elif option == '11':
-            print('CREATE PATHS')
-            print('Nodes to connect: ')
+            print('''CREATE PATHS
+                     Nodes to connect: ''')
             menu.print_nodes(d.nodes)
-            print('As a first and the last value insert the index of edge router')
-            print('Insert data as on example. \n Example: \n Path[N]: ER N, node 1, ..., node i, ER M')
+            print('''As a first and the last value insert the index of edge router.
+                     Insert data as on example. \n Example: \n Path[N]: ER N, node 1, ..., node i, ER M''')
             if option == '11.1':
                 d.create_paths_matrix_voice(menu.paths())
             elif option == '11.2':
@@ -235,4 +242,41 @@ if __name__ == '__main__':
                 d.create_paths_matrix_be(menu.paths())
 
         elif option == '12':
-            pass
+            if option == '12.1':
+                d.process_data_resources()
+            elif option == '12.2':
+                d.process_data_flow()
+            elif option == '12.3':
+                d.process_data_qos()
+
+        elif option == '13':
+            if option == '13.1':
+                print('RESOURCES ON THE EDGE OF ACCESS NETWORK')
+                for network in d.networks:
+                    if 'GSM' in network.name:
+                        print('''{}
+                                 Links in: {}
+                                 R in: {}
+                                PCM in: {}
+                                DSP in: {}
+                                Flow voice in {}
+                                Intensity_voice_out: {}
+                                Links out: {}
+                                PCM out: {}
+                                DSP out: {}
+                                Flow voice out'''.format(network.name, network.links_in, network.r_in, network.pcm_in,
+                                                         network.dsp_in, network.flow_voice_in,
+                                                         network.intensity_voice_out,
+                                                         network.links_out, network.pcm_out, network.dsp_out,
+                                                         network.flow_voice_out))
+                        else:
+                            print('''Flow voice in: {}
+                                     Flow video in: {}
+                                     Flow be in: {}
+                                    Flow voice out: {}
+                                    Flow video out: {}
+                                    FLow be out: {}'''.format(network.flow_voice_in, network.flow_video_in,
+                                                              network.flow_be_in, network.flow_voice_out,
+                                                              network.flow_video_out, network.flow_be_out))
+            elif option == '13.2':
+                pass

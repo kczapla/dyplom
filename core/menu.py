@@ -65,5 +65,5 @@ def paths():
 
 def links(connections):
     x = 1000000
-    return [[index, int(input('Length of link (in km): ')), 
+    return [[index, int(input('Length of link {} (in km): '.format(index))),
              int(input('Capacity of link (in Mb/s)')) * x] for index in connections]

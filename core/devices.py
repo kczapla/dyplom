@@ -14,6 +14,9 @@ class Router:
 
         self.loss = 0
 
+    def reset_resources(self):
+        pass
+
 
 class EdgeRouter(Router):
     def __init__(self, index, buffer_voice, buffer_video, buffer_be):
@@ -172,6 +175,10 @@ class Link:
 
         """
 
+        self.paths_voice = {}
+        self.paths_video = {}
+        self.paths_be = {}
+
         self.flow_voice_up = 0
         self.flow_video_up = 0
         self.flow_be_up = 0
@@ -183,3 +190,15 @@ class Link:
         self.flow_voice = 0
         self.flow_video = 0
         self.flow_be = 0
+
+        self.iplr_voice = 0
+        self.iplr_void = 0
+        self.iplr_be = 0
+
+        self.ipdt_voice = 0
+        self.ipdt_video = 0
+        self.ipdt_be = 0
+
+        self.ipdv_voice = 0
+        self.ipdv_video = 0
+        self.ipdv_be = 0

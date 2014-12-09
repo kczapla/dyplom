@@ -5,10 +5,7 @@ import core.calculations as calc
 
 class Circuit:
     def __init__(self, index=None, intensity=None, loss=0.002):
-
         """
-
-
         :param intensity: Intensity which network generate to the core
         :param index: Index of the network
         :param loss: The probability of losing call. Need for the calculation of the network resources
