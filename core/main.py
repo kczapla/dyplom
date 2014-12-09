@@ -9,7 +9,7 @@ if __name__ == '__main__':
     d = dist.Data()
 
     while True:
-        print("""+++++++++++++++OPTIONS+++++++++++++++
+        print("""++++++++++++++++++++++++OPTIONS++++++++++++++++++++++++
                 (1) - CREATE ACCESS NETWORKS
                     (1.1) - CIRCUIT
                     (1.2) - PACKAGE
@@ -28,17 +28,19 @@ if __name__ == '__main__':
                 (6) - DELETE NODE
                 (7) - CREATE ADJACENCY MATRIX
                 (8) - CHANGE ADJACENCY MATRIX
-                (9) - CONNECT NETWORKS WITH CORE
-                (10) - SET PATHS BETWEEN NODES
-                    (10.1) - VOICE TRAFFIC
-                    (10.2) - VIDEO TRAFFIC
-                    (10.3) - BE TRAFFIC
-                (11) - PROCESS DATA
-                (12) - SHOW DATA
-                (13) - USE TEST VALUES
-                (14) - SHOW INTEREST MATRIX
-                (15) - EXIT PROGRAM
-                +++++++++++++++OPTIONS+++++++++++++++""")
+                (9) - CREATE LINKS BETWEEN NODES
+                (10) - CONNECT NETWORKS WITH CORE
+                (11) - SET PATHS BETWEEN NODES
+                    (11.1) - VOICE TRAFFIC
+                    (11.2) - VIDEO TRAFFIC
+                    (11.3) - BE TRAFFIC
+                (12) - PROCESS DATA
+                    (12.1) - RESOURCES ON THE EDGE OF ACCESS NETWORK
+                (13) - SHOW DATA
+                (14) - USE TEST VALUES
+                (15) - SHOW INTEREST MATRIX
+                (16) - EXIT PROGRAM
+                ++++++++++++++++++++++++OPTIONS++++++++++++++++++++++++""")
         option = str(input('Your choice: '))
 
         if '1.' in option:
@@ -180,17 +182,16 @@ if __name__ == '__main__':
 
         elif option == '7':
             if d.nodes:
-                if option == '7.1':
-                    print('ADJACENCY MATRIX')
-                    print('Size of matrix: {}'.format(d.index_nodes))
-                    print('Insert data as on example. \n Example: \n Row[N]: value1, value2, ..., valueN')
-                    tmp = menu.adjacency_matrix(d.index_nodes)
-                    if not tmp:
-                        print('To much values in single row. Try again.')
-                    else:
-                        d.create_adjacency_matrix(tmp)
+                print('ADJACENCY MATRIX')
+                print('Size of matrix: {}'.format(d.index_nodes))
+                print('Insert data as on example. \n Example: \n Row[N]: value1, value2, ..., valueN')
+                tmp = menu.adjacency_matrix(d.index_nodes)
+                if not tmp:
+                    print('To much values in single row. Try again.')
                 else:
-                    print('Wrong value! Choose from available options.')
+                    d.create_adjacency_matrix(tmp)
+            else:
+                print('Wrong value! Choose from available options.')
 
         elif option == '8':
 
@@ -207,5 +208,31 @@ if __name__ == '__main__':
                         print('Wrong value! Try again.')
 
         elif option == '9':
-            print('EXIT PROGRAM')
-            break
+            pass
+
+        elif option == '10':
+            if d.networks and d.nodes:
+                print('CONNECTING ACCESS NETWORK WITH EDGE ROUTER')
+                print('Networks to connect: ')
+                menu.print_nodes(d.networks)
+                print('Edge routers to connect: ')
+                menu.print_edge_nodes(d.nodes)
+                d.create_net_edge_matrix(menu.access_edge(d.networks))
+            else:
+                print('Networks or nodes doesnt exist. Create them before choosing this option.')
+
+        elif option == '11':
+            print('CREATE PATHS')
+            print('Nodes to connect: ')
+            menu.print_nodes(d.nodes)
+            print('As a first and the last value insert the index of edge router')
+            print('Insert data as on example. \n Example: \n Path[N]: ER N, node 1, ..., node i, ER M')
+            if option == '11.1':
+                d.create_paths_matrix_voice(menu.paths())
+            elif option == '11.2':
+                d.create_paths_matrix_video(menu.paths())
+            elif option == '11.3':
+                d.create_paths_matrix_be(menu.paths())
+
+        elif option == '12':
+            pass
