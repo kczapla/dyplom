@@ -72,7 +72,7 @@ if __name__ == '__main__':
             else:
                 print('Wrong value! Try again.')
 
-        elif '2.' in option:
+        elif '2' in option:
             if d.networks:
                 print('Select netowrk to delete from list below:')
                 menu.print_nodes(d.networks)
@@ -269,8 +269,8 @@ if __name__ == '__main__':
                                                          network.intensity_voice_out,
                                                          network.links_out, network.pcm_out, network.dsp_out,
                                                          network.flow_voice_out))
-                        else:
-                            print('''Flow voice in: {}
+                    else:
+                        print('''Flow voice in: {}
                                      Flow video in: {}
                                      Flow be in: {}
                                     Flow voice out: {}
