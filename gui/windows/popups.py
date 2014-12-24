@@ -125,17 +125,25 @@ class ShowData(Frame):
         self.parent = parent
         self.pack(side=TOP)
 
+        self.network_name = []
+
+        self.make_form()
+
         self.distribution = distribution
 
     def make_form(self):
-        pass
+        tpl.label(self, TOP, 'Chose data to show')
+        tpl.button(self, TOP, 'Access networks', lambda: print('IKSO'))
+        tpl.button(self, TOP, 'Quit', self.parent.destroy)
+
 
 
 if __name__ == '__main__':
 
     root = Tk()
     d = core.distribution.Data()
-    #cn = ChooseNetwork(d, root)
-    cim = CreateInterestMatrix(d, root)
+    # cn = ChooseNetwork(d, root)
+    # cim = CreateInterestMatrix(d, root)
+    shd = ShowData(d, root)
 
     root.mainloop()

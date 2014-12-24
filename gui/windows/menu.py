@@ -6,7 +6,9 @@ from tkinter.messagebox import *
 import core.distribution as distribution
 import gui.buttons.quitter as quitter
 import gui.templates.widgets as tpl
+import gui.templates.scrolled_list as scl
 import gui.windows.popups as popups
+
 
 
 class Menu(Frame):
@@ -23,7 +25,7 @@ class Menu(Frame):
         tpl.button(self, TOP, 'Create network', lambda: popups.ChooseNetwork(self.distribution,
                                                                              Toplevel(self))).pack(padx=5)
         tpl.button(self, TOP, 'Create interest matrix', self.chose_interest_matrix).pack(padx=5)
-        tpl.button(self, TOP, 'Show data', self.distribution.show_data).pack(padx=5)
+        tpl.button(self, TOP, 'Show data', self.show_data).pack(padx=5)
         quitter.Quitter(self)
 
     def chose_interest_matrix(self):
@@ -31,11 +33,22 @@ class Menu(Frame):
             popups.CreateInterestMatrix(self.distribution,
                                         Toplevel(self))
         else:
-            showinfo('Ok', 'Networks doesn\'t exist. Create networks first to use this option.')
+            showwarning('Warning', 'Networks don\'t exist. Create networks first to use this option.')
 
     def delete_network(self):
         if self.distribution.index_networks:
             pass
+
+    def show_data(self):
+        if self.distribution.index_networks:
+            #
+            # options = []
+            # for name in self.distribution.networks:
+                # options.append(name.name)
+            # scl.ScrolledList(options, Toplevel())
+            popups.ShowData(self.distribution, Toplevel())
+        else:
+            showwarning('Warning', 'Networks don\'t exist. Create networks first to use this option.')
 
 
 if __name__ == '__main__':
