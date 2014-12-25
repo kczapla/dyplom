@@ -1,10 +1,11 @@
 __author__ = 'perun'
 
-
 from tkinter import *
+
 import gui.templates.widgets as tpl
 import core.distribution
-import gui.entires.getters as getters
+import gui.templates.matrix as matrix
+import gui.windows.list as list
 
 
 class ChooseNetwork(Frame):
@@ -99,13 +100,13 @@ class CreateInterestMatrix(Frame):
 
         self.distribution = distribution
 
-        self.button_names = (('Voice', lambda: getters.MatrixVoiceInterest(self.distribution,
+        self.button_names = (('Voice', lambda: matrix.MatrixVoiceInterest(self.distribution,
                                                                            'Voice Matrix',
                                                                            Toplevel())),
-                            ('Video', lambda: getters.MatrixVideoInterest(self.distribution,
+                            ('Video', lambda: matrix.MatrixVideoInterest(self.distribution,
                                                                           'Video Matrix',
                                                                           Toplevel())),
-                            ('Best Effort', lambda: getters.MatrixBeInterest(self.distribution,
+                            ('Best Effort', lambda: matrix.MatrixBeInterest(self.distribution,
                                                                              'Voice Matrix',
                                                                              Toplevel())),
                             ('Cancel', self.parent.destroy))
@@ -125,23 +126,23 @@ class ShowData(Frame):
         self.parent = parent
         self.pack(side=TOP)
 
-        self.network_name = []
-
         self.make_form()
 
         self.distribution = distribution
 
     def make_form(self):
         tpl.label(self, TOP, 'Chose data to show')
-        tpl.button(self, TOP, 'Access networks', lambda: print('IKSO'))
+        tpl.button(self, TOP, 'Access networks', lambda: list.AccessNetworksList(self.distribution, Toplevel()))
         tpl.button(self, TOP, 'Quit', self.parent.destroy)
-
 
 
 if __name__ == '__main__':
 
     root = Tk()
     d = core.distribution.Data()
+    for x in range(20):
+        d.create_package_network(100, 1000, 1000)
+        d.create_circuit_network(50, 500)
     # cn = ChooseNetwork(d, root)
     # cim = CreateInterestMatrix(d, root)
     shd = ShowData(d, root)

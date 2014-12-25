@@ -1,14 +1,12 @@
 __author__ = 'perun'
 
-
 from tkinter import *
 from tkinter.messagebox import *
-import core.distribution as distribution
-import gui.buttons.quitter as quitter
-import gui.templates.widgets as tpl
-import gui.templates.scrolled_list as scl
-import gui.windows.popups as popups
 
+import core.distribution as distribution
+import gui.templates.quitter as quitter
+import gui.templates.widgets as tpl
+import gui.windows.popups as popups
 
 
 class Menu(Frame):
@@ -41,11 +39,6 @@ class Menu(Frame):
 
     def show_data(self):
         if self.distribution.index_networks:
-            #
-            # options = []
-            # for name in self.distribution.networks:
-                # options.append(name.name)
-            # scl.ScrolledList(options, Toplevel())
             popups.ShowData(self.distribution, Toplevel())
         else:
             showwarning('Warning', 'Networks don\'t exist. Create networks first to use this option.')
@@ -55,6 +48,9 @@ if __name__ == '__main__':
 
     root = Tk()
     d = distribution.Data()
+    for x in range(6):
+        d.create_package_network(100, 1000, 1000)
+        d.create_circuit_network(50, 500)
     m = Menu(d, root)
     m.pack()
     root.mainloop()

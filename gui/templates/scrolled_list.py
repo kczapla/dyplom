@@ -35,6 +35,7 @@ class ScrolledList(Frame):
         list.bind('<Double-1>', self.handle_list)
         self.listbox = list
 
+
 if __name__ == '__main__':
     option = (('Lumberjack-%s' % x) for x in range(20))  # or map/lambda, [...]
     ScrolledList(option).mainloop()
