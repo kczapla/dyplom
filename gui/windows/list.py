@@ -5,6 +5,7 @@ import gui.templates.show as show
 import gui.templates.scrolled_list as scl
 import core.distribution as dist
 import gui.config.list
+import gui.templates.menu_bar as menu_bar
 from tkinter import *
 
 
@@ -20,7 +21,7 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo):
 
         self.distribution = distribution
 
-    def run_command(self, selection):
+    def run_command_left(self, selection):
         """
         When user click two times on item in list, method checks what type of network has been chosen and send it to
         ShowInfo class.

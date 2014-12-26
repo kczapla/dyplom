@@ -12,15 +12,49 @@ class ScrolledList(Frame):
 
         self.make_widgets(options)
 
-    def handle_list(self, event):
+    def handle_list_left(self, event):
+        """
+        Methods services left click of mouse.
+        :param event: Mouse event.
+        """
         index = self.listbox.curselection()
         label = self.listbox.get(index)
-        self.run_command(label)
+        self.run_command_left(label)
 
-    def run_command(self, selection):
+    def run_command_left(self, selection):
+        """
+        Left mouse button callback
+        :param selection: Label of chose item in listbox
+        """
+        print('You selected: ', selection)
+
+    def handle_list_right(self, event):
+        """
+        Methods services right click of mouse.
+        :param event: Mouse event.
+        """
+        if self.listbox.curselection():
+            index = self.listbox.curselection()
+            self.listbox.select_clear(index)
+        index = self.listbox.nearest(event.y)
+        self.listbox.select_set(index)
+        self.listbox.activate(index)
+        label = self.listbox.get(index)
+
+        self.run_command_right(label)
+
+    def run_command_right(self, selection):
+        """
+        Right mouse button callback
+        :param selection: Label of chose item in listbox
+        """
         print('You selected: ', selection)
 
     def make_widgets(self, options):
+        """
+        Method creates listbox and bind left and right click mouse events
+        :param options: name of list objects
+        """
         sbar = Scrollbar(self)
         list = Listbox(self, relief=SUNKEN)
         sbar.config(command=list.yview)
@@ -32,7 +66,8 @@ class ScrolledList(Frame):
             list.insert(pos, label)
             pos += 1
         # list.config(selectmode=SINGLE, setgrid=1)
-        list.bind('<Double-1>', self.handle_list)
+        list.bind('<Double-1>', self.handle_list_left)
+        list.bind('<Button-3>', self.handle_list_right)
         self.listbox = list
 
 
