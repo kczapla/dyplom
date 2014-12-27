@@ -10,17 +10,18 @@ class MenuBar(Frame):
         Frame.__init__(self, parent)
 
         self.parent = parent
-        self.make_form(fields)
+        self.menu = None
+        self.make_menu_widget(fields, self.parent)
 
-    def make_form(self, pull_downs):
-        top = self.create_top_menu_widget(self.parent)  #Menu(self.parent)
-        #self.parent.config(menu=top)
+    def make_menu_widget(self, pull_downs, parent):
+        self.menu = self.create_top_menu_widget(parent)
+        self.parent.config(menu=self.menu)
 
         for main, options in pull_downs:
-            tmp1 = Menu(top)
+            tmp1 = Menu(self.menu)
             for option in options:
                 self.create_command(tmp1, option, self.not_done, underline=0)
-            self.create_cascade(top, tmp1, main, underline=0)
+            self.create_cascade(self.menu, tmp1, main, underline=0)
 
     def create_command(self, pull_down, option, command, **extras):
         pull_down.add_command(label=option, command=command, **extras)
@@ -38,21 +39,27 @@ class MenuBar(Frame):
 
 
 class ContextMenu(MenuBar):
-    def __init__(self, fields, parent=None):
+    def __init__(self, coordinates, fields=None, parent=None):
         MenuBar.__init__(self, fields, parent)
         self.pack(side=TOP)
+        self.show_menu(coordinates)
 
-    def make_form(self, pull_downs):
-        top = self.create_top_menu_widget(self.parent)
-        for main, options in pull_downs:
-            tmp1 = Menu(top)
-            for name, command in options:
-                self.create_command(tmp1, name, command, underline=0)
-            self.create_cascade(top, tmp1, main, underline=0)
+    def show_menu(self, xy):
+        print(*xy)
+        self.menu.post(*xy)
 
     def create_top_menu_widget(self, win):
         top = Menu(win)
         return top
+
+    def make_menu_widget(self, pull_downs, parent):
+        self.menu = self.create_top_menu_widget(parent)
+
+        for main, options in pull_downs:
+            tmp1 = Menu(self.menu)
+            for option in options:
+                self.create_command(tmp1, option, self.not_done, underline=0)
+            self.create_cascade(self.menu, tmp1, main, underline=0)
 
 
 def not_done():
@@ -82,12 +89,15 @@ def make_menu(win):
 
 
 if __name__ == '__main__':
+
+    def get_co(event):
+        fields = (('File', ('New', 'Open', 'Quit')), ('Edit', ('Cut', 'Paste')))
+        co = event.x_root, event.y_root
+        ContextMenu(co, fields, root)
     root = Tk()                                        # or Toplevel()
     root.title('menu_win')                             # set window-mgr info
-    #fields = (('File', ('New', 'Open', 'Quit')), ('Edit', ('Cut', 'Paste')))
-    #fields = ('File', (('New', lambda: print('Ikso')), ('Print', lambda: print('spam'))))
-    MenuBar(fields, root)
-    #make_menu(root)                                     # associate a menu bar
+    root.bind('<Button-3>', get_co)
+
     msg = Label(root, text='Window menu basics')       # add something below
     msg.pack(expand=YES, fill=BOTH)
     msg.config(relief=SUNKEN, width=40, height=7, bg='beige')

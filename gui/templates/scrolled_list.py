@@ -36,19 +36,20 @@ class ScrolledList(Frame):
         if self.listbox.curselection():
             index = self.listbox.curselection()
             self.listbox.select_clear(index)
+        xy = event.x, event.y
         index = self.listbox.nearest(event.y)
         self.listbox.select_set(index)
         self.listbox.activate(index)
         label = self.listbox.get(index)
 
-        self.run_command_right(label)
+        self.run_command_right(label, xy)
 
-    def run_command_right(self, selection):
+    def run_command_right(self, selection, xy):
         """
         Right mouse button callback
         :param selection: Label of chose item in listbox
         """
-        print('You selected: ', selection)
+        print('You selected: ', selection, 'on position: ', xy)
 
     def make_widgets(self, options):
         """

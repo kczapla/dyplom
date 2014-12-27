@@ -9,8 +9,9 @@ import gui.templates.menu_bar as menu_bar
 from tkinter import *
 
 
-class AccessNetworksList(scl.ScrolledList, show.ShowInfo):
+class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
     def __init__(self, distribution, parent=None):
+        self.parent = parent
         self.list_frame = Frame(parent)
         self.list_frame.pack(side=LEFT, fill=BOTH, expand=YES)
 
@@ -46,6 +47,18 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo):
             return gui.config.list.access_network_list_circuit(instance)
         elif 'IP' in instance.name:
             return gui.config.list.access_network_list_package(instance)
+
+    def run_command_right(self, selection, xy):
+        tmp = [z + 121 for z in xy]
+        xy = tuple(tmp)
+        menu_bar.ContextMenu.__init__(self, coordinates=xy, parent=Frame(self.list_frame))
+
+    def make_menu_widget(self, pull_downs, parent):
+        self.menu = self.create_top_menu_widget(parent)
+
+        self.create_command(self.menu, 'Edit network', self.not_done)
+        self.create_command(self.menu, 'Delete', self.not_done)
+
 
 if __name__ == '__main__':
     root = Tk()
