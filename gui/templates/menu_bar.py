@@ -44,12 +44,14 @@ class ContextMenu(MenuBar):
         self.pack(side=TOP)
         self.show_menu(coordinates)
 
+        self.selection = fields
+
     def show_menu(self, xy):
         print(*xy)
         self.menu.post(*xy)
 
     def create_top_menu_widget(self, win):
-        top = Menu(win)
+        top = Menu(win, tearoff=False)
         return top
 
     def make_menu_widget(self, pull_downs, parent):

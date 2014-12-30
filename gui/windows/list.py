@@ -18,7 +18,8 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
         self.info_frame = Frame(parent)
         self.info_frame.pack(side=LEFT, fill=BOTH, expand=YES)
 
-        scl.ScrolledList.__init__(self, (network.name for network in distribution.networks), self.list_frame)
+        scl.ScrolledList.__init__(self, (network.name for network in distribution.networks),
+                                  self.list_frame)
 
         self.distribution = distribution
 
@@ -49,15 +50,23 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
             return gui.config.list.access_network_list_package(instance)
 
     def run_command_right(self, selection, xy):
-        tmp = [z + 121 for z in xy]
+        tmp = [z + 120 for z in xy]
         xy = tuple(tmp)
-        menu_bar.ContextMenu.__init__(self, coordinates=xy, parent=Frame(self.list_frame))
+        menu_bar.ContextMenu.__init__(self, coordinates=xy, fields=selection, parent=Frame(self.list_frame))
 
     def make_menu_widget(self, pull_downs, parent):
         self.menu = self.create_top_menu_widget(parent)
 
         self.create_command(self.menu, 'Edit network', self.not_done)
-        self.create_command(self.menu, 'Delete', self.not_done)
+        self.create_command(self.menu, 'Delete', self.delete_network)
+
+    def delete_network(self):
+        index = None
+        for network in self.distribution.networks:
+            if network.name == self.selection:
+                index = network.index
+        self.distribution.delete_network(index)
+        self.delete_selected_item_from_listbox(self.selection)
 
 
 if __name__ == '__main__':
