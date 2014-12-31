@@ -153,6 +153,28 @@ class Data:
         self.networks.append(nw.Package(self.index_networks, intensity_voice, intensity_video, intensity_be))
         self.index_networks += 1
 
+    def edit_network(self, index, intensity_voice=0, intensity_video=0, intensity_be=0, loss=0):
+        """
+        Setups new initiation values for existing circuit network selected by index
+        :param index: index of network in networks list
+        :param intensity: new voice intensity value
+        :param loss: new loss value
+        """
+        if type(self.networks[index]) is nw.Circuit:
+            self.networks[index].edit_network(intensity_voice, loss)
+        elif type(self.networks[index]) is nw.Package:
+            self.networks[index].edit_network(intensity_voice, intensity_video, intensity_be)
+
+    def edit_package_network(self, index, intensity_voice=0, intensity_video=0, intensity_be=0):
+        """
+        Setups new initiation values for existing package network selected by index
+        :param index: index of network in networks list
+        :param intensity_voice: new voice intensity value
+        :param intensity_video: new video intensity value
+        :param intensity_be: new be intensity value
+        """
+        self.networks[index].edit_network(intensity_voice, intensity_video, intensity_be)
+
     def delete_network(self, n=None):
         """
         Method is deleting selected network from the row of created networks. It also removes the row from an interest
@@ -546,91 +568,101 @@ class Data:
 if __name__ == '__main__':
 
     d = Data()
+    d.create_circuit_network(100, 0)
+    d.create_package_network(120, 230, 340)
 
-    d.create_package_network(100, 1000, 1000)
-    d.create_package_network(50, 500, 500)
+    print(type(d.networks[0]))
+    print(type(d.networks[1]))
 
-    d.set_interest_matrix_voice([[0, 1], [1, 0]])
-    d.set_interest_matrix_video([[0, 1], [1, 0]])
-    d.set_interest_matrix_be([[0, 1], [1, 0]])
+    if type(d.networks[0]) is nw.Circuit:
+        print('YES')
 
-    d.process_data_resources()
-
-    d.create_node_edge(5, 15, 30)
-    for abc in range(4):
-        d.create_node_core(5, 15, 30)
-    d.create_node_edge(5, 15, 30)
-
-    d.create_adjacency_matrix([[0, 1, 0, 1, 1, 0], [1, 0, 1, 1, 0, 0], [0, 1, 0, 1, 1, 1], [1, 1, 1, 0, 0, 0],
-                               [1, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
-
-    print(d.adjacency_matrix)
-
-    #d.create_links()
-    matrix = [[index, 50, 300000000] for index in d.connections]
-    d.create_links(matrix)
-    d.create_paths_matrix_voice([[5, 2, 1, 0], [0, 1, 3, 2, 5]])
-    d.create_paths_matrix_video([[5, 2, 1, 0], [0, 1, 3, 2, 5]])
-    d.create_paths_matrix_be([[5, 2, 1, 0], [0, 1, 3, 2, 5]])
-
-    d.create_net_edge_matrix([[1, 0], [0, 5]])
-    d.set_connections()
-
-    d.scatter_flow_voice()
-    d.scatter_flow_video()
-    d.scatter_flow_be()
-
-    d.sum_up_flow()
-
-    d.scatter_iplr()
-    d.sum_iplr_path_voice()
-    d.sum_iplr_path_video()
-    d.sum_iplr_path_be()
-
-    d.scatter_ipdt()
-    d.sum_ipdt_path_voice()
-    d.sum_ipdt_path_video()
-    d.sum_ipdt_path_be()
-
-    d.scatter_ipdv()
-    d.sum_ipdv_path_voice()
-    d.sum_ipdv_path_video()
-    d.sum_ipdv_path_be()
-
+    # d = Data()
+#
+    # d.create_package_network(100, 1000, 1000)
+    # d.create_package_network(50, 500, 500)
+#
+    # d.set_interest_matrix_voice([[0, 1], [1, 0]])
+    # d.set_interest_matrix_video([[0, 1], [1, 0]])
+    # d.set_interest_matrix_be([[0, 1], [1, 0]])
+#
+    # d.process_data_resources()
+#
+    # d.create_node_edge(5, 15, 30)
+    # for abc in range(4):
+        # d.create_node_core(5, 15, 30)
+    # d.create_node_edge(5, 15, 30)
+#
+    # d.create_adjacency_matrix([[0, 1, 0, 1, 1, 0], [1, 0, 1, 1, 0, 0], [0, 1, 0, 1, 1, 1], [1, 1, 1, 0, 0, 0],
+                               # [1, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
+#
+    # print(d.adjacency_matrix)
+#
+    # #d.create_links()
+    # matrix = [[index, 50, 300000000] for index in d.connections]
+    # d.create_links(matrix)
+    # d.create_paths_matrix_voice([[5, 2, 1, 0], [0, 1, 3, 2, 5]])
+    # d.create_paths_matrix_video([[5, 2, 1, 0], [0, 1, 3, 2, 5]])
+    # d.create_paths_matrix_be([[5, 2, 1, 0], [0, 1, 3, 2, 5]])
+#
+    # d.create_net_edge_matrix([[1, 0], [0, 5]])
+    # d.set_connections()
+#
+    # d.scatter_flow_voice()
+    # d.scatter_flow_video()
+    # d.scatter_flow_be()
+#
+    # d.sum_up_flow()
+#
+    # d.scatter_iplr()
+    # d.sum_iplr_path_voice()
+    # d.sum_iplr_path_video()
+    # d.sum_iplr_path_be()
+#
+    # d.scatter_ipdt()
+    # d.sum_ipdt_path_voice()
+    # d.sum_ipdt_path_video()
+    # d.sum_ipdt_path_be()
+#
+    # d.scatter_ipdv()
+    # d.sum_ipdv_path_voice()
+    # d.sum_ipdv_path_video()
+    # d.sum_ipdv_path_be()
+#
+    # # for x in d.links:
+    # #   print(x.name)
+#
+    # #d.delete_node(3)
+#
+    # #for x in d.nodes:
+    # #   print(x.name)
+#
     # for x in d.links:
-    #   print(x.name)
-
-    #d.delete_node(3)
-
-    #for x in d.nodes:
-    #   print(x.name)
-
-    for x in d.links:
-        print(x.index)
-        print(x.flow_voice_up)
-        print(x.flow_voice_down)
-        print(x.flow_voice)
-        print(x.paths_voice)
-        print('-----------------------')
-        print('IPLR for voice: ', x.iplr_voice)
-        print('IPLR for video: ', x.iplr_video)
-        print('IPLR for be: ', x.iplr_be)
-        print('------------------------')
-        print('IPDT for voice: ', x.ipdt_voice)
-        print('IPDT for video: ', x.ipdt_video)
-        print('IPDT for be: ', x.ipdt_be)
-        print('+++++++++++++++++++++++')
-
-    print('Voice IPLR: ', d.iplr_for_paths_voice)
-    print('Video IPLR: ', d.iplr_for_paths_video)
-    print('BE IPLR: ', d.iplr_for_paths_be)
-    print('------------------------')
-    print('Voice IPDT: ', d.ipdt_for_paths_voice)
-    print('Video IPDT: ', d.ipdt_for_paths_video)
-    print('BE IPDT: ', d.ipdt_for_paths_be)
-    print('------------------------')
-    print('Voice IPDV: ', d.ipdv_for_paths_voice)
-    print('Video IPDV: ', d.ipdv_for_paths_video)
-    print('BE IPDV: ', d.ipdv_for_paths_be)
-    # print(d.connections)
-    #print(d.connections_sliced)
+        # print(x.index)
+        # print(x.flow_voice_up)
+        # print(x.flow_voice_down)
+        # print(x.flow_voice)
+        # print(x.paths_voice)
+        # print('-----------------------')
+        # print('IPLR for voice: ', x.iplr_voice)
+        # print('IPLR for video: ', x.iplr_video)
+        # print('IPLR for be: ', x.iplr_be)
+        # print('------------------------')
+        # print('IPDT for voice: ', x.ipdt_voice)
+        # print('IPDT for video: ', x.ipdt_video)
+        # print('IPDT for be: ', x.ipdt_be)
+        # print('+++++++++++++++++++++++')
+#
+    # print('Voice IPLR: ', d.iplr_for_paths_voice)
+    # print('Video IPLR: ', d.iplr_for_paths_video)
+    # print('BE IPLR: ', d.iplr_for_paths_be)
+    # print('------------------------')
+    # print('Voice IPDT: ', d.ipdt_for_paths_voice)
+    # print('Video IPDT: ', d.ipdt_for_paths_video)
+    # print('BE IPDT: ', d.ipdt_for_paths_be)
+    # print('------------------------')
+    # print('Voice IPDV: ', d.ipdv_for_paths_voice)
+    # print('Video IPDV: ', d.ipdv_for_paths_video)
+    # print('BE IPDV: ', d.ipdv_for_paths_be)
+    # # print(d.connections)
+    # #print(d.connections_sliced)

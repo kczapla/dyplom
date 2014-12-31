@@ -6,6 +6,7 @@ import gui.templates.scrolled_list as scl
 import core.distribution as dist
 import gui.config.list
 import gui.templates.menu_bar as menu_bar
+import gui.templates.inser_box as insert_box
 from tkinter import *
 
 
@@ -57,7 +58,7 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
     def make_menu_widget(self, pull_downs, parent):
         self.menu = self.create_top_menu_widget(parent)
 
-        self.create_command(self.menu, 'Edit network', self.not_done)
+        self.create_command(self.menu, 'Edit network', self.edit_network)
         self.create_command(self.menu, 'Delete', self.delete_network)
 
     def delete_network(self):
@@ -67,6 +68,15 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
                 index = network.index
         self.distribution.delete_network(index)
         self.delete_selected_item_from_listbox(self.selection)
+
+    def edit_network(self):
+        index = None
+        for network in self.distribution.networks:
+            if network.name == self.selection:
+                index = network.index
+        gui.templates.inser_box.EditNetworkCircuit(index, self.distribution, Toplevel())
+
+
 
 
 if __name__ == '__main__':

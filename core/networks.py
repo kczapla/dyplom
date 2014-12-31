@@ -179,6 +179,16 @@ class Circuit:
     def set_name(self):
         self.name = "PSTN/ISDN/GSM " + str(self.index)
 
+    def edit_network(self, intensity, loss):
+        """
+        Method implement network with new values
+        :param intensity: Voice intensity [Erl]
+        :param loss: probability of loss
+        """
+        self.intensity_voice_in = intensity
+        self.loss = loss
+        print('New values of circuit networks instance setup successfully.')
+
 
 class Package:
     def __init__(self, index=None, intensity_voice=0, intensity_video=0, intensity_be=0):
@@ -376,3 +386,9 @@ class Package:
 
     def out_intensity(self):
         pass
+
+    def edit_network(self, intensity_voice_in, intensity_video_in, intensity_be_in):
+        self.intensity_voice_in = intensity_voice_in
+        self.intensity_video_in = intensity_video_in
+        self.intensity_be_in = intensity_be_in
+        print('New values of package networks instance setup successfully.')

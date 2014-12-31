@@ -1,41 +1,11 @@
 __author__ = 'perun'
 
-from tkinter import *
 
 import gui.templates.widgets as tpl
 import core.distribution
-import gui.templates.matrix as matrix
-import gui.windows.list as list_box
 import core.networks
 import gui.config.insert_box as conf_popups
-
-
-class ChooseNetwork(Frame):
-    def __init__(self, distribution, parent=None, **extras):
-        Frame.__init__(self, parent, **extras)
-
-        self.parent = parent
-
-        self.pack(side=TOP)
-
-        self.distribution = distribution
-
-        self.make_widgets()
-
-        self.focus_set()          # take over input focus,
-        self.grab_set()           # disable other windows while I'm open,
-        self.wait_window()        # and wait here until win destroyed
-
-    def make_widgets(self):
-        circuit_entry_fields = 'Voice latency [Erl]', 'Loss'
-        package_entry_fields = 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]'
-
-        tpl.label(self, TOP, 'Create Network')
-        tpl.button(self, TOP, 'PSTN/ISDN/GSM', lambda: CreateNetwork(self.distribution, circuit_entry_fields,
-                                                                     Toplevel()))
-        tpl.button(self, TOP, 'IP', lambda: CreateNetworkPackage(self.distribution, package_entry_fields,
-                                                                 Toplevel()))
-        tpl.button(self, TOP, 'Quit', self.parent.destroy)
+from tkinter import *
 
 
 class CreateNetwork(Frame):
@@ -131,50 +101,6 @@ class EditNetworkPackage(CreateNetwork):
         self.distribution.edit_network(index=self.index, intensity_voice=values[0], intensity_video=values[1],
                                        intensity_be=values[2])
         self.parent.destroy()
-
-
-class CreateInterestMatrix(Frame):
-    def __init__(self, distribution, parent=None, **extras):
-        Frame.__init__(self, parent, **extras)
-        self.parent = parent
-        self.pack(side=TOP)
-
-        self.distribution = distribution
-
-        self.button_names = (('Voice', lambda: matrix.MatrixVoiceInterest(self.distribution,
-                                                                          'Voice Matrix',
-                                                                          Toplevel())),
-                            ('Video', lambda: matrix.MatrixVideoInterest(self.distribution,
-                                                                         'Video Matrix',
-                                                                         Toplevel())),
-                            ('Best Effort', lambda: matrix.MatrixBeInterest(self.distribution,
-                                                                            'Voice Matrix',
-                                                                            Toplevel())),
-                            ('Cancel', self.parent.destroy))
-        self.make_form()
-
-    def make_form(self):
-        row = Frame(self)
-        row.pack(side=TOP)
-        Label(row, text='Chose type of traffic').pack(side=TOP)
-        for button in self.button_names:
-            tpl.button(row, TOP, button[0], button[1])
-
-
-class ShowData(Frame):
-    def __init__(self, distribution, parent=None, **extras):
-        Frame.__init__(self, parent, **extras)
-        self.parent = parent
-        self.pack(side=TOP)
-
-        self.make_form()
-
-        self.distribution = distribution
-
-    def make_form(self):
-        tpl.label(self, TOP, 'Chose data to show')
-        tpl.button(self, TOP, 'Access networks', lambda: list_box.AccessNetworksList(self.distribution, Toplevel()))
-        tpl.button(self, TOP, 'Quit', self.parent.destroy)
 
 
 if __name__ == '__main__':
