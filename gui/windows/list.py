@@ -7,6 +7,7 @@ import core.distribution as dist
 import gui.config.list
 import gui.templates.menu_bar as menu_bar
 import gui.templates.inser_box as insert_box
+import core.networks
 from tkinter import *
 
 
@@ -26,28 +27,35 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
 
     def run_command_left(self, selection):
         """
-        When user click two times on item in list, method checks what type of network has been chosen and send it to
+        When user click two times on the item in list, method checks what type of network has been chosen and send it to
         ShowInfo class.
         :param selection: selected item from list (double clicked)
         """
-        if 'GSM' in selection:
-            for network in self.distribution.networks:
-                if selection == network.name:
-                    show.ShowInfo.__init__(self, network, self.info_frame)
-        elif 'IP' in selection:
-            for network in self.distribution.networks:
-                if selection == network.name:
-                    show.ShowInfo.__init__(self, network, self.info_frame)
+        index = self.listbox.curselection()
+        if self.distribution.networks[index[0]]:
+            print('Network with selected index from list exists.')
+            if type(self.distribution.networks[index[0]]) is core.networks.Circuit:
+                print('Selected item {} from listbox represents Circuit class.'.format(selection))
+                show.ShowInfo.__init__(self, self.distribution.networks[index[0]], self.info_frame)
+            elif type(self.distribution.networks[index[0]]) is core.networks.Package:
+                print('Selected item {} from listbox represents Package class.'.format(selection))
+                show.ShowInfo.__init__(self, self.distribution.networks[index[0]], self.info_frame)
+        else:
+            print('Network with given index does not exists.')
 
     def process_data(self, instance):
         """
 
-        :param instance: Network instance, fetch from cofnig file labels name and values to be displayed in entry.
-        :return:
+        :param instance: Network instance
+        :return: fetch from config file labels name and values to be displayed in entry.
         """
-        if 'GSM' in instance.name:
+        index = self.listbox.curselection()
+        print('Network with selected index from list exists.')
+        if type(self.distribution.networks[index[0]]) is core.networks.Circuit:
+            print('Fetching Circuit\'s class entry labels from config file.')
             return gui.config.list.access_network_list_circuit(instance)
-        elif 'IP' in instance.name:
+        elif type(self.distribution.networks[index[0]]) is core.networks.Package:
+            print('Fetching package\'s class entry labels from config file.')
             return gui.config.list.access_network_list_package(instance)
 
     def run_command_right(self, selection, xy):
@@ -62,28 +70,29 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
         self.create_command(self.menu, 'Delete', self.delete_network)
 
     def delete_network(self):
-        index = None
-        for network in self.distribution.networks:
-            if network.name == self.selection:
-                index = network.index
-        self.distribution.delete_network(index)
-        self.delete_selected_item_from_listbox(self.selection)
+        index = self.listbox.curselection()
+        # for network in self.distribution.networks:
+         #   if network.name == self.selection:
+          #      index = network.index
+        self.distribution.delete_network(index[0])
+        self.delete_selected_item_from_listbox()
 
     def edit_network(self):
-        index = None
-        for network in self.distribution.networks:
-            if network.name == self.selection:
-                index = network.index
-        gui.templates.inser_box.EditNetworkCircuit(index, self.distribution, Toplevel())
+        """
+        Context menu edit option. After operation reloads listbox.
 
-
+        """
+        index = self.listbox.curselection()
+        gui.templates.inser_box.EditNetworkCircuit(index[0], self.distribution, Toplevel())
+        scl.ScrolledList.__init__(self, (network.name for network in self.distribution.networks),
+                                  self.list_frame)
 
 
 if __name__ == '__main__':
     root = Tk()
     d = dist.Data()
-    d.create_package_network(100, 1000, 1000)
-    d.create_package_network(50, 500, 500)
-    d.create_circuit_network(123, 0.02)
+    d.create_package_network('jan', 100, 1000, 1000)
+    d.create_package_network('adam', 50, 500, 500)
+    d.create_circuit_network('smok', 123, 0.02)
     AccessNetworksList(d, root)
     root.mainloop()

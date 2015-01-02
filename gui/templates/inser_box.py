@@ -8,6 +8,34 @@ import gui.config.insert_box as conf_popups
 from tkinter import *
 
 
+class ChooseNetwork(Frame):
+    def __init__(self, distribution, parent=None, **extras):
+        Frame.__init__(self, parent, **extras)
+
+        self.parent = parent
+
+        self.pack(side=TOP)
+
+        self.distribution = distribution
+
+        self.make_widgets()
+
+        self.focus_set()          # take over input focus,
+        self.grab_set()           # disable other windows while I'm open,
+        self.wait_window()        # and wait here until win destroyed
+
+    def make_widgets(self):
+        circuit_entry_fields = 'Name', 'Voice latency [Erl]', 'Loss'
+        package_entry_fields = 'Name', 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]'
+
+        tpl.label(self, TOP, 'Create Network')
+        tpl.button(self, TOP, 'PSTN/ISDN/GSM', lambda: CreateNetwork(self.distribution, circuit_entry_fields,
+                                                                     Toplevel()))
+        tpl.button(self, TOP, 'IP', lambda: CreateNetworkPackage(self.distribution, package_entry_fields,
+                                                                 Toplevel()))
+        tpl.button(self, TOP, 'Quit', self.parent.destroy)
+
+
 class CreateNetwork(Frame):
     def __init__(self, distribution, entry_fields, parent=None, **extras):
         Frame.__init__(self, parent, **extras)
@@ -48,8 +76,11 @@ class CreateNetwork(Frame):
         values = []
         for entry in self.entries:
             print('Input => "{}"'.format(entry.get()))
-            values.append(float(entry.get()))
-        self.distribution.create_circuit_network(values[0], values[1])
+            if type(entry.get()) is str and not entry.get().isdigit():
+                values.append(str(entry.get()))
+            else:
+                values.append(float(entry.get()))
+        self.distribution.create_circuit_network(values[0], values[1], values[2])
 
         self.parent.destroy()
 
@@ -59,8 +90,11 @@ class CreateNetworkPackage(CreateNetwork):
         values = []
         for entry in self.entries:
             print('Input => "{}"'.format(entry.get()))
-            values.append(float(entry.get()))
-        self.distribution.create_package_network(values[0], values[1], values[2])
+            if type(entry.get()) is str and not entry.get().isdigit():
+                values.append(str(entry.get()))
+            else:
+                values.append(float(entry.get()))
+        self.distribution.create_package_network(values[0], values[1], values[2], values[3])
         self.parent.destroy()
 
 
@@ -78,28 +112,17 @@ class EditNetworkCircuit(CreateNetwork):
         values = []
         for entry in self.entries:
             print('Input => "{}"'.format(entry.get()))
-            values.append(float(entry.get()))
+            if type(entry.get()) is str and not entry.get().isdigit():
+                values.append(str(entry.get()))
+            else:
+                values.append(float(entry.get()))
 
         if type(self.distribution.networks[self.index]) == core.networks.Circuit:
-            self.distribution.edit_network(index=self.index, intensity_voice=values[0], loss=values[1])
+            self.distribution.edit_network(name=values[0], index=self.index, intensity_voice=values[1], loss=values[2])
         elif type(self.distribution.networks[self.index]) == core.networks.Package:
-            self.distribution.edit_network(index=self.index, intensity_voice=values[0], intensity_video=values[1],
-                                           intensity_be=values[2])
-        self.parent.destroy()
-
-
-class EditNetworkPackage(CreateNetwork):
-    def __init__(self, index, distribution, entry_fields, parent=None, **extras):
-        CreateNetwork.__init__(distribution, entry_fields, parent, **extras)
-        self.index = index
-
-    def fetch(self):
-        values = []
-        for entry in self.entries:
-            print('Input => "{}"'.format(entry.get()))
-            values.append(float(entry.get()))
-        self.distribution.edit_network(index=self.index, intensity_voice=values[0], intensity_video=values[1],
-                                       intensity_be=values[2])
+            self.distribution.edit_network(name=values[0], index=self.index, intensity_voice=values[1],
+                                           intensity_video=values[2],
+                                           intensity_be=values[3])
         self.parent.destroy()
 
 
@@ -108,8 +131,8 @@ if __name__ == '__main__':
     root = Tk()
     d = core.distribution.Data()
     for x in range(20):
-        d.create_package_network(100, 1000, 1000)
-        d.create_circuit_network(50, 500)
+        d.create_package_network('ikso' + str(x), 100, 1000, 1000)
+        d.create_circuit_network('ikso' + str(x), 50, 500)
     # cn = ChooseNetwork(d, root)
     # cim = CreateInterestMatrix(d, root)
     # shd = ShowData(d, root)

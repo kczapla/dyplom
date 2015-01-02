@@ -49,8 +49,8 @@ if __name__ == '__main__':
     root = Tk()
     d = distribution.Data()
     for x in range(6):
-        d.create_package_network(100, 1000, 1000)
-        d.create_circuit_network(50, 500)
+        d.create_package_network('ikso' + str(x), 100, 1000, 1000)
+        d.create_circuit_network('lolo' + str(x), 50, 500)
     m = Menu(d, root)
     m.pack()
     root.mainloop()

@@ -71,13 +71,11 @@ class ScrolledList(Frame):
         list.bind('<Button-3>', self.handle_list_right)
         self.listbox = list
 
-    def delete_selected_item_from_listbox(self, selection):
+    def delete_selected_item_from_listbox(self):
         """
         Deletes selected item from list box
-        :param selection: selected item
         """
         index = self.listbox.curselection()
-
         self.listbox.delete(index)
         print('Item {} deleted from list successfully.'.format(index))
 

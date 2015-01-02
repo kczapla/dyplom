@@ -72,7 +72,7 @@ if __name__ == '__main__':
             else:
                 print('Wrong value! Try again.')
 
-        elif '2' in option:
+        elif '2' in option and option is '12.':
             if d.networks:
                 print('Select netowrk to delete from list below:')
                 menu.print_nodes(d.networks)
@@ -84,7 +84,7 @@ if __name__ == '__main__':
             else:
                 print('Before operation create networks! Try again.')
 
-        elif '3.' in option:
+        elif '3.' in option and option is '13.':
             if d.networks:
                 if option == '3.1':
                     print('INTEREST MATRIX VOICE')
@@ -241,7 +241,7 @@ if __name__ == '__main__':
             elif option == '11.3':
                 d.create_paths_matrix_be(menu.paths())
 
-        elif option == '12':
+        elif '12.' in option:
             if option == '12.1':
                 d.process_data_resources()
             elif option == '12.2':
@@ -249,7 +249,7 @@ if __name__ == '__main__':
             elif option == '12.3':
                 d.process_data_qos()
 
-        elif option == '13':
+        elif '13.' in option:
             if option == '13.1':
                 print('RESOURCES ON THE EDGE OF ACCESS NETWORK')
                 for network in d.networks:
@@ -280,3 +280,5 @@ if __name__ == '__main__':
                                                               network.flow_video_out, network.flow_be_out))
             elif option == '13.2':
                 pass
+        elif option == '14':
+            d.use_test_values()

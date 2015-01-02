@@ -2,7 +2,8 @@ __author__ = 'perun'
 
 
 def access_network_list_circuit(instance):
-    rows = [('Voice intensity in [Erl]', instance.__dict__['intensity_voice_in']),
+    rows = [('Network name: ', instance.__dict__['name']),
+            ('Voice intensity in [Erl]', instance.__dict__['intensity_voice_in']),
             ('Voice intensity out [Erl]', instance.__dict__['intensity_voice_out']),
             ('Links in', instance.__dict__['links_in']),
             ('Links out', instance.__dict__['links_out']),
@@ -15,7 +16,8 @@ def access_network_list_circuit(instance):
 
 
 def access_network_list_package(instance):
-        rows = [('Voice intensity in [1/s]', instance.__dict__['intensity_voice_in']),
+        rows = [('Network name: ', instance.__dict__['name']),
+                ('Voice intensity in [1/s]', instance.__dict__['intensity_voice_in']),
                 ('Voice intensity out [1/s]', instance.__dict__['intensity_voice_out']),
                 ('Video intensity in [1/s]', instance.__dict__['intensity_video_in']),
                 ('Video intensity out [1/s]', instance.__dict__['intensity_video_out']),

@@ -7,7 +7,8 @@ import core.distribution
 import gui.templates.matrix as matrix
 import gui.windows.list as list_box
 import core.networks
-import gui.config.insert_box as conf_popups
+import gui.templates.inser_box
+#import gui.config.insert_box as conf_popups
 
 
 class ChooseNetwork(Frame):
@@ -27,14 +28,16 @@ class ChooseNetwork(Frame):
         self.wait_window()        # and wait here until win destroyed
 
     def make_widgets(self):
-        circuit_entry_fields = 'Voice latency [Erl]', 'Loss'
-        package_entry_fields = 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]'
+        circuit_entry_fields = 'Name', 'Voice latency [Erl]', 'Loss'
+        package_entry_fields = 'Name', 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]'
 
         tpl.label(self, TOP, 'Create Network')
-        tpl.button(self, TOP, 'PSTN/ISDN/GSM', lambda: CreateNetwork(self.distribution, circuit_entry_fields,
-                                                                     Toplevel()))
-        tpl.button(self, TOP, 'IP', lambda: CreateNetworkPackage(self.distribution, package_entry_fields,
-                                                                 Toplevel()))
+        tpl.button(self, TOP, 'PSTN/ISDN/GSM', lambda: gui.templates.inser_box.CreateNetwork(self.distribution,
+                                                                                             circuit_entry_fields,
+                                                                                             Toplevel()))
+        tpl.button(self, TOP, 'IP', lambda: gui.templates.inser_box.CreateNetworkPackage(self.distribution,
+                                                                                         package_entry_fields,
+                                                                                         Toplevel()))
         tpl.button(self, TOP, 'Quit', self.parent.destroy)
 
 
@@ -78,8 +81,11 @@ class CreateNetwork(Frame):
         values = []
         for entry in self.entries:
             print('Input => "{}"'.format(entry.get()))
-            values.append(float(entry.get()))
-        self.distribution.create_circuit_network(values[0], values[1])
+            if type(entry.get()) is str:
+                values.append(str(entry.get()))
+            else:
+                values.append(float(entry.get()))
+        self.distribution.create_circuit_network(values[0], values[1], values[2])
 
         self.parent.destroy()
 
@@ -89,47 +95,11 @@ class CreateNetworkPackage(CreateNetwork):
         values = []
         for entry in self.entries:
             print('Input => "{}"'.format(entry.get()))
-            values.append(float(entry.get()))
-        self.distribution.create_package_network(values[0], values[1], values[2])
-        self.parent.destroy()
-
-
-class EditNetworkCircuit(CreateNetwork):
-    def __init__(self, index, distribution, parent=None, **extras):
-        self.index = index
-        self.distribution = distribution
-
-        if type(self.distribution.networks[self.index]) == core.networks.Circuit:
-            CreateNetwork.__init__(self, distribution, conf_popups.access_network_circuit_insertbox(), parent, **extras)
-        elif type(self.distribution.networks[self.index]) == core.networks.Package:
-            CreateNetwork.__init__(self, distribution, conf_popups.access_network_package_insertbox(), parent, **extras)
-
-    def fetch(self):
-        values = []
-        for entry in self.entries:
-            print('Input => "{}"'.format(entry.get()))
-            values.append(float(entry.get()))
-
-        if type(self.distribution.networks[self.index]) == core.networks.Circuit:
-            self.distribution.edit_network(index=self.index, intensity_voice=values[0], loss=values[1])
-        elif type(self.distribution.networks[self.index]) == core.networks.Package:
-            self.distribution.edit_network(index=self.index, intensity_voice=values[0], intensity_video=values[1],
-                                           intensity_be=values[2])
-        self.parent.destroy()
-
-
-class EditNetworkPackage(CreateNetwork):
-    def __init__(self, index, distribution, entry_fields, parent=None, **extras):
-        CreateNetwork.__init__(distribution, entry_fields, parent, **extras)
-        self.index = index
-
-    def fetch(self):
-        values = []
-        for entry in self.entries:
-            print('Input => "{}"'.format(entry.get()))
-            values.append(float(entry.get()))
-        self.distribution.edit_network(index=self.index, intensity_voice=values[0], intensity_video=values[1],
-                                       intensity_be=values[2])
+            if type(entry.get()) is str and not entry.get().isdigit():
+                values.append(str(entry.get()))
+            else:
+                values.append(float(entry.get()))
+        self.distribution.create_package_network(values[0], values[1], values[2], values[3])
         self.parent.destroy()
 
 
@@ -188,6 +158,6 @@ if __name__ == '__main__':
     # cim = CreateInterestMatrix(d, root)
     # shd = ShowData(d, root)
     #circuit_entry_fields = 'Voice latency [Erl]', 'Loss'
-    ep = EditNetworkCircuit(1, d, root)
+    #ep = EditNetworkCircuit(1, d, root)
 
     root.mainloop()

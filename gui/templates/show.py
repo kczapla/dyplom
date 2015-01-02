@@ -23,7 +23,6 @@ class ShowInfo(Frame):
         for x, y in fields:
             row = Frame(self)
             tpl.label(row, LEFT, x, width=20)
-            #print(x)
             tmp = StringVar()
             tmp.set(y)
             tpl.entry(row, LEFT, tmp, width=20, state='disabled')

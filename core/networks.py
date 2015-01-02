@@ -4,7 +4,7 @@ import core.calculations as calc
 
 
 class Circuit:
-    def __init__(self, index=None, intensity=None, loss=0.002):
+    def __init__(self, name, index=None, intensity=None, loss=0.002):
         """
         :param intensity: Intensity which network generate to the core
         :param index: Index of the network
@@ -40,7 +40,11 @@ class Circuit:
         self.interest_row_video = []
         self.interest_row_be = []
         self.index = index
-        self.name = "PSTN/ISDN/GSM " + str(index)
+        #self.name = "PSTN/ISDN/GSM " + str(index)
+        if name:
+            self.name = name
+        else:
+            self.name = 'PSTN/ISDN/GSM ' + str(self.index)
         self.loss = loss
 
         # Variables connected with codec
@@ -82,7 +86,7 @@ class Circuit:
         """
         for net in networks:
 
-            if 'GSM' in net.name:
+            if type(net) is Circuit:
                 tmp = (self.interest_row_voice[net.index] *
                        self.r_in *
                        self.lambda_g711 *
@@ -167,31 +171,34 @@ class Circuit:
         :param networks: list of all created networks in the core
         """
         for x in networks:
-            if 'GSM' in x.name:
+            if type(x) is Circuit:
                 self.intensity_voice_out += x.intensity_voice_in * x.interest_row_voice[self.index]
             else:
                 self.intensity_voice_out += x.get_intensity_voice_g729_out() * x.interest_row_voice[self.index]
 
     def set_index(self, index):
         self.index = index
-        self.set_name()
+        #self.set_name()
 
-    def set_name(self):
-        self.name = "PSTN/ISDN/GSM " + str(self.index)
+    def set_name(self, name):
+        self.name = name
 
-    def edit_network(self, intensity, loss):
+    def edit_network(self, name, intensity, loss):
         """
-        Method implement network with new values
+        Method implements network with new values
+        :param name: new name for network
         :param intensity: Voice intensity [Erl]
         :param loss: probability of loss
         """
+        if name:
+            self.name = name
         self.intensity_voice_in = intensity
         self.loss = loss
         print('New values of circuit networks instance setup successfully.')
 
 
 class Package:
-    def __init__(self, index=None, intensity_voice=0, intensity_video=0, intensity_be=0):
+    def __init__(self, name, index=None, intensity_voice=0, intensity_video=0, intensity_be=0):
 
         """
 
@@ -230,7 +237,11 @@ class Package:
         self.interest_row_video = []
         self.interest_row_be = []
         self.index = index
-        self.name = "Dostęp IP " + str(index)
+        #self.name = "Dostęp IP " + str(index)
+        if name:
+            self.name = name
+        else:
+            self.name = 'IP ' + str(self.index)
         self.loss = 0
 
         # Variables connected with codec
@@ -299,7 +310,7 @@ class Package:
         :param networks: list of created networks in project
         """
         for net in networks:
-            if not 'GSM' in net.name:
+            if type(net) is Package:
                 self.flow_video_out += net.flow_video_in_list[self.index]
 
     def set_flow_be_in(self, networks=None):
@@ -321,7 +332,7 @@ class Package:
         :param networks: list of created networks in project
         """
         for net in networks:
-            if not 'GSM' in net.name:
+            if type(net) is Package:
                 self.flow_be_out += net.flow_be_in_list[self.index]
 
     def reset_resources(self):
@@ -375,19 +386,28 @@ class Package:
         :param index:
         """
         self.index = index
-        self.set_name()
+        # self.set_name()
 
-    def set_name(self):
+    def set_name(self, name):
         """
         Setter for a name variable
-
+        :param name: new name
         """
-        self.name = "Dostęp IP " + str(self.index)
+        self.name = name
 
     def out_intensity(self):
         pass
 
-    def edit_network(self, intensity_voice_in, intensity_video_in, intensity_be_in):
+    def edit_network(self, name, intensity_voice_in, intensity_video_in, intensity_be_in):
+        """
+        Method implements network with new values
+        :param intensity_voice_in: voice packages intensity
+        :param intensity_video_in: video packages intensity
+        :param intensity_be_in: be packages intensity
+        :param name: new name for network
+        """
+        if name:
+            self.name = name
         self.intensity_voice_in = intensity_voice_in
         self.intensity_video_in = intensity_video_in
         self.intensity_be_in = intensity_be_in
