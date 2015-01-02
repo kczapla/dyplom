@@ -22,7 +22,7 @@ class ShowInfo(Frame):
         tpl.label(self, TOP, 'Instance variables')
         for x, y in fields:
             row = Frame(self)
-            tpl.label(row, LEFT, x, width=20)
+            tpl.label(row, LEFT, x, width=28)
             tmp = StringVar()
             tmp.set(y)
             tpl.entry(row, LEFT, tmp, width=20, state='disabled')

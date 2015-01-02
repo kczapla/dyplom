@@ -255,23 +255,26 @@ class Data:
         self.process_data_resources()
 
     # methods connected with graph operations
-    def create_node_edge(self, buffer_voice, buffer_video, buffer_be):
+    def create_node_edge(self, name, buffer_voice, buffer_video, buffer_be):
         """
+
+        :param name: new name
         :param buffer_voice: size of queue for voice traffic
         :param buffer_video: size of queue for video traffic
         :param buffer_be: size of queue for best effort traffic
         """
-        self.nodes.append(dev.EdgeRouter(self.index_nodes, buffer_voice, buffer_video, buffer_be))
+        self.nodes.append(dev.EdgeRouter(name, self.index_nodes, buffer_voice, buffer_video, buffer_be))
         self.index_nodes += 1
 
-    def create_node_core(self, buffer_voice, buffer_video, buffer_be):
+    def create_node_core(self, name, buffer_voice, buffer_video, buffer_be):
         """
 
+        :param name: new name
         :param buffer_voice: size of queue for voice traffic
         :param buffer_video: size of queue for video traffic
         :param buffer_be: size of queue for best effort traffic
         """
-        self.nodes.append(dev.CoreRouter(self.index_nodes, buffer_voice, buffer_video, buffer_be))
+        self.nodes.append(dev.CoreRouter(name, self.index_nodes, buffer_voice, buffer_video, buffer_be))
         self.index_nodes += 1
 
     def delete_node(self, index):
@@ -285,6 +288,10 @@ class Data:
             self.adjacency_matrix.pop(index)
             self.slice_adjacency_matrix()
             self.create_links(self.connections)
+
+    def edit_node(self, name, index, buffer_voice, buffer_video, buffer_be):
+        print('Edit router')
+        self.nodes[index].edit(name, buffer_voice, buffer_video, buffer_be)
 
     def create_links(self, matrix):
         """
@@ -359,7 +366,8 @@ class Data:
             for y in self.networks:
                 if x[0] == y.index:
                     for z in self.nodes:
-                        if x[1] == z.index and 'ER' in z.name and not z.connected:
+                        if x[1] == z.index and type(z) is dev.EdgeRouter and not z.connected:
+                        #if x[1] == z.index and 'ER' in z.name and not z.connected:
                             z.flow_voice = y.flow_voice_in
                             z.flow_video = y.flow_video_in
                             z.flow_be = y.flow_be_in
@@ -589,13 +597,13 @@ if __name__ == '__main__':
 
     d.process_data_resources()
 
-    d.create_node_edge(5, 15, 30)
+    d.create_node_edge('iksoaa', 5, 15, 30)
     for abc in range(4):
-        d.create_node_core(5, 15, 30)
-    d.create_node_edge(5, 15, 30)
+        d.create_node_core('ikso' + str(abs), 5, 15, 30)
+    d.create_node_edge('iksoa', 5, 15, 30)
 
     d.create_adjacency_matrix([[0, 1, 0, 1, 1, 0], [1, 0, 1, 1, 0, 0], [0, 1, 0, 1, 1, 1], [1, 1, 1, 0, 0, 0],
-                                [1, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
+                               [1, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
 
     print(d.adjacency_matrix)
 

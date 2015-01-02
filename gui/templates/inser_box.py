@@ -6,6 +6,7 @@ import core.distribution
 import core.networks
 import gui.config.insert_box as conf_popups
 from tkinter import *
+from tkinter.messagebox import *
 
 
 class ChooseNetwork(Frame):
@@ -56,7 +57,7 @@ class CreateNetwork(Frame):
         self.wait_window()        # and wait here until win destroyed
 
     def make_form(self):
-        tpl.label(self, TOP, 'Set parameters of the network')
+        tpl.label(self, TOP, 'Set parameters')
         for field in self.entry_fields:
             row = Frame(self)
             lab = Label(row, width=20, text=field)
@@ -76,13 +77,15 @@ class CreateNetwork(Frame):
         values = []
         for entry in self.entries:
             print('Input => "{}"'.format(entry.get()))
-            if type(entry.get()) is str and not entry.get().isdigit():
+            if not entry.get().replace('.', '', 1).isdigit():
                 values.append(str(entry.get()))
             else:
                 values.append(float(entry.get()))
-        self.distribution.create_circuit_network(values[0], values[1], values[2])
-
-        self.parent.destroy()
+        if type(values[1]) is float and type(values[2]) is float:
+            self.distribution.create_circuit_network(values[0], values[1], values[2])
+            self.parent.destroy()
+        else:
+            showerror('Error', 'Wrong value! Try again!')
 
 
 class CreateNetworkPackage(CreateNetwork):
@@ -90,12 +93,15 @@ class CreateNetworkPackage(CreateNetwork):
         values = []
         for entry in self.entries:
             print('Input => "{}"'.format(entry.get()))
-            if type(entry.get()) is str and not entry.get().isdigit():
+            if not entry.get().replace('.', '', 1).isdigit():
                 values.append(str(entry.get()))
             else:
                 values.append(float(entry.get()))
-        self.distribution.create_package_network(values[0], values[1], values[2], values[3])
-        self.parent.destroy()
+        if type(values[1]) is float and type(values[2]) is float and type(values[3]) is float:
+            self.distribution.create_package_network(values[0], values[1], values[2], values[3])
+            self.parent.destroy()
+        else:
+            showerror('Error', 'Wrong value! Try again!')
 
 
 class EditNetworkCircuit(CreateNetwork):
@@ -112,18 +118,87 @@ class EditNetworkCircuit(CreateNetwork):
         values = []
         for entry in self.entries:
             print('Input => "{}"'.format(entry.get()))
-            if type(entry.get()) is str and not entry.get().isdigit():
+            if not entry.get().replace('.', '', 1).isdigit():
                 values.append(str(entry.get()))
             else:
                 values.append(float(entry.get()))
 
         if type(self.distribution.networks[self.index]) == core.networks.Circuit:
-            self.distribution.edit_network(name=values[0], index=self.index, intensity_voice=values[1], loss=values[2])
+            if type(values[1]) is float and type(values[2]) is float:
+                self.distribution.edit_network(name=values[0], index=self.index, intensity_voice=values[1],
+                                               loss=values[2])
+                self.parent.destroy()
+            else:
+                showerror('Error', 'Wrong value! Try again!')
         elif type(self.distribution.networks[self.index]) == core.networks.Package:
-            self.distribution.edit_network(name=values[0], index=self.index, intensity_voice=values[1],
-                                           intensity_video=values[2],
-                                           intensity_be=values[3])
-        self.parent.destroy()
+            if type(values[1]) is float and type(values[2]) is float and type(values[3]) is float:
+                self.distribution.edit_network(name=values[0], index=self.index, intensity_voice=values[1],
+                                               intensity_video=values[2],
+                                               intensity_be=values[3])
+                self.parent.destroy()
+            else:
+                showerror('Error', 'Wrong value! Try again!')
+
+
+class CreateNodeEdge(CreateNetwork):
+    def fetch(self):
+        print('CreateNodeEdge fetch method.')
+        values = []
+        for entry in self.entries:
+            print('Input => "{}"'.format(entry.get()))
+            if not entry.get().isdigit():
+                values.append(str(entry.get()))
+            else:
+                values.append(int(entry.get()))
+        if type(values[1]) is int and type(values[2]) is int and type(values[3]) is int:
+            self.distribution.create_node_edge(values[0], values[1], values[2], values[3])
+            self.parent.destroy()
+        else:
+            showerror('Error', 'Wrong value! Try again!')
+
+
+class CreateNodeCore(CreateNetwork):
+    def fetch(self):
+        print('CreateNodeCore fetch method.')
+        values = []
+        for entry in self.entries:
+            print('Input => "{}"'.format(entry.get()))
+            if not entry.get().isdigit():
+                values.append(str(entry.get()))
+            else:
+                values.append(int(entry.get()))
+        if type(values[1]) is int and type(values[2]) is int and type(values[3]) is int:
+            self.distribution.create_node_core(values[0], values[1], values[2], values[3])
+            self.parent.destroy()
+        else:
+            showerror('Error', 'Wrong value! Try again!')
+
+
+class EditNode(CreateNetwork):
+    def __init__(self, index, distribution, parent=None, **extras):
+        self.index = index
+        self.distribution = distribution
+
+        if type(self.distribution.networks[self.index]) == core.networks.Circuit:
+            CreateNetwork.__init__(self, distribution, conf_popups.node_insertbox(), parent, **extras)
+        elif type(self.distribution.networks[self.index]) == core.networks.Package:
+            CreateNetwork.__init__(self, distribution, conf_popups.node_insertbox(), parent, **extras)
+
+    def fetch(self):
+        values = []
+        for entry in self.entries:
+            print('Input => "{}"'.format(entry.get()))
+            if not entry.get().isdigit():
+                values.append(str(entry.get()))
+            else:
+                values.append(int(entry.get()))
+
+        if type(values[1]) is int and type(values[2]) is int and type(values[3]) is int:
+            self.distribution.edit_network(name=values[0], index=self.index, buffer_voice=values[1],
+                                           buffer_video=values[2], buffer_be=values[3])
+            self.parent.destroy()
+        else:
+            showerror('Error', 'Wrong value! Try again!')
 
 
 if __name__ == '__main__':

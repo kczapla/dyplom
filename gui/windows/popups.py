@@ -1,6 +1,7 @@
 __author__ = 'perun'
 
 from tkinter import *
+from tkinter.messagebox import *
 
 import gui.templates.widgets as tpl
 import core.distribution
@@ -38,69 +39,43 @@ class ChooseNetwork(Frame):
         tpl.button(self, TOP, 'IP', lambda: gui.templates.inser_box.CreateNetworkPackage(self.distribution,
                                                                                          package_entry_fields,
                                                                                          Toplevel()))
+        tpl.button(self, TOP, 'Close', self.parent.destroy)
+
+    def not_ready(self):
+        showinfo('Info', 'Opton is not ready.')
+
+
+class ChooseNode(ChooseNetwork):
+    def make_widgets(self):
+        entry_fields = 'Name', 'Size of voice buffer', 'Size of video buffer', 'Size of be buffer'
+        tpl.label(self, TOP, 'Create Node')
+        tpl.button(self, TOP, 'Edge', lambda: gui.templates.inser_box.CreateNodeEdge(self.distribution, entry_fields,
+                                                                                     Toplevel(self)))
+        tpl.button(self, TOP, 'Core', lambda: gui.templates.inser_box.CreateNodeCore(self.distribution, entry_fields,
+                                                                                     Toplevel(self)))
+        tpl.button(self, TOP, 'Close', self.parent.destroy)
+
+
+class ChooseData(ChooseNetwork):
+    def make_widgets(self):
+        tpl.label(self, TOP, 'Process data')
+        tpl.button(self, TOP, 'Edge resources', self.calculate_edge_resources)
+        tpl.button(self, TOP, 'Flow in the network', self.not_ready)
+        tpl.button(self, TOP, 'QoS', self.not_ready)
         tpl.button(self, TOP, 'Quit', self.parent.destroy)
 
-
-class CreateNetwork(Frame):
-    def __init__(self, distribution, entry_fields, parent=None, **extras):
-        Frame.__init__(self, parent, **extras)
-
-        self.distribution = distribution
-        self.parent = parent
-        self.pack(side=TOP)
-
-        self.entry_fields = entry_fields
-        self.title = 'Create Network'
-
-        self.entries = []
-        self.make_form()
-        self.make_buttons()
-
-        self.focus_set()          # take over input focus,
-        self.grab_set()           # disable other windows while I'm open,
-        self.wait_window()        # and wait here until win destroyed
-
-    def make_form(self):
-        tpl.label(self, TOP, 'Set parameters of the network')
-        for field in self.entry_fields:
-            row = Frame(self)
-            lab = Label(row, width=20, text=field)
-            ent = Entry(row)
-            row.pack(side=TOP, fill=X)
-            lab.pack(side=LEFT)
-            ent.pack(side=RIGHT, expand=YES, fill=X)
-            self.entries.append(ent)
-
-    def make_buttons(self):
-        row = Frame(self)
-        row.pack(side=TOP, fill=X)
-        Button(row, text='Ok', command=self.fetch).pack(side=LEFT, expand=YES, fill=X)
-        Button(row, text='Cancel', command=self.parent.destroy).pack(side=RIGHT, expand=YES, fill=X)
-
-    def fetch(self):
-        values = []
-        for entry in self.entries:
-            print('Input => "{}"'.format(entry.get()))
-            if type(entry.get()) is str:
-                values.append(str(entry.get()))
-            else:
-                values.append(float(entry.get()))
-        self.distribution.create_circuit_network(values[0], values[1], values[2])
-
-        self.parent.destroy()
-
-
-class CreateNetworkPackage(CreateNetwork):
-    def fetch(self):
-        values = []
-        for entry in self.entries:
-            print('Input => "{}"'.format(entry.get()))
-            if type(entry.get()) is str and not entry.get().isdigit():
-                values.append(str(entry.get()))
-            else:
-                values.append(float(entry.get()))
-        self.distribution.create_package_network(values[0], values[1], values[2], values[3])
-        self.parent.destroy()
+    def calculate_edge_resources(self):
+        if not self.distribution.interest_matrix_voice:
+            showwarning('Warning!', 'Interest matrix for voice is not initialized. Operation canceled.')
+        elif not self.distribution.interest_matrix_video or not self.distribution.interest_matrix_be:
+            showwarning('Warning!', 'Interest matrix for video or be is not initialized. Processing data for voice')
+            self.distribution.process_data_resources()
+            print('Empty video or be interest matrix.')
+            showinfo('Done!', 'Resources calculated')
+        else:
+            self.distribution.process_data_resources()
+            print('Calculating resources... Success.')
+            showinfo('Done!', 'Resources calculated')
 
 
 class CreateInterestMatrix(Frame):
@@ -144,6 +119,7 @@ class ShowData(Frame):
     def make_form(self):
         tpl.label(self, TOP, 'Chose data to show')
         tpl.button(self, TOP, 'Access networks', lambda: list_box.AccessNetworksList(self.distribution, Toplevel()))
+        tpl.button(self, TOP, 'Nodes', lambda: list_box.NodesList(self.distribution, Toplevel()))
         tpl.button(self, TOP, 'Quit', self.parent.destroy)
 
 

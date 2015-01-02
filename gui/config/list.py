@@ -3,6 +3,7 @@ __author__ = 'perun'
 
 def access_network_list_circuit(instance):
     rows = [('Network name: ', instance.__dict__['name']),
+            ('Type of network', type(instance).__name__),
             ('Voice intensity in [Erl]', instance.__dict__['intensity_voice_in']),
             ('Voice intensity out [Erl]', instance.__dict__['intensity_voice_out']),
             ('Links in', instance.__dict__['links_in']),
@@ -17,6 +18,7 @@ def access_network_list_circuit(instance):
 
 def access_network_list_package(instance):
         rows = [('Network name: ', instance.__dict__['name']),
+                ('Type of network', type(instance).__name__),
                 ('Voice intensity in [1/s]', instance.__dict__['intensity_voice_in']),
                 ('Voice intensity out [1/s]', instance.__dict__['intensity_voice_out']),
                 ('Video intensity in [1/s]', instance.__dict__['intensity_video_in']),
@@ -30,3 +32,23 @@ def access_network_list_package(instance):
                 ('BE flow in [kb/s]', instance.__dict__['flow_be_in']),
                 ('BE flow out [kb/s]', instance.__dict__['flow_be_out'])]
         return rows
+
+
+def nodes_list_edge(instance):
+    rows = [('Node name: ', instance.__dict__['name']),
+            ('Type of node', type(instance).__name__),
+            ('Size of voice buffer', instance.__dict__['buffer_voice']),
+            ('Size of video buffer', instance.__dict__['buffer_video']),
+            ('Size of be buffer', instance.__dict__['buffer_be']),
+            ('Voice flow through the router [kb/s]', instance.__dict__['flow_voice']),
+            ('Video flow through the router [kb/s]', instance.__dict__['flow_video']),
+            ('Be flow through the router [kb/s]', instance.__dict__['flow_be'])]
+    return rows
+
+
+def nodes_list_core(instance):
+    rows = [('Node name: ', instance.__dict__['name']),
+            ('Type of node', type(instance).__name__),
+            ('Size of voice buffer', instance.__dict__['buffer_voice']),
+            ('Size of video buffer', instance.__dict__['buffer_video'])]
+    return rows

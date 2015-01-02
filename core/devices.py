@@ -4,7 +4,7 @@ import core.calculations as calc
 
 
 class Router:
-    def __init__(self, index, buffer_voice, buffer_video, buffer_be):
+    def __init__(self, name, index, buffer_voice, buffer_video, buffer_be):
 
         self.index = index
 
@@ -12,17 +12,31 @@ class Router:
         self.buffer_video = buffer_video
         self.buffer_be = buffer_be
 
+        self.name = name
+
         self.loss = 0
 
     def reset_resources(self):
         pass
 
+    def edit(self, name, buffer_voice, buffer_video, buffer_be):
+        """
+        Method edits values of router
+        :param name: new name. If empty name will be unchanged
+        :param buffer_voice: size of voice buffer
+        :param buffer_video: size of video buffer
+        :param buffer_be: size of be buffer
+        """
+        if name:
+            self.name = name
+        self.buffer_voice = buffer_voice
+        self.buffer_video = buffer_video
+        self.buffer_be = buffer_be
+
 
 class EdgeRouter(Router):
-    def __init__(self, index, buffer_voice, buffer_video, buffer_be):
-        super().__init__(index, buffer_voice, buffer_video, buffer_be)
-
-        self.name = "ER " + str(index)
+    def __init__(self, name, index, buffer_voice, buffer_video, buffer_be):
+        Router.__init__(self, name, index, buffer_voice, buffer_video, buffer_be)
 
         self.flow_voice_in = 0
         self.flow_video_in = 0
@@ -60,23 +74,14 @@ class EdgeRouter(Router):
         Method is responsible for resenting resources of current object
 
         """
-        self.flow_voice_in = 0
-        self.flow_video_in = 0
-        self.flow_be_in = 0
-
-        self.flow_voice = 0
-        self.flow_video = 0
-        self.flow_be = 0
 
         self.connected = False
         self.connected_index = ''
 
 
 class CoreRouter(Router):
-    def __init__(self, index, buffer_voice, buffer_video, buffer_be):
-        super().__init__(index, buffer_voice, buffer_video, buffer_be)
-
-        self.name = "CR " + str(index)
+    def __init__(self, name, index, buffer_voice, buffer_video, buffer_be):
+        Router.__init__(self, name, index, buffer_voice, buffer_video, buffer_be)
 
     def set_name(self, index):
 
