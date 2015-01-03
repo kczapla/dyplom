@@ -207,3 +207,6 @@ class Link:
         self.ipdv_voice = 0
         self.ipdv_video = 0
         self.ipdv_be = 0
+
+    def edit(self):
+        pass

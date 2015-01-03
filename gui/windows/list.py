@@ -21,10 +21,13 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
         self.info_frame = Frame(parent)
         self.info_frame.pack(side=LEFT, fill=BOTH, expand=YES)
 
-        scl.ScrolledList.__init__(self, (network.name for network in distribution.networks),
+        self.distribution = distribution
+
+        scl.ScrolledList.__init__(self, self.make_fields_list(),
                                   self.list_frame)
 
-        self.distribution = distribution
+    def make_fields_list(self):
+        return (network.name for network in self.distribution.networks)
 
     def run_command_left(self, selection):
         """
@@ -67,10 +70,10 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
     def make_menu_widget(self, pull_downs, parent):
         self.menu = self.create_top_menu_widget(parent)
 
-        self.create_command(self.menu, 'Edit network', self.edit_network)
-        self.create_command(self.menu, 'Delete', self.delete_network)
+        self.create_command(self.menu, 'Edit network', self.edit_item)
+        self.create_command(self.menu, 'Delete', self.delete_item)
 
-    def delete_network(self):
+    def delete_item(self):
         index = self.listbox.curselection()
         # for network in self.distribution.networks:
          #   if network.name == self.selection:
@@ -78,7 +81,7 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
         self.distribution.delete_network(index[0])
         self.delete_selected_item_from_listbox()
 
-    def edit_network(self):
+    def edit_item(self):
         """
         Context menu edit option. After operation reloads listbox.
 
@@ -89,19 +92,9 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
                                   self.list_frame)
 
 
-class NodesList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
-    def __init__(self, distribution, parent=None):
-        self.parent = parent
-        self.list_frame = Frame(parent)
-        self.list_frame.pack(side=LEFT, fill=BOTH, expand=YES)
-
-        self.info_frame = Frame(parent)
-        self.info_frame.pack(side=LEFT, fill=BOTH, expand=YES)
-
-        scl.ScrolledList.__init__(self, (node.name for node in distribution.nodes),
-                                  self.list_frame)
-
-        self.distribution = distribution
+class NodesList(AccessNetworksList):
+    def make_fields_list(self):
+        return (network.name for network in self.distribution.networks)
 
     def run_command_left(self, selection):
         """
@@ -132,18 +125,13 @@ class NodesList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
             print('Fetching CoreNode\'s class entry labels from config file.')
             return gui.config.list.nodes_list_core(instance)
 
-    def run_command_right(self, selection, xy):
-        tmp = [z + 120 for z in xy]
-        xy = tuple(tmp)
-        menu_bar.ContextMenu.__init__(self, coordinates=xy, fields=selection, parent=Frame(self.list_frame))
-
     def make_menu_widget(self, pull_downs, parent):
         self.menu = self.create_top_menu_widget(parent)
 
-        self.create_command(self.menu, 'Edit node', self.edit_node)
-        self.create_command(self.menu, 'Delete', self.delete_node)
+        self.create_command(self.menu, 'Edit node', self.edit_item)
+        self.create_command(self.menu, 'Delete', self.delete_item)
 
-    def delete_node(self):
+    def delete_item(self):
         index = self.listbox.curselection()
         # for network in self.distribution.networks:
          #   if network.name == self.selection:
@@ -151,7 +139,7 @@ class NodesList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
         self.distribution.delete_node(index[0])
         self.delete_selected_item_from_listbox()
 
-    def edit_node(self):
+    def edit_item(self):
         """
         Context menu edit option. After operation reloads listbox.
 
