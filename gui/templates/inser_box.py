@@ -194,8 +194,8 @@ class EditNode(CreateNetwork):
                 values.append(int(entry.get()))
 
         if type(values[1]) is int and type(values[2]) is int and type(values[3]) is int:
-            self.distribution.edit_network(name=values[0], index=self.index, buffer_voice=values[1],
-                                           buffer_video=values[2], buffer_be=values[3])
+            self.distribution.edit_node(name=values[0], index=self.index, buffer_voice=values[1],
+                                        buffer_video=values[2], buffer_be=values[3])
             self.parent.destroy()
         else:
             showerror('Error', 'Wrong value! Try again!')

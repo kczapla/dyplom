@@ -22,19 +22,17 @@ class Menu(Frame):
         tpl.label(self, TOP, 'MENU')
         tpl.button(self, TOP, 'Create network', lambda: popups.ChooseNetwork(self.distribution,
                                                                              Toplevel(self))).pack(padx=5)
-        tpl.button(self, TOP, 'Create interest matrix', self.chose_interest_matrix).pack(padx=5)
-        tpl.button(self, TOP, 'Show data', self.show_data).pack(padx=5)
-        tpl.button(self, TOP, 'Process data', self.process_data).pack(padx=5)
         tpl.button(self, TOP, 'Create node', lambda: popups.ChooseNode(self.distribution,
                                                                        Toplevel(self))).pack(padx=5)
+        tpl.button(self, TOP, 'Create matrix', self.chose_interest_matrix).pack(padx=5)
+        tpl.button(self, TOP, 'Show data', self.show_data).pack(padx=5)
+        tpl.button(self, TOP, 'Process data', self.process_data).pack(padx=5)
+
         quitter.Quitter(self)
 
     def chose_interest_matrix(self):
-        if self.distribution.index_networks:
-            popups.CreateInterestMatrix(self.distribution,
-                                        Toplevel(self))
-        else:
-            showwarning('Warning', 'Networks don\'t exist. Create networks first to use this option.')
+        popups.CreateMatrix(self.distribution,
+                            Toplevel(self))
 
     def show_data(self):
         if self.distribution.index_networks:

@@ -50,5 +50,6 @@ def nodes_list_core(instance):
     rows = [('Node name: ', instance.__dict__['name']),
             ('Type of node', type(instance).__name__),
             ('Size of voice buffer', instance.__dict__['buffer_voice']),
-            ('Size of video buffer', instance.__dict__['buffer_video'])]
+            ('Size of video buffer', instance.__dict__['buffer_video']),
+            ('Size of be buffer', instance.__dict__['buffer_be'])]
     return rows

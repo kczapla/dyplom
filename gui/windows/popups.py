@@ -78,7 +78,7 @@ class ChooseData(ChooseNetwork):
             showinfo('Done!', 'Resources calculated')
 
 
-class CreateInterestMatrix(Frame):
+class CreateMatrix(Frame):
     def __init__(self, distribution, parent=None, **extras):
         Frame.__init__(self, parent, **extras)
         self.parent = parent
@@ -86,15 +86,10 @@ class CreateInterestMatrix(Frame):
 
         self.distribution = distribution
 
-        self.button_names = (('Voice', lambda: matrix.MatrixVoiceInterest(self.distribution,
-                                                                          'Voice Matrix',
-                                                                          Toplevel())),
-                            ('Video', lambda: matrix.MatrixVideoInterest(self.distribution,
-                                                                         'Video Matrix',
-                                                                         Toplevel())),
-                            ('Best Effort', lambda: matrix.MatrixBeInterest(self.distribution,
-                                                                            'Voice Matrix',
-                                                                            Toplevel())),
+        self.button_names = (('Voice', self.create_voice_matrix),
+                            ('Video', self.create_video_matrix),
+                            ('Best Effort', self.create_be_matrix),
+                            ('Adjacency matrix', self.create_adjacency_matrix),
                             ('Cancel', self.parent.destroy))
         self.make_form()
 
@@ -104,6 +99,42 @@ class CreateInterestMatrix(Frame):
         Label(row, text='Chose type of traffic').pack(side=TOP)
         for button in self.button_names:
             tpl.button(row, TOP, button[0], button[1])
+
+    def create_voice_matrix(self):
+        if self.distribution.networks:
+            matrix.MatrixVoiceInterest(self.distribution,
+                                       self.distribution.index_networks,
+                                       'Voice Matrix',
+                                       Toplevel())
+        else:
+            showwarning('Warning', 'Networks don\'t exist. Create networks first to use this option.')
+
+    def create_video_matrix(self):
+        if self.distribution.networks:
+            matrix.MatrixVideoInterest(self.distribution,
+                                       self.distribution.index_networks,
+                                       'Voice Matrix',
+                                       Toplevel())
+        else:
+            showwarning('Warning', 'Networks don\'t exist. Create networks first to use this option.')
+
+    def create_be_matrix(self):
+        if self.distribution.networks:
+            matrix.MatrixBeInterest(self.distribution,
+                                    self.distribution.index_networks,
+                                    'Voice Matrix',
+                                    Toplevel())
+        else:
+            showwarning('Warning', 'Networks don\'t exist. Create networks first to use this option.')
+
+    def create_adjacency_matrix(self):
+        if self.distribution.nodes:
+            matrix.MatrixAdjacency(self.distribution,
+                                   self.distribution.index_nodes,
+                                   'Adjacency Matrix',
+                                   Toplevel())
+        else:
+            showwarning('Warning', 'Nodes don\'t exist. Create networks first to use this option.')
 
 
 class ShowData(Frame):
