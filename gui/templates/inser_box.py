@@ -4,6 +4,7 @@ __author__ = 'perun'
 import gui.templates.widgets as tpl
 import core.distribution
 import core.networks
+import gui.templates.matrix as matrix
 import gui.config.insert_box as conf_popups
 from tkinter import *
 from tkinter.messagebox import *
@@ -223,6 +224,82 @@ class EditLink(CreateNetwork):
             showerror('Error', 'Wrong value! Try again!')
 
 
+class CreatePaths(Frame):
+    def __init__(self, distribution, parent=None, **extras):
+        Frame.__init__(self, parent, **extras)
+        self.distribution = distribution
+        self.parent = parent
+        self.pack(side=TOP)
+
+        self.option_frame = Frame(self)
+        self.option_frame.pack(side=LEFT, fill=BOTH, expand=YES)
+
+        self.length_frame = None
+        self.path_frame = None
+
+        #self.insert_frame = Frame(self, bd=1, relief=SUNKEN)
+        #self.insert_frame.pack(side=LEFT, fill=BOTH, expand=YES)
+        self.insert_frame = None
+
+        self.number_paths = StringVar()
+        self.length_entries = []
+        self.path_entries = []
+
+        self.set_number_paths()
+
+    def set_number_paths(self):
+        size_frame = Frame(self.option_frame, bd=1, relief=SUNKEN)
+        size_frame.pack(side=TOP, padx=5, pady=5)
+
+        row1 = Frame(size_frame)
+        row1.pack(side=TOP)
+
+        row2 = Frame(size_frame)
+        row2.pack(side=TOP)
+
+        Label(row1, text='Number of paths:', width=15).pack(side=LEFT)
+        Entry(row1, textvariable=self.number_paths, width=5).pack(side=LEFT)
+        Button(row2, text='Ok', command=self.paths_lengths).pack(side=LEFT)
+
+    def paths_lengths(self):
+        if self.length_frame:
+            self.length_frame.destroy()
+        self.length_frame = Frame(self.option_frame, bd=1, relief=SUNKEN)
+        self.length_frame.pack(side=TOP, padx=10, pady=10)
+        for size in range(int(self.number_paths.get())):
+            row = Frame(self.length_frame)
+            row.pack(side=TOP)
+            Label(row, text='Path {}'.format(size), width=5).pack(side=LEFT)
+            ent = Entry(row, width=5)
+            ent.pack(side=LEFT, expand=YES, fill=X)
+            self.length_entries.append(ent)
+        row = Frame(self.length_frame)
+        row.pack(side=TOP)
+        Button(row, text='Ok', command=self.set_paths).pack(side=LEFT)
+
+    def set_paths(self):
+        i = 0
+        if self.insert_frame:
+            self.insert_frame.destroy()
+        self.insert_frame = Frame(self, bd=1, relief=SUNKEN)
+        self.insert_frame.pack(side=LEFT, padx=10, pady=10)
+        for entry in self.length_entries:
+            row = Frame(self.insert_frame)
+            row.pack(side=TOP, padx=5, pady=5)
+            Label(row, text='Path {}'.format(i), width=10).pack(side=LEFT)
+            single_path = []
+            for x in range(int(entry.get())):
+                ent = Entry(row, width=5)
+                ent.pack(side=LEFT, expand=YES, fill=X, padx=5)
+                single_path.append(ent)
+            self.path_entries.append(single_path)
+            i += 1
+
+        row = Frame(self.insert_frame)
+        row.pack(side=TOP, padx=5, pady=5)
+        Button(row, text='Ok', command=lambda: print('ikso')).pack(side=LEFT)
+
+
 if __name__ == '__main__':
 
     root = Tk()
@@ -234,6 +311,7 @@ if __name__ == '__main__':
     # cim = CreateInterestMatrix(d, root)
     # shd = ShowData(d, root)
     #circuit_entry_fields = 'Voice latency [Erl]', 'Loss'
-    ep = EditNetworkCircuit(1, d, root)
+    #ep = EditNetworkCircuit(1, d, root)
+    CreatePaths(d, root)
 
     root.mainloop()

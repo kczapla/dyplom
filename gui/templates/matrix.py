@@ -152,6 +152,10 @@ class NetEdgeMatrix(Matrix):
             #self.parent.destroy()
 
 
+class CreatePaths(Matrix):
+    def make_matrix(self, size):
+         Label(self, text='Create '+self.tittle).pack(side=TOP)
+
 if __name__ == "__main__":
         root = Tk()
         d = distribution.Data()
