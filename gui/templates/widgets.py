@@ -45,7 +45,7 @@ def button(root, side, text, command, **extras):
 
 def entry(root, side, linkvar, **extras):
     widget = Entry(root, relief=SUNKEN, textvariable=linkvar)
-    widget.pack(side=side, expand=YES, fill=BOTH)
+    widget.pack(side=side, expand=YES, fill=BOTH, padx=10, pady=1)
     if extras:
         widget.config(**extras)
     return widget

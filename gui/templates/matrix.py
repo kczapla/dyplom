@@ -2,7 +2,9 @@ __author__ = 'perun'
 
 
 from tkinter import *
-import core.distribution as diststirbution
+from tkinter.messagebox import *
+import core.distribution as distribution
+import gui.templates.widgets as tpl
 
 
 class Matrix(Frame):
@@ -57,7 +59,8 @@ class MatrixVoiceInterest(Matrix):
             self.parent.destroy()
         else:
             print('Nothing inserted into voice matrix\'s entries.')
-            self.parent.destroy()
+            showinfo('Info', 'Nothing inserted into voice interest matrix\'s entries.')
+            #self.parent.destroy()
 
 
 class MatrixVideoInterest(Matrix):
@@ -68,8 +71,9 @@ class MatrixVideoInterest(Matrix):
             print('Video matrix created.')
             self.parent.destroy()
         else:
+            showinfo('Info', 'Nothing inserted into video interest matrix\'s entries.')
             print('Nothing inserted into video matrix\'s entries.')
-            self.parent.destroy()
+            #self.parent.destroy()
 
 
 class MatrixBeInterest(Matrix):
@@ -80,8 +84,9 @@ class MatrixBeInterest(Matrix):
             print('BE matrix created.')
             self.parent.destroy()
         else:
+            showinfo('Info', 'Nothing inserted into Be interest matrix\'s entries.')
             print('Nothing inserted into BE matrix\'s entries.')
-            self.parent.destroy()
+            #self.parent.destroy()
 
 
 class MatrixAdjacency(Matrix):
@@ -92,12 +97,64 @@ class MatrixAdjacency(Matrix):
             print('Adjacency matrix created.')
             self.parent.destroy()
         else:
+            showinfo('Info', 'Nothing inserted into Adjacency matrix\'s entries.')
             print('Nothing inserted into Adjacency matrix\'s entries.')
+            #self.parent.destroy()
+
+
+class NetEdgeMatrix(Matrix):
+    def make_matrix(self, size):
+        Label(self, text='Create '+self.tittle).pack(side=TOP)
+        fields = [(network.name, network.index) for network in self.distribution.networks]
+        for field in fields:
+            row = Frame(self)
+            row.pack(side=TOP)
+            Label(row, text=field[0], width=20).pack(side=LEFT, padx=5)
+            ent1_variable = StringVar()
+            ent1_variable.set(field[1])
+            ent1 = Entry(row, width=5, state='disabled', textvariable=ent1_variable)
+            ent2 = Entry(row, width=5)
+            ent1.pack(side=LEFT, padx=2)
+            #ent1.insert(0, field[0])
+            ent2.pack(side=LEFT, padx=2)
+
+            self.matrix.append([ent1, ent2])
+
+            #tpl.entry(row, LEFT, tmp, width=5, state='disabled')
+            #ent2 = tpl.entry(row, LEFT, 'Index of edge router', width=25)
+
+            #self.matrix.append([tpl.entry(row, LEFT, tmp, width=5, state='disabled'),
+             #                   tpl.entry(row, LEFT, 'Index of edge router', width=25)])
+
+    def fetch(self):
+        if self.matrix[0][0].get():
+            #self.distribution.net_edge = [[int(y.get()) for y in x] for x in self.matrix]
+            paths = []
+            stop = False
+            for x, y in self.matrix:
+                if int(y.get()) <= self.distribution.index_nodes:
+                    paths.append([int(x.get()), int(y.get())])
+                else:
+                    showerror('Error', 'Node with index {} doesn\'t exists. Insert correct values.'
+                              .format(int(y.get())))
+                    stop = True
+                    break
+
+            if not stop:
+                self.distribution.create_net_edge_matrix(paths)
+                print(paths)
+                print('Net - edge matrix created.')
+
             self.parent.destroy()
+        else:
+            showinfo('Info', 'Nothing inserted into Net - edge matrix\'s entries.')
+            print('Nothing inserted into Net - edge matrix\'s entries.')
+            #self.parent.destroy()
 
 
 if __name__ == "__main__":
         root = Tk()
-        d = diststirbution.Data()
-        m = Matrix(d, 5, 'Voice interest matrix', root)
+        d = distribution.Data()
+        d.test()
+        m = NetEdgeMatrix(d, 2, 'IKSO', root)
         root.mainloop()

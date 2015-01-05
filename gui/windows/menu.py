@@ -24,13 +24,13 @@ class Menu(Frame):
                                                                              Toplevel(self))).pack(padx=5)
         tpl.button(self, TOP, 'Create node', lambda: popups.ChooseNode(self.distribution,
                                                                        Toplevel(self))).pack(padx=5)
-        tpl.button(self, TOP, 'Create matrix', self.chose_interest_matrix).pack(padx=5)
+        tpl.button(self, TOP, 'Create matrix', self.chose_matrix).pack(padx=5)
         tpl.button(self, TOP, 'Show data', self.show_data).pack(padx=5)
         tpl.button(self, TOP, 'Process data', self.process_data).pack(padx=5)
 
         quitter.Quitter(self)
 
-    def chose_interest_matrix(self):
+    def chose_matrix(self):
         popups.CreateMatrix(self.distribution,
                             Toplevel(self))
 

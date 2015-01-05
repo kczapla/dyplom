@@ -86,10 +86,11 @@ class CreateMatrix(Frame):
 
         self.distribution = distribution
 
-        self.button_names = (('Voice', self.create_voice_matrix),
-                            ('Video', self.create_video_matrix),
-                            ('Best Effort', self.create_be_matrix),
+        self.button_names = (('Interest Voice', self.create_voice_matrix),
+                            ('Interest Video', self.create_video_matrix),
+                            ('Interest Best Effort', self.create_be_matrix),
                             ('Adjacency matrix', self.create_adjacency_matrix),
+                            ('Network - Edge router matrix', self.create_net_edge_matrix),
                             ('Cancel', self.parent.destroy))
         self.make_form()
 
@@ -99,6 +100,16 @@ class CreateMatrix(Frame):
         Label(row, text='Chose type of traffic').pack(side=TOP)
         for button in self.button_names:
             tpl.button(row, TOP, button[0], button[1])
+
+    def create_net_edge_matrix(self):
+        if self.distribution.networks and self.distribution.nodes:
+            matrix.NetEdgeMatrix(self.distribution,
+                                 2,
+                                 'Net - Edge',
+                                 Toplevel())
+        else:
+            showwarning('Warning', 'Networks or nodes don\'t exist. Create networks and nodes \
+                                    first to use this option.')
 
     def create_voice_matrix(self):
         if self.distribution.networks:

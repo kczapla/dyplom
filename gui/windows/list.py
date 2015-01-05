@@ -88,13 +88,13 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
         """
         index = self.listbox.curselection()
         gui.templates.inser_box.EditNetworkCircuit(index[0], self.distribution, Toplevel())
-        scl.ScrolledList.__init__(self, (network.name for network in self.distribution.networks),
+        scl.ScrolledList.__init__(self, self.make_fields_list(),
                                   self.list_frame)
 
 
 class NodesList(AccessNetworksList):
     def make_fields_list(self):
-        return (network.name for network in self.distribution.networks)
+        return (node.name for node in self.distribution.nodes)
 
     def run_command_left(self, selection):
         """
@@ -146,15 +146,70 @@ class NodesList(AccessNetworksList):
         """
         index = self.listbox.curselection()
         gui.templates.inser_box.EditNode(index[0], self.distribution, Toplevel())
-        scl.ScrolledList.__init__(self, (node.name for node in self.distribution.nodes),
+        scl.ScrolledList.__init__(self, self.make_fields_list(),
+                                  self.list_frame)
+
+
+class LinksList(AccessNetworksList):
+    def make_fields_list(self):
+        return (link.name for link in self.distribution.links)
+
+    def run_command_left(self, selection):
+        """
+        When user click two times on the item in list, method checks what type of node has been chosen and send it to
+        ShowInfo class.
+        :param selection: selected item from list (double clicked)
+        """
+        index = self.listbox.curselection()
+        if self.distribution.links[index[0]]:
+            print('Link with selected index from list exists.')
+            print('Selected item {} from listbox represents node class.'.format(selection))
+            show.ShowInfo.__init__(self, self.distribution.links[index[0]], self.info_frame)
+        else:
+            print('Network with given index does not exists.')
+
+    def process_data(self, instance):
+        """
+
+        :param instance: Network instance
+        :return: fetch from config file labels name and values to be displayed in entry.
+        """
+        print('Link with selected index from list exists.')
+        print('Fetching Link\'s class entry labels from config file.')
+        return gui.config.list.links_list(instance)
+
+    def make_menu_widget(self, pull_downs, parent):
+        self.menu = self.create_top_menu_widget(parent)
+
+        self.create_command(self.menu, 'Edit link', self.edit_item)
+        #self.create_command(self.menu, 'Delete', self.delete_item)
+
+    def delete_item(self):
+        index = self.listbox.curselection()
+        # for network in self.distribution.networks:
+         #   if network.name == self.selection:
+          #      index = network.index
+        self.distribution.delete_node(index[0])
+        self.delete_selected_item_from_listbox()
+
+    def edit_item(self):
+        """
+        Context menu edit option. After operation reloads listbox.
+
+        """
+        index = self.listbox.curselection()
+        gui.templates.inser_box.EditLink(index[0], self.distribution, Toplevel())
+        scl.ScrolledList.__init__(self, self.make_fields_list(),
                                   self.list_frame)
 
 
 if __name__ == '__main__':
     root = Tk()
     d = dist.Data()
-    d.create_package_network('jan', 100, 1000, 1000)
-    d.create_package_network('adam', 50, 500, 500)
-    d.create_circuit_network('smok', 123, 0.02)
-    AccessNetworksList(d, root)
+    #d.create_package_network('jan', 100, 1000, 1000)
+    #d.create_package_network('adam', 50, 500, 500)
+    #d.create_circuit_network('smok', 123, 0.02)
+    d.test()
+    #AccessNetworksList(d, root)
+    LinksList(d, root)
     root.mainloop()

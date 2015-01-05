@@ -36,8 +36,10 @@ class ScrolledList(Frame):
         if self.listbox.curselection():
             index = self.listbox.curselection()
             self.listbox.select_clear(index)
-        xy = event.x, event.y
+        #xy = event.x, event.y
         index = self.listbox.nearest(event.y)
+        xy = self.listbox.bbox(index)
+        xy = xy[0], xy[1]
         self.listbox.select_set(index)
         self.listbox.activate(index)
         label = self.listbox.get(index)

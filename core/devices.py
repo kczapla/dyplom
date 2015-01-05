@@ -94,10 +94,10 @@ class CoreRouter(Router):
 
 
 class Link:
-    def __init__(self, index, length, capacity):
+    def __init__(self, name, index, length, capacity):
 
         self.index = index
-        self.name = "Link " + str(index)
+        self.name = name
         self.length = length
         self.paths_voice = {}
         self.paths_video = {}
@@ -117,7 +117,7 @@ class Link:
         self.flow_be = 0
 
         self.iplr_voice = 0
-        self.iplr_void = 0
+        self.iplr_video = 0
         self.iplr_be = 0
 
         self.ipdt_voice = 0
@@ -197,7 +197,7 @@ class Link:
         self.flow_be = 0
 
         self.iplr_voice = 0
-        self.iplr_void = 0
+        self.iplr_video = 0
         self.iplr_be = 0
 
         self.ipdt_voice = 0
@@ -208,5 +208,11 @@ class Link:
         self.ipdv_video = 0
         self.ipdv_be = 0
 
-    def edit(self):
-        pass
+    def edit(self, name, length, capacity):
+        print('class: {}, method: edit()'.format(type(self).__name__))
+        if name:
+            self.name = name
+        else:
+            self.name = self.name
+        self.length = length
+        self.capacity = capacity

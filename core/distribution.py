@@ -26,6 +26,9 @@ class Data:
         self.adjacency_matrix = []
         self.connections = []
 
+        self.paths_matrix = []
+        self.paths = []
+
         self.paths_matrix_voice = []
         self.paths_voice = []
 
@@ -288,18 +291,28 @@ class Data:
                 x.pop(index)
             self.adjacency_matrix.pop(index)
             self.slice_adjacency_matrix()
-            self.create_links(self.connections)
+            self.create_links()
 
     def edit_node(self, name, index, buffer_voice, buffer_video, buffer_be):
         print('Edit router')
         self.nodes[index].edit(name, buffer_voice, buffer_video, buffer_be)
 
-    def create_links(self, matrix):
+    def create_links(self):
         """
-        Method is creating links between nodes
+        Method is creating links between nodes based on connections implemented in adjacency matrix. Method is
+        implementing every link with 0 value. User later have to edit link with demanding values.
         """
-        self.links = []
-        self.links = [dev.Link(x[0], x[1], x[2]) for x in matrix]
+        self.links = [dev.Link('Link ({}, {})'.format(self.nodes[connection[0]].name, self.nodes[connection[1]].name),
+                               connection, 0, 0) for connection in self.connections]
+
+    def edit_link(self, name, index, length, capacity):
+        """
+        Method is responsible for editing single link.
+        :param name: New name of link
+        :param length: New length of link
+        :param capacity: New capacity of link
+        """
+        self.links[index].edit(name, length, capacity)
 
     def create_adjacency_matrix(self, matrix):
         """
@@ -325,6 +338,18 @@ class Data:
     def create_net_edge_matrix(self, matrix):
         self.net_edge = []
         self.net_edge = matrix
+
+    def create_paths_matrix(self, matrix):
+        self.paths_matrix = []
+        self.paths_matrix = matrix
+        self.slice_paths_matrix()
+
+    def slice_paths_matrix(self):
+        self.paths = [[] for x in self.paths_matrix]
+        for x in self.paths_matrix:
+            for y in range(len(x)):
+                if y < len(x) - 1:
+                    self.paths[self.paths_matrix.index(x)].append(x[y:y + 2])
 
     def create_paths_matrix_voice(self, matrix):
         self.paths_matrix_voice = []
@@ -575,8 +600,8 @@ class Data:
             self.ipdv_for_paths_be[str(path)] = tmp_ipdv
 
     def test(self):
-        self.create_package_network(100, 1000, 1000)
-        self.create_package_network(50, 500, 500)
+        self.create_package_network('Test1', 100, 1000, 1000)
+        self.create_package_network('Test2', 50, 500, 500)
 
         self.set_interest_matrix_voice([[0, 1], [1, 0]])
         self.set_interest_matrix_video([[0, 1], [1, 0]])
@@ -586,17 +611,16 @@ class Data:
 
         self.create_node_edge('iksoaa', 5, 15, 30)
         for abc in range(4):
-            self.create_node_core('ikso' + str(abs), 5, 15, 30)
+            self.create_node_core('ikso' + str(abc), 5, 15, 30)
         self.create_node_edge('iksoa', 5, 15, 30)
 
-        d.create_adjacency_matrix([[0, 1, 0, 1, 1, 0], [1, 0, 1, 1, 0, 0], [0, 1, 0, 1, 1, 1], [1, 1, 1, 0, 0, 0],
-                                   [1, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
+        self.create_adjacency_matrix([[0, 1, 0, 1, 1, 0], [1, 0, 1, 1, 0, 0], [0, 1, 0, 1, 1, 1], [1, 1, 1, 0, 0, 0],
+                                      [1, 0, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0]])
 
-        print(d.adjacency_matrix)
+        print(self.adjacency_matrix)
 
         #d.create_links()
-        matrix = [[index, 50, 300000000] for index in self.connections]
-        self.create_links(matrix)
+        self.create_links()
         self.create_paths_matrix_voice([[5, 2, 1, 0], [0, 1, 3, 2, 5]])
         self.create_paths_matrix_video([[5, 2, 1, 0], [0, 1, 3, 2, 5]])
         self.create_paths_matrix_be([[5, 2, 1, 0], [0, 1, 3, 2, 5]])
@@ -610,49 +634,49 @@ class Data:
 
         self.sum_up_flow()
 
-        self.scatter_iplr()
-        self.sum_iplr_path_voice()
-        self.sum_iplr_path_video()
-        self.sum_iplr_path_be()
-
-        self.scatter_ipdt()
-        self.sum_ipdt_path_voice()
-        self.sum_ipdt_path_video()
-        self.sum_ipdt_path_be()
-
-        self.scatter_ipdv()
-        self.sum_ipdv_path_voice()
-        self.sum_ipdv_path_video()
-        self.sum_ipdv_path_be()
-
-        for x in self.links:
-            print(x.index)
-            print(x.flow_voice_up)
-            print(x.flow_voice_down)
-            print(x.flow_voice)
-            print(x.paths_voice)
-            print('-----------------------')
-            print('IPLR for voice: ', x.iplr_voice)
-            print('IPLR for video: ', x.iplr_video)
-            print('IPLR for be: ', x.iplr_be)
-            print('------------------------')
-            print('IPDT for voice: ', x.ipdt_voice)
-            print('IPDT for video: ', x.ipdt_video)
-            print('IPDT for be: ', x.ipdt_be)
-            print('+++++++++++++++++++++++')
-
-        print('Voice IPLR: ', d.iplr_for_paths_voice)
-        print('Video IPLR: ', d.iplr_for_paths_video)
-        print('BE IPLR: ', d.iplr_for_paths_be)
-        print('------------------------')
-        print('Voice IPDT: ', d.ipdt_for_paths_voice)
-        print('Video IPDT: ', d.ipdt_for_paths_video)
-        print('BE IPDT: ', d.ipdt_for_paths_be)
-        print('------------------------')
-        print('Voice IPDV: ', d.ipdv_for_paths_voice)
-        print('Video IPDV: ', d.ipdv_for_paths_video)
-        print('BE IPDV: ', d.ipdv_for_paths_be)
-        print(d.connections)
+        #self.scatter_iplr()
+        #self.sum_iplr_path_voice()
+        #self.sum_iplr_path_video()
+        #self.sum_iplr_path_be()
+        #
+        #self.scatter_ipdt()
+        #self.sum_ipdt_path_voice()
+        #self.sum_ipdt_path_video()
+        #self.sum_ipdt_path_be()
+        #
+        #self.scatter_ipdv()
+        #self.sum_ipdv_path_voice()
+        #self.sum_ipdv_path_video()
+        #self.sum_ipdv_path_be()
+        #
+        #for x in self.links:
+        #    print(x.index)
+        #    print(x.flow_voice_up)
+        #    print(x.flow_voice_down)
+        #    print(x.flow_voice)
+        #    print(x.paths_voice)
+        #    print('-----------------------')
+        #    print('IPLR for voice: ', x.iplr_voice)
+        #    print('IPLR for video: ', x.iplr_video)
+        #    print('IPLR for be: ', x.iplr_be)
+        #    print('------------------------')
+        #    print('IPDT for voice: ', x.ipdt_voice)
+        #    print('IPDT for video: ', x.ipdt_video)
+        #    print('IPDT for be: ', x.ipdt_be)
+        #    print('+++++++++++++++++++++++')
+        #
+        #print('Voice IPLR: ', d.iplr_for_paths_voice)
+        #print('Video IPLR: ', d.iplr_for_paths_video)
+        #print('BE IPLR: ', d.iplr_for_paths_be)
+        #print('------------------------')
+        #print('Voice IPDT: ', d.ipdt_for_paths_voice)
+        #print('Video IPDT: ', d.ipdt_for_paths_video)
+        #print('BE IPDT: ', d.ipdt_for_paths_be)
+        #print('------------------------')
+        #print('Voice IPDV: ', d.ipdv_for_paths_voice)
+        #print('Video IPDV: ', d.ipdv_for_paths_video)
+        #print('BE IPDV: ', d.ipdv_for_paths_be)
+        #print(d.connections)
 
 if __name__ == '__main__':
 

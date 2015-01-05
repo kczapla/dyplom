@@ -201,6 +201,28 @@ class EditNode(CreateNetwork):
             showerror('Error', 'Wrong value! Try again!')
 
 
+class EditLink(CreateNetwork):
+    def __init__(self, index, distribution, parent, **extras):
+        self.index = index
+        CreateNetwork.__init__(self, distribution, conf_popups.link_inserbox(), parent, **extras)
+
+    def fetch(self):
+        values = []
+        for entry in self.entries:
+            print('Input => "{}"'.format(entry.get()))
+            if not entry.get().isdigit():
+                values.append(str(entry.get()))
+            else:
+                values.append(int(entry.get()))
+
+        if type(values[1]) is int and type(values[2]) is int:
+            self.distribution.edit_link(name=values[0], index=self.index, length=values[1],
+                                        capacity=values[2])
+            self.parent.destroy()
+        else:
+            showerror('Error', 'Wrong value! Try again!')
+
+
 if __name__ == '__main__':
 
     root = Tk()

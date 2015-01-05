@@ -14,3 +14,8 @@ def access_network_package_insertbox():
 def node_insertbox():
     edge_entry_fields = 'Name', 'Size of voice buffer', 'Size of video buffer', 'Size of be buffer'
     return edge_entry_fields
+
+
+def link_inserbox():
+    link_entry_fields = 'Name', 'Length [km]', 'Capacity [kb/s]'
+    return link_entry_fields
