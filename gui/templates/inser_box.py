@@ -4,7 +4,6 @@ __author__ = 'perun'
 import gui.templates.widgets as tpl
 import core.distribution
 import core.networks
-import gui.templates.matrix as matrix
 import gui.config.insert_box as conf_popups
 from tkinter import *
 from tkinter.messagebox import *
@@ -247,6 +246,8 @@ class CreatePaths(Frame):
 
         self.set_number_paths()
 
+        Button(self.parent, text='Close', command=self.parent.destroy).pack(side=TOP, padx=5, pady=5)
+
     def set_number_paths(self):
         size_frame = Frame(self.option_frame, bd=1, relief=SUNKEN)
         size_frame.pack(side=TOP, padx=5, pady=5)
@@ -266,6 +267,7 @@ class CreatePaths(Frame):
             self.length_frame.destroy()
         self.length_frame = Frame(self.option_frame, bd=1, relief=SUNKEN)
         self.length_frame.pack(side=TOP, padx=10, pady=10)
+        self.length_entries = []
         for size in range(int(self.number_paths.get())):
             row = Frame(self.length_frame)
             row.pack(side=TOP)
@@ -275,7 +277,9 @@ class CreatePaths(Frame):
             self.length_entries.append(ent)
         row = Frame(self.length_frame)
         row.pack(side=TOP)
-        Button(row, text='Ok', command=self.set_paths).pack(side=LEFT)
+
+        Button(row, text='Ok', command=self.set_paths).pack(side=LEFT, padx=5)
+        Button(row, text='Clear', command=lambda: self.clear_entries(self.length_entries)).pack(side=LEFT, padx=5)
 
     def set_paths(self):
         i = 0
@@ -283,6 +287,7 @@ class CreatePaths(Frame):
             self.insert_frame.destroy()
         self.insert_frame = Frame(self, bd=1, relief=SUNKEN)
         self.insert_frame.pack(side=LEFT, padx=10, pady=10)
+        self.path_entries = []
         for entry in self.length_entries:
             row = Frame(self.insert_frame)
             row.pack(side=TOP, padx=5, pady=5)
@@ -290,14 +295,45 @@ class CreatePaths(Frame):
             single_path = []
             for x in range(int(entry.get())):
                 ent = Entry(row, width=5)
-                ent.pack(side=LEFT, expand=YES, fill=X, padx=5)
+                ent.pack(side=LEFT, expand=YES, fill=X, padx=10)
                 single_path.append(ent)
             self.path_entries.append(single_path)
             i += 1
 
         row = Frame(self.insert_frame)
         row.pack(side=TOP, padx=5, pady=5)
-        Button(row, text='Ok', command=lambda: print('ikso')).pack(side=LEFT)
+
+        Button(row, text='Ok', command=self.fetch_values).pack(side=LEFT)
+        Button(row, text='Clear', command=lambda: self.clear_entries(self.path_entries)).pack(side=LEFT, padx=5)
+
+    def clear_entries(self, entries):
+        for entrie in entries:
+            if type(entrie) is list:
+                for x in entrie:
+                    x.delete(0, END)
+            else:
+                entrie.delete(0, END)
+
+    def fetch_values(self):
+        matrix = []
+        value = True
+        for path in self.path_entries:
+            tmp = []
+            for x in path:
+                try:
+                    tmp.append(int(x.get()))
+                except ValueError:
+                    showerror('Error', 'Wrong values!')
+                    value = False
+            if value:
+                matrix.append(tmp)
+            else:
+                print('Value exception, ')
+                break
+
+        #for x in matrix:
+        #    print(x)
+        self.distribution.create_paths_matrix(matrix)
 
 
 if __name__ == '__main__':

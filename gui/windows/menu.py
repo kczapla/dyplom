@@ -21,12 +21,12 @@ class Menu(Frame):
     def make_content(self):
         tpl.label(self, TOP, 'MENU')
         tpl.button(self, TOP, 'Create network', lambda: popups.ChooseNetwork(self.distribution,
-                                                                             Toplevel(self))).pack(padx=5)
+                                                                             Toplevel(self))).pack(pady=5)
         tpl.button(self, TOP, 'Create node', lambda: popups.ChooseNode(self.distribution,
-                                                                       Toplevel(self))).pack(padx=5)
-        tpl.button(self, TOP, 'Create matrix', self.chose_matrix).pack(padx=5)
-        tpl.button(self, TOP, 'Show data', self.show_data).pack(padx=5)
-        tpl.button(self, TOP, 'Process data', self.process_data).pack(padx=5)
+                                                                       Toplevel(self))).pack(pady=5)
+        tpl.button(self, TOP, 'Create matrix', self.chose_matrix).pack(pady=5)
+        tpl.button(self, TOP, 'Show data', self.show_data).pack(pady=5)
+        tpl.button(self, TOP, 'Process data', self.process_data).pack(pady=5)
 
         quitter.Quitter(self)
 
@@ -53,13 +53,7 @@ if __name__ == '__main__':
 
     root = Tk()
     d = distribution.Data()
-    for x in range(6):
-        d.create_package_network('ikso' + str(x), 100, 1000, 1000)
-        d.create_circuit_network('lolo' + str(x), 50, 500)
-    d.create_node_edge('bebebe', 5, 15, 30)
-    for abc in range(4):
-        d.create_node_core('zzz' + str(abc), 5, 15, 30)
-    d.create_node_edge('aeaeaeae', 5, 15, 30)
+    d.test()
     m = Menu(d, root)
     m.pack()
     root.mainloop()

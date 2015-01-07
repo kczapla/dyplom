@@ -37,7 +37,7 @@ def label(root, side, text, **extras):
 
 def button(root, side, text, command, **extras):
     widget = Button(root, text=text, command=command)
-    widget.pack(side=side, expand=YES, fill=BOTH)
+    widget.pack(side=side, expand=YES, fill=BOTH, pady=5)
     if extras:
         widget.config(**extras)
     return widget

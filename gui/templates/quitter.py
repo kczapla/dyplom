@@ -16,7 +16,7 @@ class Quitter(Frame):
         Frame.__init__(self, parent)
         self.pack()
         widget = Button(self, text='Quit', command=self.quit)
-        widget.pack(side=LEFT, expand=YES, fill=BOTH)
+        widget.pack(side=LEFT, expand=YES, fill=BOTH, padx=5, pady=5)
 
     def quit(self):
         ans = askokcancel('Verify exit', 'Really quit?')

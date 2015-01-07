@@ -39,10 +39,13 @@ class ScrolledList(Frame):
         #xy = event.x, event.y
         index = self.listbox.nearest(event.y)
         xy = self.listbox.bbox(index)
-        xy = xy[0], xy[1]
+        #xy = xy[0], xy[1]
+        xy = event.x_root-100, event.y_root-100
         self.listbox.select_set(index)
         self.listbox.activate(index)
         label = self.listbox.get(index)
+
+        print(event.x_root, event.y_root)
 
         self.run_command_right(label, xy)
 

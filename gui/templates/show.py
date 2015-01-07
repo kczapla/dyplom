@@ -28,6 +28,7 @@ class ShowInfo(Frame):
             tpl.entry(row, LEFT, tmp, width=20, state='disabled')
             row.pack(side=TOP, fill=X)
 
+
 if __name__ == '__main__':
     root = Tk()
     d = dist.Data()

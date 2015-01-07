@@ -53,6 +53,8 @@ class Data:
         self.ipdv_for_paths_video = {}
         self.ipdv_for_paths_be = {}
 
+        self.is_flow = False
+
     # Methods connected with displaying Data class
 
     def process_data_resources(self):
@@ -103,6 +105,8 @@ class Data:
         self.scatter_flow_be()
 
         self.sum_up_flow()
+
+        self.is_flow = True
 
     def process_data_qos(self):
         self.scatter_iplr()
@@ -340,9 +344,12 @@ class Data:
         self.net_edge = matrix
 
     def create_paths_matrix(self, matrix):
-        self.paths_matrix = []
-        self.paths_matrix = matrix
-        self.slice_paths_matrix()
+        #self.paths_matrix = []
+        #self.paths_matrix = matrix
+        #self.slice_paths_matrix()
+        self.create_paths_matrix_voice(matrix)
+        self.create_paths_matrix_video(matrix)
+        self.create_paths_matrix_be(matrix)
 
     def slice_paths_matrix(self):
         self.paths = [[] for x in self.paths_matrix]

@@ -9,7 +9,6 @@ import gui.templates.matrix as matrix
 import gui.windows.list as list_box
 import core.networks
 import gui.templates.inser_box
-#import gui.config.insert_box as conf_popups
 
 
 class ChooseNetwork(Frame):
@@ -77,6 +76,20 @@ class ChooseData(ChooseNetwork):
             print('Calculating resources... Success.')
             showinfo('Done!', 'Resources calculated')
 
+    def caculate_flow(self):
+        if not self.distribution.connections:
+            showerror('Error', 'Create adjacency matrix first.')
+        elif not self.distribution.paths:
+            showerror('Error', 'Create paths in the core network.')
+        else:
+            self.distribution.process_data_flow()
+
+    def qos(self):
+        if self.distribution.is_flow:
+            self.distribution.process_data_qos()
+        else:
+            showerror('Error', 'Calculate traffic flow in the network first.')
+
 
 class CreateMatrix(Frame):
     def __init__(self, distribution, parent=None, **extras):
@@ -91,6 +104,7 @@ class CreateMatrix(Frame):
                             ('Interest Best Effort', self.create_be_matrix),
                             ('Adjacency matrix', self.create_adjacency_matrix),
                             ('Network - Edge router matrix', self.create_net_edge_matrix),
+                            ('Paths', self.create_paths_matrix),
                             ('Cancel', self.parent.destroy))
         self.make_form()
 
@@ -147,6 +161,12 @@ class CreateMatrix(Frame):
         else:
             showwarning('Warning', 'Nodes don\'t exist. Create networks first to use this option.')
 
+    def create_paths_matrix(self):
+        if self.distribution.adjacency_matrix:
+            gui.templates.inser_box.CreatePaths(self.distribution, Toplevel())
+        else:
+            showwarning('Warning', 'Adjacency matrix doesn\'t exist. Create networks first to use this option.')
+
 
 class ShowData(Frame):
     def __init__(self, distribution, parent=None, **extras):
@@ -162,6 +182,7 @@ class ShowData(Frame):
         tpl.label(self, TOP, 'Chose data to show')
         tpl.button(self, TOP, 'Access networks', lambda: list_box.AccessNetworksList(self.distribution, Toplevel()))
         tpl.button(self, TOP, 'Nodes', lambda: list_box.NodesList(self.distribution, Toplevel()))
+        tpl.button(self, TOP, 'Links', lambda: list_box.LinksList(self.distribution, Toplevel()))
         tpl.button(self, TOP, 'Quit', self.parent.destroy)
 
 
