@@ -108,7 +108,6 @@ def ipdt(link, node, package_voice, package_video, package_be):
     link.ipdt_be = t_nad + t_ocz + t_prop
 
 
-
 def ipdv(link, node, package_voice, package_video, package_be):
 
     t_nad_voice = float(package_voice / link.capacity)
