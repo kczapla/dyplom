@@ -54,7 +54,7 @@ class AccessNetworksList(scl.ScrolledList, show.ShowInfo, menu_bar.ContextMenu):
         :return: fetch from config file labels name and values to be displayed in entry.
         """
         index = self.listbox.curselection()
-        print('Node with selected index from list exists.')
+        print('Network with selected index from list exists.')
         if type(self.distribution.networks[index[0]]) is core.networks.Circuit:
             print('Fetching Circuit\'s class entry labels from config file.')
             return gui.config.list.access_network_list_circuit(instance)
@@ -206,9 +206,6 @@ class LinksList(AccessNetworksList):
 if __name__ == '__main__':
     root = Tk()
     d = dist.Data()
-    #d.create_package_network('jan', 100, 1000, 1000)
-    #d.create_package_network('adam', 50, 500, 500)
-    #d.create_circuit_network('smok', 123, 0.02)
     d.test()
     #AccessNetworksList(d, root)
     LinksList(d, root)
