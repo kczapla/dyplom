@@ -1,1 +1,6 @@
-!/**/__pycache__
+__pycache__/
+core/__pycache__/
+gui/__pycache__/
+gui/windows/__pycache__/
+gui/templates/__pycache__/
+gui/config/__pycache__/
