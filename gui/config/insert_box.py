@@ -7,7 +7,8 @@ def access_network_circuit_insertbox():
 
 
 def access_network_package_insertbox():
-    package_entry_fields = 'Name', 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]'
+    package_entry_fields = ('Name', 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]',
+                            'Video package length [kB]', 'Be package length [kB]')
     return package_entry_fields
 
 

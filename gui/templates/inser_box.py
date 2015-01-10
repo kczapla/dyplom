@@ -5,8 +5,10 @@ import gui.templates.widgets as tpl
 import core.distribution
 import core.networks
 import gui.config.insert_box as conf_popups
+
 from tkinter import *
 from tkinter.messagebox import *
+import ttk
 
 
 class ChooseNetwork(Frame):
@@ -27,7 +29,8 @@ class ChooseNetwork(Frame):
 
     def make_widgets(self):
         circuit_entry_fields = 'Name', 'Voice latency [Erl]', 'Loss'
-        package_entry_fields = 'Name', 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]'
+        package_entry_fields = ('Name', 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]',
+                                'Video package length [kB]', 'Be package length [kB]')
 
         tpl.label(self, TOP, 'Create Network')
         tpl.button(self, TOP, 'PSTN/ISDN/GSM', lambda: CreateNetwork(self.distribution, circuit_entry_fields,
@@ -49,6 +52,7 @@ class CreateNetwork(Frame):
         self.title = 'Create Network'
 
         self.entries = []
+        self.combo_box = None
         self.make_form()
         self.make_buttons()
 
@@ -67,6 +71,14 @@ class CreateNetwork(Frame):
             ent.pack(side=RIGHT, expand=YES, fill=X)
             self.entries.append(ent)
 
+        row = Frame(self)
+        row.pack(side=TOP)
+        Label(row, text='Voice codec', width=20).pack(side=LEFT)
+        self.combo_box = ttk.Combobox(row, state='readonly')
+        self.combo_box['values'] = ('g.711', 'g.729')
+        self.combo_box.current(0)
+        self.combo_box.pack(side=LEFT)
+
     def make_buttons(self):
         row = Frame(self)
         row.pack(side=TOP, fill=X)
@@ -82,7 +94,7 @@ class CreateNetwork(Frame):
             else:
                 values.append(float(entry.get()))
         if type(values[1]) is float and type(values[2]) is float:
-            self.distribution.create_circuit_network(values[0], values[1], values[2])
+            self.distribution.create_circuit_network(values[0], values[1], values[2], self.combo_box.get())
             self.parent.destroy()
         else:
             showerror('Error', 'Wrong value! Try again!')
@@ -98,7 +110,8 @@ class CreateNetworkPackage(CreateNetwork):
             else:
                 values.append(float(entry.get()))
         if type(values[1]) is float and type(values[2]) is float and type(values[3]) is float:
-            self.distribution.create_package_network(values[0], values[1], values[2], values[3])
+            self.distribution.create_package_network(values[0], values[1], values[2], values[3], self.combo_box.get(),
+                                                     values[4], values[5])
             self.parent.destroy()
         else:
             showerror('Error', 'Wrong value! Try again!')
@@ -126,7 +139,7 @@ class EditNetworkCircuit(CreateNetwork):
         if type(self.distribution.networks[self.index]) == core.networks.Circuit:
             if type(values[1]) is float and type(values[2]) is float:
                 self.distribution.edit_network(name=values[0], index=self.index, intensity_voice=values[1],
-                                               loss=values[2])
+                                               loss=values[2], codec=self.combo_box.get())
                 self.parent.destroy()
             else:
                 showerror('Error', 'Wrong value! Try again!')
@@ -134,7 +147,10 @@ class EditNetworkCircuit(CreateNetwork):
             if type(values[1]) is float and type(values[2]) is float and type(values[3]) is float:
                 self.distribution.edit_network(name=values[0], index=self.index, intensity_voice=values[1],
                                                intensity_video=values[2],
-                                               intensity_be=values[3])
+                                               intensity_be=values[3],
+                                               codec=self.combo_box.get(),
+                                               video_package_length=values[4],
+                                               be_package_length=values[5])
                 self.parent.destroy()
             else:
                 showerror('Error', 'Wrong value! Try again!')
@@ -348,6 +364,9 @@ if __name__ == '__main__':
     # shd = ShowData(d, root)
     #circuit_entry_fields = 'Voice latency [Erl]', 'Loss'
     #ep = EditNetworkCircuit(1, d, root)
-    CreatePaths(d, root)
+    #CreatePaths(d, root)
+    #CreateNetworkPackage(d, ('Name', 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]',
+                             #'Video package length [kB]', 'Be package length [kB]'), root)
+    ChooseNetwork(d, root)
 
     root.mainloop()

@@ -9,6 +9,7 @@ import gui.templates.matrix as matrix
 import gui.windows.list as list_box
 import core.networks
 import gui.templates.inser_box
+import gui.config.insert_box
 
 
 class ChooseNetwork(Frame):
@@ -28,8 +29,11 @@ class ChooseNetwork(Frame):
         self.wait_window()        # and wait here until win destroyed
 
     def make_widgets(self):
-        circuit_entry_fields = 'Name', 'Voice latency [Erl]', 'Loss'
-        package_entry_fields = 'Name', 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]'
+        #circuit_entry_fields = 'Name', 'Voice latency [Erl]', 'Loss'
+        circuit_entry_fields = gui.config.insert_box.access_network_circuit_insertbox()
+        #package_entry_fields = ('Name', 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]',
+                                #'Video package length [kB]', 'Be package length [kB]')
+        package_entry_fields = gui.config.insert_box.access_network_package_insertbox()
 
         tpl.label(self, TOP, 'Create Network')
         tpl.button(self, TOP, 'PSTN/ISDN/GSM', lambda: gui.templates.inser_box.CreateNetwork(self.distribution,

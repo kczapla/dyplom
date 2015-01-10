@@ -13,7 +13,9 @@ def access_network_list_circuit(instance):
             ('Number of DSP out', instance.__dict__['dsp_out']),
             ('Voice flow in [kb/s]', instance.__dict__['flow_voice_in']),
             ('Voice flow out [kb/s]', instance.__dict__['flow_voice_out']),
-            ('Probability of loss', instance.__dict__['loss'])]
+            ('Probability of loss', instance.__dict__['loss']),
+            ('Voice codec', instance.__dict__['chosen_voice_codec']),
+            ('Voice package length', instance.__dict__['package_voice_length'])]
     return rows
 
 
@@ -32,7 +34,14 @@ def access_network_list_package(instance):
                 ('Video flow in [kb/s]', instance.__dict__['flow_video_in']),
                 ('Video flow out [kb/s]', instance.__dict__['flow_video_out']),
                 ('BE flow in [kb/s]', instance.__dict__['flow_be_in']),
-                ('BE flow out [kb/s]', instance.__dict__['flow_be_out'])]
+                ('BE flow out [kb/s]', instance.__dict__['flow_be_out']),
+                ('Voice codec', instance.__dict__['chosen_voice_codec']),
+                ('Voice package length [bit]', instance.__dict__['package_voice_length']),
+                ('Video codec', instance.__dict__['chosen_video_codec']),
+                ('Video package length [bit]', instance.__dict__['package_length_h264']),
+                ('BE codec', instance.__dict__['chosen_be_protocol']),
+                ('BE package length [bit]', instance.__dict__['package_length_be'])]
+
         return rows
 
 
