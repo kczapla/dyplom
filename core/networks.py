@@ -60,10 +60,23 @@ class Circuit:
         self.package_length_g729 = 400
 
         self.chosen_voice_codec = ''
+        # length of packages based on chosen codec
         self.package_voice_length = 0
         self.lambda_calculations = 0
 
         self.set_package_length(codec)
+
+        # number of voice package sent by this network
+        self.no_voice_package = 0
+
+    def set_no_of_package(self, links, intensity):
+        """
+        Method is calculating number of packages sent by this network. It calculates them based on intensity with
+        network create them and number of real links from network to the media gateway.
+        :param links: n_r
+        :param intensity: number oc packages created by the network in 1 second
+        """
+        self.no_voice_package = links * intensity
 
     def set_package_length(self, codec):
         print('Setting circuit network package length and lambda, based on chosen codec.')
@@ -162,6 +175,7 @@ class Circuit:
         self.pcm_in = calc.pcm_lines(self.links_in)
         self.r_in = calc.real_links(self.pcm_in)
         self.dsp_in = calc.dsp(self.r_in)
+        self.set_no_of_package(self.r_in, self.lambda_calculations)
 
     def output_resources(self):
         """
@@ -234,6 +248,12 @@ class Circuit:
 
         print(self.chosen_voice_codec)
         print(self.package_voice_length)
+
+    def test_no2(self):
+        #self.__init__('adam', 0, 205, 0.002, 'g.711')
+        self.input_resources()
+        print(self.r_in)
+        print(self.no_voice_package)
 
 
 class Package:
@@ -317,6 +337,20 @@ class Package:
 
         self.chosen_video_codec = 'h.264'
         self.chosen_be_protocol = 'http'
+
+        self.no_voice_package = 0
+        self.no_video_package = 0
+        self.no_be_package = 0
+
+        self.set_no_of_package()
+
+    def set_no_of_package(self):
+        """
+        Method is setting the number of packets of the type sent by this network
+        """
+        self.no_voice_package = self.intensity_voice_in
+        self.no_video_package = self.intensity_video_in
+        self.no_be_package = self.intensity_be_in
 
     def set_package_length(self, codec):
         print('Setting circuit network package length and lambda, based on chosen codec.')
@@ -506,11 +540,16 @@ class Package:
         print(self.chosen_be_protocol)
         print(self.package_length_be)
 
+    def test_no2(self):
+        print(self.no_voice_package, self.no_video_package, self.no_be_package)
+
 if __name__ == '__main__':
     xc = Package('szwesta', 1, 123, 234, 345, 'g.729', 1000, 900)
-    print('-----------------------------------------------------')
-    xc.test()
-    print('+++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    xz = Circuit('dzihad', 1, 340, 0.001, 'g.729')
-    print('-----------------------------------------------------')
-    xz.test()
+    # print('-----------------------------------------------------')
+    # xc.test()
+    # print('+++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    #xz = Circuit('adam', 0, 240, 0.002, 'g.711')
+    # print('-----------------------------------------------------')
+    # xz.test()
+
+    xc.test_no2()

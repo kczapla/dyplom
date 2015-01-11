@@ -131,3 +131,21 @@ def ipdv(link, node, package_voice, package_video, package_be):
     ipdt_max_be = float(num/dnom)
     ipdt_min_be = t_nad_be
     link.ipdv_be = float(ipdt_max_be - ipdt_min_be)
+
+
+def expected_value(value, probability):
+    """
+    Method calculates expected value
+    :param value: value of discreet variable
+    :param probability: probability of 
+    :return:
+    """
+    return value * probability
+
+
+def test():
+    print(expected_value(400, 0.4)+expected_value(960, 0.6))
+
+
+if __name__ == '__main__':
+    test()
