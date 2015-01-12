@@ -7,6 +7,7 @@ import core.distribution as distribution
 import gui.templates.quitter as quitter
 import gui.templates.widgets as tpl
 import gui.windows.popups as popups
+import gui.templates.show as show
 
 
 class Menu(Frame):
@@ -19,16 +20,22 @@ class Menu(Frame):
         self.make_content()
 
     def make_content(self):
-        tpl.label(self, TOP, 'MENU')
-        tpl.button(self, TOP, 'Create network', lambda: popups.ChooseNetwork(self.distribution,
-                                                                             Toplevel(self))).pack(pady=5)
-        tpl.button(self, TOP, 'Create node', lambda: popups.ChooseNode(self.distribution,
-                                                                       Toplevel(self))).pack(pady=5)
-        tpl.button(self, TOP, 'Create matrix', self.chose_matrix).pack(pady=5)
-        tpl.button(self, TOP, 'Show data', self.show_data).pack(pady=5)
-        tpl.button(self, TOP, 'Process data', self.process_data).pack(pady=5)
+        menu_box = Frame(self, relief=SUNKEN, bd=1)
+        menu_box.pack(side=LEFT, padx=5, pady=5)
+        tpl.label(menu_box, TOP, 'MENU')
+        tpl.button(menu_box, TOP, 'Create network', lambda: popups.ChooseNetwork(self.distribution,
+                                                                                 Toplevel(self))).pack(pady=5, padx=5)
+        tpl.button(menu_box, TOP, 'Create node', lambda: popups.ChooseNode(self.distribution,
+                                                                           Toplevel(self))).pack(pady=5, padx=5)
+        tpl.button(menu_box, TOP, 'Create matrix', self.chose_matrix).pack(pady=5, padx=5)
+        tpl.button(menu_box, TOP, 'Show data', self.show_data).pack(pady=5, padx=5)
+        tpl.button(menu_box, TOP, 'Process data', self.process_data).pack(pady=5, padx=5)
 
-        quitter.Quitter(self)
+        quitter.Quitter(menu_box)
+
+        log_box = Frame(self, relief=SUNKEN, bd=1)
+        log_box.pack(side=LEFT, padx=5, pady=5)
+        show.LogBox(log_box)
 
     def chose_matrix(self):
         popups.CreateMatrix(self.distribution,
@@ -53,7 +60,7 @@ if __name__ == '__main__':
 
     root = Tk()
     d = distribution.Data()
-    d.test()
+    d.test_no_2()
     m = Menu(d, root)
     m.pack()
     root.mainloop()
