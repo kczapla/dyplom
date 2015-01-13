@@ -2,6 +2,7 @@ __author__ = 'perun'
 
 from tkinter import *
 from tkinter.messagebox import *
+import tkinter.filedialog
 
 import gui.templates.widgets as tpl
 import core.distribution
@@ -10,6 +11,7 @@ import gui.windows.list as list_box
 import core.networks
 import gui.templates.inser_box
 import gui.config.insert_box
+import gui.templates.saver
 
 
 class ChooseNetwork(Frame):
@@ -190,17 +192,40 @@ class ShowData(Frame):
         tpl.button(self, TOP, 'Quit', self.parent.destroy)
 
 
+class ChooseFile(object):
+    def __init__(self, parent):
+        self.file_opt = options = {}
+        options['defaultextension'] = '.txt'
+        options['filetypes'] = [('All files', '.*'), ('Text files', '.txt'), ('distribution file', '.dbf')]
+        options['parent'] = parent
+
+    def load_file(self):
+        self.file_opt['title'] = 'Load file'
+        file = tkinter.filedialog.askopenfilename(**self.file_opt)
+        #print(file)
+        return gui.templates.saver.FileSaver().load_object(file)
+
+    def save_file(self, instance):
+        self.file_opt['title'] = 'Save file'
+        file = tkinter.filedialog.asksaveasfilename(**self.file_opt)
+        #print(file)
+        gui.templates.saver.FileSaver().save_object(instance, file)
+
 if __name__ == '__main__':
 
     root = Tk()
-    d = core.distribution.Data()
-    for x in range(20):
-        d.create_package_network(100, 1000, 1000)
-        d.create_circuit_network(50, 500)
+    #d = core.distribution.Data()
+    #d.create_circuit_network('adam', 123, 0.002, 'g.711')
+    #for x in range(20):
+    #    d.create_package_network(100, 1000, 1000)
+    #    d.create_circuit_network(50, 500)
     # cn = ChooseNetwork(d, root)
     # cim = CreateInterestMatrix(d, root)
     # shd = ShowData(d, root)
     #circuit_entry_fields = 'Voice latency [Erl]', 'Loss'
     #ep = EditNetworkCircuit(1, d, root)
+    #ChooseFile(root).save_file(d)
+    d = ChooseFile(root).load_file()
+    print(d.networks[0].name)
 
     root.mainloop()

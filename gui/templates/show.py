@@ -37,16 +37,29 @@ class LogBox(Frame):
 
         self.parent = parent
         self.text_box = None
+        self.disable_pressed = False
+
         self.make_box()
 
     def make_box(self):
-        sbar = Scrollbar(self)
-        self.text_box = Text(self, relief=SUNKEN)
+        row1 = Frame(self)
+        row1.pack(side=TOP)
+        sbar = Scrollbar(row1)
+        self.text_box = Text(row1, relief=SUNKEN)
         sbar.config(command=self.text_box.yview)
-        self.text_box.config(yscrollcommand=sbar.set, state='disabled', height=15)
+        self.text_box.config(yscrollcommand=sbar.set, height=15)
         sbar.pack(side=RIGHT, fill=Y)
         self.text_box.pack(side=LEFT, expand=YES, fill=BOTH)
+        row = Frame(self)
+        row.pack(side=BOTTOM)
+        Button(row, text='Clear', command=self.clear_text).pack(side=LEFT, padx=5, pady=5)
         sys.stdout = RedirectStdout(self.text_box)
+
+    def clear_text(self):
+        #print('lala')
+        self.text_box.config(state='normal')
+        self.text_box.delete('1.0', END)
+        self.text_box.config(state='disabled')
 
 
 class RedirectStdout(object):
