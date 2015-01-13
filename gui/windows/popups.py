@@ -5,10 +5,10 @@ from tkinter.messagebox import *
 import tkinter.filedialog
 
 import gui.templates.widgets as tpl
-import core.distribution
+#import core.distribution
 import gui.templates.matrix as matrix
 import gui.windows.list as list_box
-import core.networks
+#import core.networks
 import gui.templates.inser_box
 import gui.config.insert_box
 import gui.templates.saver
@@ -47,7 +47,7 @@ class ChooseNetwork(Frame):
         tpl.button(self, TOP, 'Close', self.parent.destroy)
 
     def not_ready(self):
-        showinfo('Info', 'Opton is not ready.')
+        showinfo('Info', 'Option is not ready.')
 
 
 class ChooseNode(ChooseNetwork):
@@ -203,13 +203,20 @@ class ChooseFile(object):
         self.file_opt['title'] = 'Load file'
         file = tkinter.filedialog.askopenfilename(**self.file_opt)
         #print(file)
-        return gui.templates.saver.FileSaver().load_object(file)
+        if file:
+            return gui.templates.saver.FileSaver().load_object(file)
+        else:
+            print('File to load not chosen...')
 
     def save_file(self, instance):
         self.file_opt['title'] = 'Save file'
         file = tkinter.filedialog.asksaveasfilename(**self.file_opt)
         #print(file)
-        gui.templates.saver.FileSaver().save_object(instance, file)
+        if file:
+            gui.templates.saver.FileSaver().save_object(instance, file)
+        else:
+            print('File to save not chosen...')
+
 
 if __name__ == '__main__':
 

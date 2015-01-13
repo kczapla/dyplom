@@ -272,8 +272,8 @@ class Data:
         self.avg_be_package_length = sum(be_avg)
 
         print('Average voice package length: ', str(self.avg_voice_package_length))
-        print('Average voice package length: ', str(self.avg_video_package_length))
-        print('Average voice package length: ', str(self.avg_be_package_length))
+        print('Average video package length: ', str(self.avg_video_package_length))
+        print('Average be package length: ', str(self.avg_be_package_length))
 
     def set_interest_matrix_voice(self, matrix):
         """
