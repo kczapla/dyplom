@@ -68,6 +68,11 @@ class MenuFrame(Frame):
         file.add_command(label='Open...', command=self.load_file, underline=0)
         file.add_command(label='Exit', command=self.parent.destroy, underline=0)
         top.add_cascade(label='File', menu=file, underline=0)
+
+        help_menu = Menu(win)
+        help_menu.add_command(label='About', command=self.not_ready, underline=0)
+        top.add_cascade(label='Help', menu=help_menu, underline=0)
+
         win.config(menu=top)
 
     def not_ready(self):
