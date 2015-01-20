@@ -71,7 +71,7 @@ def iplr(link, node):
     link.iplr_video = float(((1 - a) / (1 - pow(a, node.buffer_video + 2))) * pow(a, node.buffer_video + 1))
 
     #be
-    a = float(link.flow_be / (link.capacity - (link.flow_voice + link.flow_video)))
+    a = float(link.flow_be / (link.capacity - link.flow_voice - link.flow_video))
     link.iplr_be = float(((1 - a) / (1 - pow(a, node.buffer_be + 2))) * pow(a, node.buffer_be + 1))
 
 

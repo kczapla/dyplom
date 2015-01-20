@@ -556,6 +556,7 @@ class Data:
             network_source_index = node_source.connected_index
             network_destination_index = self.nodes[x[-1][-1]].connected_index
             temporary_flow = self.networks[network_source_index].flow_be_in_list[network_destination_index]
+
             for y in x:
                 tmp = y[:]
                 tmp.reverse()
@@ -888,22 +889,25 @@ class Data:
         self.create_links()
         c = 150000000
         for link in self.links:
-                self.edit_link('', self.links.index(link), 50, c)
+                self.edit_link('', self.links.index(link), 40, c)
 
         self.create_paths_matrix_voice([[0, 6, 7, 10, 2], [2, 10, 7, 6, 0], [0, 6, 3], [3, 6, 0], [0, 6, 4], [4, 6, 0],
-                                        [0, 6, 1, 2, 5], [5, 2, 1, 6, 0], [1, 8, 7, 6, 0], [0, 6, 7, 8, 1],
+                                        [0, 6, 7, 8, 5], [5, 8, 7, 6, 0], [1, 8, 7, 6, 0], [0, 6, 7, 8, 1],
                                         [1, 8, 2], [2, 8, 1], [2, 8, 5], [5, 8, 2], [4, 10, 7, 8, 5], [5, 8, 7, 10, 4],
-                                        [1, 8, 5], [5, 8, 1], [3, 6, 4], [4, 6, 3]])
+                                        [1, 8, 5], [5, 8, 1], [3, 6, 4], [4, 6, 3], [3, 9, 7, 8, 5], [5, 8, 7, 9, 3]])
 
         self.create_paths_matrix_video([[0, 6, 7, 10, 2], [2, 10, 7, 6, 0], [0, 6, 3], [3, 6, 0], [0, 6, 4], [4, 6, 0],
-                                        [0, 6, 1, 2, 5], [5, 2, 1, 6, 0], [1, 8, 7, 6, 0], [0, 6, 7, 8, 1],
+                                        [0, 6, 7, 2, 5], [5, 2, 7, 6, 0], [1, 8, 7, 6, 0], [0, 6, 7, 8, 1],
                                         [1, 8, 2], [2, 8, 1], [2, 8, 5], [5, 8, 2], [4, 10, 7, 8, 5], [5, 8, 7, 10, 4],
-                                        [1, 8, 5], [5, 8, 1], [3, 6, 4], [4, 6, 3]])
+                                        [1, 8, 5], [5, 8, 1], [3, 6, 4], [4, 6, 3], [3, 9, 7, 8, 5], [5, 8, 7, 9, 3]])
 
-        self.create_paths_matrix_be([[0, 6, 7, 10, 2], [2, 10, 7, 6, 0], [0, 6, 3], [3, 6, 0], [0, 6, 4], [4, 6, 0],
-                                     [0, 6, 1, 2, 5], [5, 2, 1, 6, 0], [1, 8, 7, 6, 0], [0, 6, 7, 8, 1],
-                                     [1, 8, 2], [2, 8, 1], [2, 8, 5], [5, 8, 2], [4, 10, 7, 8, 5], [5, 8, 7, 10, 4],
-                                     [1, 8, 5], [5, 8, 1], [3, 6, 4], [4, 6, 3]])
+        #self.create_paths_matrix_be([[0, 6, 7, 10, 2], [2, 10, 7, 6, 0], [0, 6, 3], [3, 6, 0], [0, 6, 4], [4, 6, 0],
+        #                             [0, 6, 7, 2, 5], [5, 2, 7, 6, 0], [1, 8, 7, 6, 0], [0, 6, 7, 8, 1],
+        #                             [1, 8, 2], [2, 8, 1], [2, 8, 5], [5, 8, 2], [4, 10, 7, 8, 5], [5, 8, 7, 10, 4],
+        #                             [1, 8, 5], [5, 8, 1], [3, 6, 4], [4, 6, 3], [3, 9, 7, 8, 5], [5, 8, 7, 9, 3]])
+
+        self.create_paths_matrix_be([[3, 6, 4], [3, 9, 7, 8, 5], [4, 6, 3], [4, 10, 7, 8, 5],
+                                     [5, 8, 7, 9, 3], [5, 8, 7, 10, 4]])
 
         self.create_net_edge_matrix([[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5]])
         self.set_connections()
@@ -914,15 +918,16 @@ class Data:
 
         self.sum_up_flow()
 
-        print('Natezenie dla sieci 0 ', self.networks[0].flow_voice_in)
+        print('Natezenie dla sieci 0 ', self.networks[3].flow_be_in_list)
+        print('Natezenie dla sieci 5 ', self.networks[5].flow_voice_in_list)
         print('Voice package length: ', self.avg_voice_package_length)
 
-        for link in self.links:
-            print(link.paths_voice)
-            print('Voice in link {}'.format(link.index), link.flow_voice)
-            print(link.iplr_voice)
-            print(link.ipdt_voice)
-            print(link.ipdv_voice)
+        #for link in self.links:
+            #print('Voice in link {}'.format(link.name), link.paths_voice)
+            #print(link.paths_voice)
+            #print(link.iplr_voice)
+            #print(link.ipdt_voice)
+            #print(link.ipdv_voice)
 
         self.scatter_iplr()
         self.sum_iplr_path_voice()
@@ -939,45 +944,50 @@ class Data:
         self.sum_ipdv_path_video()
         self.sum_ipdv_path_be()
 
-        #for x in self.iplr_for_paths_voice:
-        #    print(x, self.iplr_for_paths_voice[x])
-        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-        #
-        #for x in self.ipdt_for_paths_voice:
-        #    print(x, self.ipdt_for_paths_voice[x])
-        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-        #
-        #for x in self.ipdv_for_paths_voice:
-        #    print(x, self.ipdv_for_paths_voice[x])
-        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-        #
-        #for link in self.links:
-        #    print('IPLR {}: {}'.format(link.name, link.iplr_voice))
-        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-        #
-        #for link in self.links:
-        #    print('IPDT {}: {}'.format(link.name, link.ipdt_voice))
-        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-        #
-        #for link in self.links:
-        #    print('IPDV {}: {}'.format(link.name, link.ipdv_voice))
-        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-        #
-        #print('xxxxxxxxxxxxx BE xxxxxxxxxxxxxx')
-        #for link in self.links:
-        #    print('IPLR {}: {}'.format(link.name, link.iplr_be))
-        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-        #
-        #for link in self.links:
-        #    print('IPDT {}: {}'.format(link.name, link.ipdt_be))
-        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-        #
-        #for link in self.links:
-        #    print('IPDV {}: {}'.format(link.name, link.ipdv_be))
-        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-        #
-        #for link in self.links:
-        #    print('Flow voice {}: {}'.format(link.name, link.paths_voice))
+        for x in self.iplr_for_paths_voice:
+            print(x, self.iplr_for_paths_voice[x])
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+        for x in self.ipdt_for_paths_voice:
+            print(x, self.ipdt_for_paths_voice[x])
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+        for x in self.ipdv_for_paths_voice:
+            print(x, self.ipdv_for_paths_voice[x])
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+        for link in self.links:
+            print('IPLR {}: {}'.format(link.name, link.iplr_voice))
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+        for link in self.links:
+            print('IPDT {}: {}'.format(link.name, link.ipdt_voice))
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+        for link in self.links:
+            print('IPDV {}: {}'.format(link.name, link.ipdv_voice))
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+        print('xxxxxxxxxxxxx BE xxxxxxxxxxxxxx')
+        for link in self.links:
+            print('IPLR {}: {}'.format(link.name, link.iplr_be))
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+        for link in self.links:
+            print('IPDT {}: {}'.format(link.name, link.ipdt_be))
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+        for link in self.links:
+            print('IPDV {}: {}'.format(link.name, link.ipdv_be))
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+        print('xxxxxxxxxxxxx Voice xxxxxxxxxxxxxxxx')
+        for link in self.links:
+            print('Flow voice {}: {}'.format(link.name, link.paths_voice))
+
+        print('xxxxxxxxxxxxx BE xxxxxxxxxxxxxxxx')
+        for link in self.links:
+            print('Flow be {}: {}'.format(link.name, link.paths_be))
 
 
 if __name__ == '__main__':
