@@ -264,10 +264,14 @@ class Data:
         for network in self.networks:
             if type(network) is core.networks.Package:
                 video_package_lengths.append(network.package_length_h264)
-                video_package_probabilities.append(network.no_video_package/no_video_all)
+                if no_video_all > 0:
+                    video_package_probabilities.append(network.no_video_package/no_video_all)
+                    print('No video packages in the network...')
 
                 be_package_lengths.append(network.package_length_be)
-                be_package_probabilities.append(network.no_be_package/no_be_all)
+                if no_be_all > 0:
+                    be_package_probabilities.append(network.no_be_package/no_be_all)
+                    print('No be packages in the network...')
 
         voice_package_lengths = [g711_length, g729_length]
         voice_package_probabilities = [no_g711/no_all, no_g729/no_all]
@@ -275,11 +279,17 @@ class Data:
         voice_avg = list(map(core.calculations.expected_value, voice_package_lengths, voice_package_probabilities))
         self.avg_voice_package_length = sum(voice_avg)
 
-        video_avg = list(map(core.calculations.expected_value, video_package_lengths, video_package_probabilities))
-        self.avg_video_package_length = sum(video_avg)
+        if no_video_all > 0:
+            video_avg = list(map(core.calculations.expected_value, video_package_lengths, video_package_probabilities))
+            self.avg_video_package_length = sum(video_avg)
+        else:
+            self.avg_video_package_length = 0
 
-        be_avg = list(map(core.calculations.expected_value, be_package_lengths, be_package_probabilities))
-        self.avg_be_package_length = sum(be_avg)
+        if no_be_all > 0:
+            be_avg = list(map(core.calculations.expected_value, be_package_lengths, be_package_probabilities))
+            self.avg_be_package_length = sum(be_avg)
+        else:
+            self.avg_be_package_length = 0
 
         print('Average voice package length: ', str(self.avg_voice_package_length))
         print('Average video package length: ', str(self.avg_video_package_length))
@@ -446,7 +456,8 @@ class Data:
         for x in self.paths_matrix_voice:
             for y in range(len(x)):
                 if y < len(x) - 1:
-                    self.paths_voice[self.paths_matrix_voice.index(x)].append(x[y:y + 2])
+                    index = self.paths_matrix_voice.index(x)
+                    self.paths_voice[index].append(x[y:y + 2])
 
     def create_paths_matrix_video(self, matrix):
         self.paths_matrix_video = []
@@ -466,7 +477,7 @@ class Data:
         self.slice_paths_matrix_be()
 
     def slice_paths_matrix_be(self):
-        self.paths_be = [[] for x in self.paths_matrix_video]
+        self.paths_be = [[] for x in self.paths_matrix_be]
         for x in self.paths_matrix_be:
             for y in range(len(x)):
                 if y < len(x) - 1:
@@ -827,8 +838,150 @@ class Data:
 
         self.package_length()
 
+
+    def test3(self):
+        self.create_circuit_network('PSTN1', 240, 0.002)
+        self.create_circuit_network('PSTN1', 350, 0.002)
+        self.create_circuit_network('PSTN1', 180, 0.002)
+        self.create_package_network('IP1', 12000, 0, 18000, 0, 1500)
+        self.create_package_network('IP2', 16000, 0, 20000, 0, 1500)
+        self.create_package_network('IP1', 15000, 0, 19000, 0, 1500)
+
+
+        self.set_interest_matrix_voice([[0, 0.2, 0.2, 0.2, 0.2, 0.2],
+                                        [0.2, 0, 0.2, 0.2, 0.2, 0.2],
+                                        [0.2, 0.2, 0, 0.2, 0.2, 0.2],
+                                        [0.2, 0.2, 0.2, 0, 0.2, 0.2],
+                                        [0.2, 0.2, 0.2, 0.2, 0, 0.2],
+                                        [0.2, 0.2, 0.2, 0.2, 0.2, 0]])
+        self.set_interest_matrix_video([[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+                                        [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]])
+
+        self.set_interest_matrix_be([[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+                                     [0, 0, 0, 0, 0.5, 0.5], [0, 0, 0, 0.5, 0, 0.5], [0, 0, 0, 0.5, 0.5, 0]])
+
+        self.process_data_resources()
+
+        self.create_node_edge('RB1', 5, 15, 30)
+        self.create_node_edge('RB2', 5, 15, 30)
+        self.create_node_edge('RB3', 5, 15, 30)
+        self.create_node_edge('RB4', 5, 15, 30)
+        self.create_node_edge('RB5', 5, 15, 30)
+        self.create_node_edge('RB6', 5, 15, 30)
+        for abc in range(7):
+            if abc > 0:
+                self.create_node_core('RR' + str(abc), 5, 15, 30)
+
+        self.create_adjacency_matrix([[0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],   # 0 rb
+                                      [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0],   # 1 rb
+                                      [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],   # 2 rb
+                                      [0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0],   # 3 rb
+                                      [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],   # 4 rb
+                                      [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],   # 5 rb
+                                      [1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0],   # 6 rr
+                                      [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1],   # 7 rr
+                                      [0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0],   # 8 rr
+                                      [0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0],   # 9 rr
+                                      [0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0]])  # 10 rr
+
+        #d.create_links()
+        self.create_links()
+        c = 150000000
+        for link in self.links:
+                self.edit_link('', self.links.index(link), 50, c)
+
+        self.create_paths_matrix_voice([[0, 6, 7, 10, 2], [2, 10, 7, 6, 0], [0, 6, 3], [3, 6, 0], [0, 6, 4], [4, 6, 0],
+                                        [0, 6, 1, 2, 5], [5, 2, 1, 6, 0], [1, 8, 7, 6, 0], [0, 6, 7, 8, 1],
+                                        [1, 8, 2], [2, 8, 1], [2, 8, 5], [5, 8, 2], [4, 10, 7, 8, 5], [5, 8, 7, 10, 4],
+                                        [1, 8, 5], [5, 8, 1], [3, 6, 4], [4, 6, 3]])
+
+        self.create_paths_matrix_video([[0, 6, 7, 10, 2], [2, 10, 7, 6, 0], [0, 6, 3], [3, 6, 0], [0, 6, 4], [4, 6, 0],
+                                        [0, 6, 1, 2, 5], [5, 2, 1, 6, 0], [1, 8, 7, 6, 0], [0, 6, 7, 8, 1],
+                                        [1, 8, 2], [2, 8, 1], [2, 8, 5], [5, 8, 2], [4, 10, 7, 8, 5], [5, 8, 7, 10, 4],
+                                        [1, 8, 5], [5, 8, 1], [3, 6, 4], [4, 6, 3]])
+
+        self.create_paths_matrix_be([[0, 6, 7, 10, 2], [2, 10, 7, 6, 0], [0, 6, 3], [3, 6, 0], [0, 6, 4], [4, 6, 0],
+                                     [0, 6, 1, 2, 5], [5, 2, 1, 6, 0], [1, 8, 7, 6, 0], [0, 6, 7, 8, 1],
+                                     [1, 8, 2], [2, 8, 1], [2, 8, 5], [5, 8, 2], [4, 10, 7, 8, 5], [5, 8, 7, 10, 4],
+                                     [1, 8, 5], [5, 8, 1], [3, 6, 4], [4, 6, 3]])
+
+        self.create_net_edge_matrix([[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5]])
+        self.set_connections()
+
+        self.scatter_flow_voice()
+        self.scatter_flow_video()
+        self.scatter_flow_be()
+
+        self.sum_up_flow()
+
+        print('Natezenie dla sieci 0 ', self.networks[0].flow_voice_in)
+        print('Voice package length: ', self.avg_voice_package_length)
+
+        for link in self.links:
+            print(link.paths_voice)
+            print('Voice in link {}'.format(link.index), link.flow_voice)
+            print(link.iplr_voice)
+            print(link.ipdt_voice)
+            print(link.ipdv_voice)
+
+        self.scatter_iplr()
+        self.sum_iplr_path_voice()
+        self.sum_iplr_path_video()
+        self.sum_iplr_path_be()
+        #
+        self.scatter_ipdt()
+        self.sum_ipdt_path_voice()
+        self.sum_ipdt_path_video()
+        self.sum_ipdt_path_be()
+        #
+        self.scatter_ipdv()
+        self.sum_ipdv_path_voice()
+        self.sum_ipdv_path_video()
+        self.sum_ipdv_path_be()
+
+        #for x in self.iplr_for_paths_voice:
+        #    print(x, self.iplr_for_paths_voice[x])
+        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        #
+        #for x in self.ipdt_for_paths_voice:
+        #    print(x, self.ipdt_for_paths_voice[x])
+        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        #
+        #for x in self.ipdv_for_paths_voice:
+        #    print(x, self.ipdv_for_paths_voice[x])
+        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        #
+        #for link in self.links:
+        #    print('IPLR {}: {}'.format(link.name, link.iplr_voice))
+        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        #
+        #for link in self.links:
+        #    print('IPDT {}: {}'.format(link.name, link.ipdt_voice))
+        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        #
+        #for link in self.links:
+        #    print('IPDV {}: {}'.format(link.name, link.ipdv_voice))
+        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        #
+        #print('xxxxxxxxxxxxx BE xxxxxxxxxxxxxx')
+        #for link in self.links:
+        #    print('IPLR {}: {}'.format(link.name, link.iplr_be))
+        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        #
+        #for link in self.links:
+        #    print('IPDT {}: {}'.format(link.name, link.ipdt_be))
+        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        #
+        #for link in self.links:
+        #    print('IPDV {}: {}'.format(link.name, link.ipdv_be))
+        #print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        #
+        #for link in self.links:
+        #    print('Flow voice {}: {}'.format(link.name, link.paths_voice))
+
+
 if __name__ == '__main__':
 
     d = Data()
 
-    d.test()
+    d.test3()

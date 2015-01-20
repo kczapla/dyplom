@@ -350,15 +350,17 @@ class CreatePaths(Frame):
         #    print(x)
         print('Paths matrix created...')
         self.distribution.create_paths_matrix(matrix)
+        #for row in matrix:
+            #print(row)
 
 
 if __name__ == '__main__':
 
     root = Tk()
     d = core.distribution.Data()
-    for x in range(20):
-        d.create_package_network('ikso' + str(x), 100, 1000, 1000)
-        d.create_circuit_network('ikso' + str(x), 50, 500)
+    #for x in range(20):
+        #d.create_package_network('ikso' + str(x), 100, 1000, 1000)
+        #d.create_circuit_network('ikso' + str(x), 50, 500)
     # cn = ChooseNetwork(d, root)
     # cim = CreateInterestMatrix(d, root)
     # shd = ShowData(d, root)
@@ -367,6 +369,8 @@ if __name__ == '__main__':
     #CreatePaths(d, root)
     #CreateNetworkPackage(d, ('Name', 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]',
                              #'Video package length [kB]', 'Be package length [kB]'), root)
-    ChooseNetwork(d, root)
+    #ChooseNetwork(d, root)
+
+    CreatePaths(d, root)
 
     root.mainloop()
