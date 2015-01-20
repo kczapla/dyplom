@@ -176,12 +176,23 @@ class LinksList(AccessNetworksList):
         """
         print('Link with selected index from list exists.')
         print('Fetching Link\'s class entry labels from config file.')
-        return gui.config.list.links_list(instance)
+        tmp = gui.config.list.links_list(instance)
+        #for path in self.distribution.links[0].paths_voice:
+         #   tmp.append([path, self.distribution.links[0].paths_voice[path]])
+
+        return tmp
 
     def make_menu_widget(self, pull_downs, parent):
         self.menu = self.create_top_menu_widget(parent)
 
         self.create_command(self.menu, 'Edit link', self.edit_item)
+
+        paths = Menu(self.menu)
+        paths.add_command(label='Voice', command=self.show_paths_voice)
+        paths.add_command(label='Video', command=self.show_paths_video)
+        paths.add_command(label='BE', command=self.show_paths_be)
+
+        self.menu.add_cascade(label='Paths...', menu=paths)
         #self.create_command(self.menu, 'Delete', self.delete_item)
 
     def delete_item(self):
@@ -201,6 +212,21 @@ class LinksList(AccessNetworksList):
         gui.templates.inser_box.EditLink(index[0], self.distribution, Toplevel())
         scl.ScrolledList.__init__(self, self.make_fields_list(),
                                   self.list_frame)
+
+    def show_paths_voice(self):
+        index = self.listbox.curselection()
+        show.ShowPathsThroughLink(Toplevel(), self.distribution.links[index[0]].paths_voice)
+
+    def show_paths_video(self):
+        index = self.listbox.curselection()
+        show.ShowPathsThroughLink(Toplevel(), self.distribution.links[index[0]].paths_video)
+
+    def show_paths_be(self):
+        index = self.listbox.curselection()
+        show.ShowPathsThroughLink(Toplevel(), self.distribution.links[index[0]].paths_be)
+
+    def not_ready(self):
+        print('Option not ready...')
 
 
 if __name__ == '__main__':

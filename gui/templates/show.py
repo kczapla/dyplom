@@ -30,6 +30,30 @@ class ShowInfo(Frame):
             row.pack(side=TOP, fill=X)
 
 
+class ShowPathsThroughLink(Frame):
+    def __init__(self, parent, paths):
+        Frame.__init__(self, parent)
+        self.pack(side=TOP)
+        self.parent = parent
+        self.make_form(paths)
+
+
+    def make_form(self, paths):
+        for path in paths:
+            row = Frame(self)
+            row.pack(side=TOP)
+            Label(row, text=path+' [b/s]').pack(side=LEFT)
+            tmp = StringVar()
+            tmp.set(paths[path])
+            Entry(row, textvariable=tmp, state='disabled').pack(side=LEFT)
+
+        row = Frame(self)
+        row.pack(side=TOP)
+        Button(row, text='Close', command=self.parent.destroy).pack(side=TOP)
+
+
+
+
 class LogBox(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)

@@ -8,7 +8,6 @@ import gui.templates.widgets as tpl
 #import core.distribution
 import gui.templates.matrix as matrix
 import gui.windows.list as list_box
-#import core.networks
 import gui.templates.inser_box
 import gui.config.insert_box
 import gui.templates.saver
@@ -65,8 +64,8 @@ class ChooseData(ChooseNetwork):
     def make_widgets(self):
         tpl.label(self, TOP, 'Process data')
         tpl.button(self, TOP, 'Edge resources', self.calculate_edge_resources)
-        tpl.button(self, TOP, 'Flow in the network', self.not_ready)
-        tpl.button(self, TOP, 'QoS', self.not_ready)
+        tpl.button(self, TOP, 'Flow in the network', self.caculate_flow)
+        tpl.button(self, TOP, 'QoS', self.qos)
         tpl.button(self, TOP, 'Quit', self.parent.destroy)
 
     def calculate_edge_resources(self):
@@ -85,7 +84,7 @@ class ChooseData(ChooseNetwork):
     def caculate_flow(self):
         if not self.distribution.connections:
             showerror('Error', 'Create adjacency matrix first.')
-        elif not self.distribution.paths:
+        elif not self.distribution.paths_voice:
             showerror('Error', 'Create paths in the core network.')
         else:
             self.distribution.process_data_flow()

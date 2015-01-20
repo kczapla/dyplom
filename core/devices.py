@@ -47,7 +47,7 @@ class EdgeRouter(Router):
         self.flow_be = 0
 
         self.connected = False
-        self.connected_index = ''
+        self.connected_index = None
 
     def set_name(self, index):
 

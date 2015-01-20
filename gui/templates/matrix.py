@@ -4,7 +4,6 @@ __author__ = 'perun'
 from tkinter import *
 from tkinter.messagebox import *
 import core.distribution as distribution
-import gui.templates.widgets as tpl
 
 
 class Matrix(Frame):
@@ -50,6 +49,78 @@ class Matrix(Frame):
         print(zzz)
 
 
+class ShowMatrixAdjacency(Matrix):
+    def make_matrix(self, size):
+        Label(self, text='Show '+self.tittle).pack(side=TOP)
+        for vector in self.distribution.adjacency_matrix:
+            row = Frame(self)
+            row.pack(side=TOP)
+            for cell in vector:
+                x = StringVar()
+                x.set(cell)
+                ent = Entry(row, width=5, state='readonly', textvariable=x)
+                ent.pack(side=LEFT, padx=1, pady=1)
+
+    def make_buttons(self):
+        row = Frame(self)
+        row.pack(side=TOP, fill=X, pady=5)
+        Button(row, text='Cancel', command=self.parent.destroy).pack(side=RIGHT, expand=YES, fill=X, padx=5)
+
+
+class ShowMatrixVoiceInterest(Matrix):
+    def make_matrix(self, size):
+        Label(self, text='Show '+self.tittle).pack(side=TOP)
+        for vector in self.distribution.interest_matrix_voice:
+            row = Frame(self)
+            row.pack(side=TOP)
+            for cell in vector:
+                x = StringVar()
+                x.set(cell)
+                ent = Entry(row, width=5, state='readonly', textvariable=x)
+                ent.pack(side=LEFT, padx=1, pady=1)
+
+    def make_buttons(self):
+        row = Frame(self)
+        row.pack(side=TOP, fill=X, pady=5)
+        Button(row, text='Cancel', command=self.parent.destroy).pack(side=RIGHT, expand=YES, fill=X, padx=5)
+
+
+class ShowMatrixVideoInterest(Matrix):
+    def make_matrix(self, size):
+        Label(self, text='Show '+self.tittle).pack(side=TOP)
+        for vector in self.distribution.interest_matrix_video:
+            row = Frame(self)
+            row.pack(side=TOP)
+            for cell in vector:
+                x = StringVar()
+                x.set(cell)
+                ent = Entry(row, width=5, state='readonly', textvariable=x)
+                ent.pack(side=LEFT, padx=1, pady=1)
+
+    def make_buttons(self):
+        row = Frame(self)
+        row.pack(side=TOP, fill=X, pady=5)
+        Button(row, text='Cancel', command=self.parent.destroy).pack(side=RIGHT, expand=YES, fill=X, padx=5)
+
+
+class ShowMatrixBeInterest(Matrix):
+    def make_matrix(self, size):
+        Label(self, text='Show '+self.tittle).pack(side=TOP)
+        for vector in self.distribution.interest_matrix_be:
+            row = Frame(self)
+            row.pack(side=TOP)
+            for cell in vector:
+                x = StringVar()
+                x.set(cell)
+                ent = Entry(row, width=5, state='readonly', textvariable=x)
+                ent.pack(side=LEFT, padx=1, pady=1)
+
+    def make_buttons(self):
+        row = Frame(self)
+        row.pack(side=TOP, fill=X, pady=5)
+        Button(row, text='Cancel', command=self.parent.destroy).pack(side=RIGHT, expand=YES, fill=X, padx=5)
+
+
 class MatrixVoiceInterest(Matrix):
     def fetch(self):
         if self.matrix[0][0].get():
@@ -92,9 +163,10 @@ class MatrixBeInterest(Matrix):
 class MatrixAdjacency(Matrix):
     def fetch(self):
         if self.matrix[0][0].get():
-            self.distribution.adjacency_matrix = [[float(y.get()) for y in x] for x in self.matrix]
+            matrix = [[float(y.get()) for y in x] for x in self.matrix]
+            self.distribution.create_adjacency_matrix(matrix)
             #print(self.distribution.interest_matrix_be)
-            print('Adjacency matrix created.')
+            print('Adjacency matrix created...')
             self.parent.destroy()
         else:
             showinfo('Info', 'Nothing inserted into Adjacency matrix\'s entries.')
