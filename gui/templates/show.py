@@ -37,7 +37,6 @@ class ShowPathsThroughLink(Frame):
         self.parent = parent
         self.make_form(paths)
 
-
     def make_form(self, paths):
         for path in paths:
             row = Frame(self)

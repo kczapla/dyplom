@@ -2,13 +2,13 @@ __author__ = 'perun'
 
 
 def access_network_circuit_insertbox():
-    circuit_entry_fields = 'Name', 'Voice latency [Erl]', 'Loss'
+    circuit_entry_fields = 'Name', 'Voice latency [Erl]', 'Loss probability'
     return circuit_entry_fields
 
 
 def access_network_package_insertbox():
     package_entry_fields = ('Name', 'Voice latency [Pack/s]', 'Video latency [Pack/s]', 'BE latency [Pack/s]',
-                            'Video package length [kB]', 'Be package length [kB]')
+                            'Video package length [B]', 'Be package length [B]')
     return package_entry_fields
 
 
@@ -18,5 +18,5 @@ def node_insertbox():
 
 
 def link_inserbox():
-    link_entry_fields = 'Name', 'Length [km]', 'Capacity [kb/s]'
+    link_entry_fields = 'Name', 'Length [km]', 'Capacity [b/s]'
     return link_entry_fields
