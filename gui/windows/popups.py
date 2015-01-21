@@ -88,10 +88,12 @@ class ChooseData(ChooseNetwork):
             showerror('Error', 'Create paths in the core network.')
         else:
             self.distribution.process_data_flow()
+            showinfo('Info', 'Flow in network caaculated...')
 
     def qos(self):
         if self.distribution.is_flow:
             self.distribution.process_data_qos()
+            showinfo('Info', 'QoS parameters calculated...')
         else:
             showerror('Error', 'Calculate traffic flow in the network first.')
 

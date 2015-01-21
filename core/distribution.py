@@ -109,8 +109,15 @@ class Data:
 
         self.scatter_flow_voice()
 
-        self.scatter_flow_video()
-        self.scatter_flow_be()
+        if self.interest_matrix_video:
+            self.scatter_flow_video()
+        else:
+            print('Video interest matrix does not exists...')
+
+        if self.interest_matrix_be:
+            self.scatter_flow_be()
+        else:
+            print('BE interest matrix does not exists...')
 
         self.sum_up_flow()
 
@@ -855,8 +862,8 @@ class Data:
                                         [0.2, 0.2, 0.2, 0, 0.2, 0.2],
                                         [0.2, 0.2, 0.2, 0.2, 0, 0.2],
                                         [0.2, 0.2, 0.2, 0.2, 0.2, 0]])
-        self.set_interest_matrix_video([[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
-                                        [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]])
+        #self.set_interest_matrix_video([[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
+        #                                [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]])
 
         self.set_interest_matrix_be([[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
                                      [0, 0, 0, 0, 0.5, 0.5], [0, 0, 0, 0.5, 0, 0.5], [0, 0, 0, 0.5, 0.5, 0]])
@@ -913,7 +920,7 @@ class Data:
         self.set_connections()
 
         self.scatter_flow_voice()
-        self.scatter_flow_video()
+        #self.scatter_flow_video()
         self.scatter_flow_be()
 
         self.sum_up_flow()
@@ -944,6 +951,8 @@ class Data:
         self.sum_ipdv_path_video()
         self.sum_ipdv_path_be()
 
+
+        print('xxxxxxxxxxxxx PATHS xxxxxxxxxxxxx')
         for x in self.iplr_for_paths_voice:
             print(x, self.iplr_for_paths_voice[x])
         print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
@@ -956,6 +965,7 @@ class Data:
             print(x, self.ipdv_for_paths_voice[x])
         print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 
+        print('xxxxxxxxxxxxx LINKS xxxxxxxxxxxxxxx')
         for link in self.links:
             print('IPLR {}: {}'.format(link.name, link.iplr_voice))
         print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')

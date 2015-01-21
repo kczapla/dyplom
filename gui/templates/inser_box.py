@@ -8,7 +8,6 @@ import gui.config.insert_box as conf_popups
 
 from tkinter import *
 from tkinter.messagebox import *
-#import ttk
 
 
 class ChooseNetwork(Frame):
@@ -280,6 +279,7 @@ class CreatePaths(Frame):
     def paths_lengths(self):
         if self.length_frame:
             self.length_frame.destroy()
+
         self.length_frame = Frame(self.option_frame, bd=1, relief=SUNKEN)
         self.length_frame.pack(side=TOP, padx=10, pady=10)
         self.length_entries = []
@@ -300,6 +300,8 @@ class CreatePaths(Frame):
         i = 0
         if self.insert_frame:
             self.insert_frame.destroy()
+
+        sbar = Scrollbar(self)
         self.insert_frame = Frame(self, bd=1, relief=SUNKEN)
         self.insert_frame.pack(side=LEFT, padx=10, pady=10)
         self.path_entries = []

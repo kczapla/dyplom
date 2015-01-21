@@ -169,7 +169,7 @@ class MenuFrame(Frame):
             row = Frame(iplr_frame)
             row.pack(side=TOP)
             path_name = '{}. {}'.format(str(i), path)
-            Label(row, text=path_name).pack(side=LEFT)
+            Label(row, text=path_name, width=25).pack(side=LEFT)
             tmp = StringVar()
             tmp.set(self.distribution.iplr_for_paths_voice[path])
             Entry(row, textvariable=tmp, state='disabled', width=25).pack(side=LEFT)
@@ -178,14 +178,14 @@ class MenuFrame(Frame):
         row = Frame(ipdt_frame)
         row.pack(side=TOP)
 
-        Label(row, text='IPDT').pack(side=LEFT)
+        Label(row, text='IPDT [s]').pack(side=LEFT)
 
         i = 1
         for path in self.distribution.ipdt_for_paths_voice:
             row = Frame(ipdt_frame)
             row.pack(side=TOP)
-            path_name = '{}. {} {}'.format(str(i), path, '[s]')
-            Label(row, text=path_name).pack(side=LEFT)
+            path_name = '{}. {}'.format(str(i), path)
+            Label(row, text=path_name, width=25).pack(side=LEFT)
             tmp = StringVar()
             tmp.set(self.distribution.ipdt_for_paths_voice[path])
             Entry(row, textvariable=tmp, state='disabled', width=25).pack(side=LEFT)
@@ -194,14 +194,14 @@ class MenuFrame(Frame):
         row = Frame(ipdv_frame)
         row.pack(side=TOP)
 
-        Label(row, text='IPDV').pack(side=LEFT)
+        Label(row, text='IPDV [s]').pack(side=LEFT)
 
         i = 1
         for path in self.distribution.ipdt_for_paths_voice:
             row = Frame(ipdv_frame)
             row.pack(side=TOP)
-            path_name = '{}. {} {}'.format(str(i), path, '[s]')
-            Label(row, text=path_name).pack(side=LEFT)
+            path_name = '{}. {}'.format(str(i), path)
+            Label(row, text=path_name, width=25).pack(side=LEFT)
             tmp = StringVar()
             tmp.set(self.distribution.ipdv_for_paths_voice[path])
             Entry(row, textvariable=tmp, state='disabled', width=25).pack(side=LEFT)
@@ -236,7 +236,7 @@ class MenuFrame(Frame):
             row = Frame(iplr_frame)
             row.pack(side=TOP)
             path_name = '{}. {}'.format(str(i), path)
-            Label(row, text=path_name).pack(side=LEFT)
+            Label(row, text=path_name, width=25).pack(side=LEFT)
             tmp = StringVar()
             tmp.set(self.distribution.iplr_for_paths_video[path])
             Entry(row, textvariable=tmp, state='disabled', width=25).pack(side=LEFT)
@@ -245,14 +245,14 @@ class MenuFrame(Frame):
         row = Frame(ipdt_frame)
         row.pack(side=TOP)
 
-        Label(row, text='IPDT').pack(side=LEFT)
+        Label(row, text='IPDT [s]').pack(side=LEFT)
 
         i = 1
         for path in self.distribution.ipdt_for_paths_video:
             row = Frame(ipdt_frame)
             row.pack(side=TOP)
-            path_name = '{}. {} {}'.format(str(i), path, '[s]')
-            Label(row, text=path_name).pack(side=LEFT)
+            path_name = '{}. {}'.format(str(i), path)
+            Label(row, text=path_name, width=25).pack(side=LEFT)
             tmp = StringVar()
             tmp.set(self.distribution.ipdt_for_paths_video[path])
             Entry(row, textvariable=tmp, state='disabled', width=25).pack(side=LEFT)
@@ -261,14 +261,14 @@ class MenuFrame(Frame):
         row = Frame(ipdv_frame)
         row.pack(side=TOP)
 
-        Label(row, text='IPDV').pack(side=LEFT)
+        Label(row, text='IPDV [s]').pack(side=LEFT)
 
         i = 1
         for path in self.distribution.ipdt_for_paths_video:
             row = Frame(ipdv_frame)
             row.pack(side=TOP)
-            path_name = '{}. {} {}'.format(str(i), path, '[s]')
-            Label(row, text=path_name).pack(side=LEFT)
+            path_name = '{}. {}'.format(str(i), path)
+            Label(row, text=path_name, width=25).pack(side=LEFT)
             tmp = StringVar()
             tmp.set(self.distribution.ipdv_for_paths_video[path])
             Entry(row, textvariable=tmp, state='disabled', width=25).pack(side=LEFT)
@@ -312,14 +312,14 @@ class MenuFrame(Frame):
         row = Frame(ipdt_frame)
         row.pack(side=TOP)
 
-        Label(row, text='IPDT').pack(side=LEFT)
+        Label(row, text='IPDT [s]').pack(side=LEFT)
 
         i = 1
         for path in self.distribution.ipdt_for_paths_be:
             row = Frame(ipdt_frame)
             row.pack(side=TOP)
-            path_name = '{}. {} {}'.format(str(i), path, '[s]')
-            Label(row, text=path_name).pack(side=LEFT)
+            path_name = '{}. {}'.format(str(i), path)
+            Label(row, text=path_name, width=25).pack(side=LEFT)
             tmp = StringVar()
             tmp.set(self.distribution.ipdt_for_paths_be[path])
             Entry(row, textvariable=tmp, state='disabled', width=25).pack(side=LEFT)
@@ -328,14 +328,14 @@ class MenuFrame(Frame):
         row = Frame(ipdv_frame)
         row.pack(side=TOP)
 
-        Label(row, text='IPDV').pack(side=LEFT)
+        Label(row, text='IPDV [s]').pack(side=LEFT)
 
         i = 1
         for path in self.distribution.ipdt_for_paths_be:
             row = Frame(ipdv_frame)
             row.pack(side=TOP)
-            path_name = '{}. {} {}'.format(str(i), path, '[s]')
-            Label(row, text=path_name).pack(side=LEFT)
+            path_name = '{}. {}'.format(str(i), path)
+            Label(row, text=path_name, width=25).pack(side=LEFT)
             tmp = StringVar()
             tmp.set(self.distribution.ipdv_for_paths_be[path])
             Entry(row, textvariable=tmp, state='disabled', width=25).pack(side=LEFT)
