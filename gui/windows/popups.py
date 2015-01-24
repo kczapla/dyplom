@@ -11,6 +11,7 @@ import gui.windows.list as list_box
 import gui.templates.inser_box
 import gui.config.insert_box
 import gui.templates.saver
+import gui.templates.entry_box
 
 
 class ChooseNetwork(Frame):
@@ -170,7 +171,8 @@ class CreateMatrix(Frame):
 
     def create_paths_matrix(self):
         if self.distribution.adjacency_matrix:
-            gui.templates.inser_box.CreatePaths(self.distribution, Toplevel())
+            # gui.templates.inser_box.CreatePaths(self.distribution, Toplevel())
+            gui.templates.entry_box.EntryFrame(Toplevel(), self.distribution)
         else:
             showwarning('Warning', 'Adjacency matrix doesn\'t exist. Create networks first to use this option.')
 

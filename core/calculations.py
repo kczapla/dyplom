@@ -102,7 +102,7 @@ def ipdt(link, node, package_voice, package_video, package_be):
         link.ipdt_video = 0
 
     if link.flow_be > 0:
-        a = float(link.flow_video / (link.capacity - link.flow_voice - link.flow_video))
+        a = float(link.flow_be / (link.capacity - link.flow_voice - link.flow_video))
         mi = float(link.capacity / package_be)
         num = float(1 + pow(a, node.buffer_be) * (node.buffer_be * a - (node.buffer_be + 1)))
         dnom = float((1 - a) * (1 - pow(a, node.buffer_be + 2)))

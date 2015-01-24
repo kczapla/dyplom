@@ -929,6 +929,13 @@ class Data:
         print('Natezenie dla sieci 5 ', self.networks[5].flow_voice_in_list)
         print('Voice package length: ', self.avg_voice_package_length)
 
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        for network in self.networks:
+            print('Netowrk {} to:'.format(network.name))
+            i = 0
+            for flow in network.flow_be_in_list:
+                print('   Network {}: {}'.format(i, flow))
+                i += 1
         #for link in self.links:
             #print('Voice in link {}'.format(link.name), link.paths_voice)
             #print(link.paths_voice)
@@ -999,7 +1006,10 @@ class Data:
         for link in self.links:
             print('Flow be {}: {}'.format(link.name, link.paths_be))
 
-
+        print('xxxxxxxxxxxxx PATHS xxxxxxxxxxxxxxxx')
+        print(self.ipdt_for_paths_be)
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+        print(self.ipdv_for_paths_be)
 if __name__ == '__main__':
 
     d = Data()

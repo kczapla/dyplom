@@ -2,7 +2,7 @@ __author__ = 'perun'
 
 
 def access_network_circuit_insertbox():
-    circuit_entry_fields = 'Name', 'Voice latency [Erl]', 'Loss probability'
+    circuit_entry_fields = 'Name', 'Offered Load [Erl]', 'Loss probability '
     return circuit_entry_fields
 
 
