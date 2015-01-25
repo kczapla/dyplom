@@ -120,26 +120,33 @@ def ipdv(link, node, package_voice, package_video, package_be):
     t_nad_video = float(package_video / link.capacity)
     t_nad_be = float(package_be / link.capacity)
 
-    ipdt_max_voice = (node.buffer_voice + 1) * t_nad_voice + t_nad_video + t_nad_be
+    ipdt_max_voice = (node.buffer_voice - 1) * t_nad_voice + t_nad_be
     ipdt_min_voice = t_nad_voice
     link.ipdv_voice = ipdt_max_voice - ipdt_min_voice
 
+    a_voice = float(link.flow_voice / link.capacity)
+    link.a_voice = a_voice
+    a_video = float(link.flow_video/(link.capacity - link.flow_voice))
+    link.a_video = a_video
+
     if link.flow_video > 0:
-        a = float(link.flow_video / (link.capacity - link.flow_voice))
-        num = float(node.buffer_video + 1) * t_nad_video + t_nad_be
-        dnom = float(1 - a)
+        num = float((node.buffer_video - 1) * t_nad_video + t_nad_be)
+        dnom = float(1 - a_voice)
         ipdt_max_video = float(num/dnom)
+        link.ipdv_max_video = ipdt_max_video
         ipdt_min_video = t_nad_video
+        link.ipdv_min_video = t_nad_video
         link.ipdv_video = float(ipdt_max_video - ipdt_min_video)
     else:
         link.ipdv_video = 0
 
     if link.flow_be > 0:
-        a = float(link.flow_video / (link.capacity - link.flow_voice - link.flow_video))
-        num = float(node.buffer_be + 1) * t_nad_be
-        dnom = float(1 - a)
+        num = float((node.buffer_be - 1) * t_nad_be)
+        dnom = float(1 - a_voice - a_video)
         ipdt_max_be = float(num/dnom)
+        link.ipdv_max_be = ipdt_max_be
         ipdt_min_be = t_nad_be
+        link.ipdv_min_be = t_nad_be
         link.ipdv_be = float(ipdt_max_be - ipdt_min_be)
     else:
         link.ipdv_be = 0

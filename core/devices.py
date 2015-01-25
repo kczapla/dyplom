@@ -128,6 +128,17 @@ class Link:
         self.ipdv_video = 0
         self.ipdv_be = 0
 
+        self.a_voice = 0
+        self.a_video = 0
+
+        self.ipdv_max_voice = 0
+        self.ipdv_max_video = 0
+        self.ipdv_max_be = 0
+
+        self.ipdv_min_voice = 0
+        self.ipdv_min_video = 0
+        self.ipdv_min_be = 0
+
     def calculate_ipdv(self, nodes, package_voice, package_video, package_be):
 
         for x in nodes:

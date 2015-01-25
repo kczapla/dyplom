@@ -794,35 +794,7 @@ class Data:
         self.sum_ipdv_path_voice()
         self.sum_ipdv_path_video()
         self.sum_ipdv_path_be()
-        #
-        #for x in self.links:
-        #    print(x.index)
-        #    print(x.flow_voice_up)
-        #    print(x.flow_voice_down)
-        #    print(x.flow_voice)
-        #    print(x.paths_voice)
-        #    print('-----------------------')
-        #    print('IPLR for voice: ', x.iplr_voice)
-        #    print('IPLR for video: ', x.iplr_video)
-        #    print('IPLR for be: ', x.iplr_be)
-        #    print('------------------------')
-        #    print('IPDT for voice: ', x.ipdt_voice)
-        #    print('IPDT for video: ', x.ipdt_video)
-        #    print('IPDT for be: ', x.ipdt_be)
-        #    print('+++++++++++++++++++++++')
-        #
-        #print('Voice IPLR: ', d.iplr_for_paths_voice)
-        #print('Video IPLR: ', d.iplr_for_paths_video)
-        #print('BE IPLR: ', d.iplr_for_paths_be)
-        #print('------------------------')
-        #print('Voice IPDT: ', d.ipdt_for_paths_voice)
-        #print('Video IPDT: ', d.ipdt_for_paths_video)
-        #print('BE IPDT: ', d.ipdt_for_paths_be)
-        #print('------------------------')
-        #print('Voice IPDV: ', d.ipdv_for_paths_voice)
-        #print('Video IPDV: ', d.ipdv_for_paths_video)
-        #print('BE IPDV: ', d.ipdv_for_paths_be)
-        #print(d.connections)
+
         for link in self.links:
             print(link.paths_voice)
             print('Voice in link {}'.format(link.index), link.flow_voice)
@@ -995,7 +967,11 @@ class Data:
         print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 
         for link in self.links:
-            print('IPDV {}: {}'.format(link.name, link.ipdv_be))
+            print('IPDV BE {}: {}, IPDV MAX: {}, IPDV MIN: {}, a_voice: {}, a_video: {}'.format(link.name, link.ipdv_be,
+                                                                                                link.ipdv_max_be,
+                                                                                                link.ipdv_min_be,
+                                                                                                link.a_voice,
+                                                                                                link.a_video))
         print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 
         print('xxxxxxxxxxxxx Voice xxxxxxxxxxxxxxxx')
