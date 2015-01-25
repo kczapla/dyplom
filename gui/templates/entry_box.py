@@ -59,6 +59,7 @@ class EntryRow(tk.Frame):
             return tmp
         except ValueError:
             tkinter.messagebox.showerror('Error', 'Insert only digits! Try again...')
+            return False
 
 
 class EntryFrame(tk.Frame):
@@ -99,10 +100,11 @@ class EntryFrame(tk.Frame):
 
     def fetch_rows(self, rows, distribution, directions):
 
-        paths = [path.fetch_values() for path in rows]
+        paths = [path.fetch_values() for path in rows if path.fetch_values()]
 
-        if self.check_if_repeat(paths):
-            tkinter.messagebox.showerror('Error', 'Paths sequence repeating!')
+        if self.check_if_repeat(paths) or not paths:
+            tkinter.messagebox.showerror('Error', 'Paths sequence repeating or path was not defined!')
+            print('Paths matrix is not initialized...')
         else:
             print('Paths ok...')
 
